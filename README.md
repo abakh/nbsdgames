@@ -4,12 +4,12 @@ The TUI games i made for NetBSD ( If they accept these ).
 
 These include:
 
-Jewels (A game with a gameplay similiar to that of Tetris, NOT my invention)
-Sudoku
-Mines (Minesweeper)
-Reversi
-Checkers
-Battleship
+Jewels (A game with a gameplay similiar to that of Tetris, NOT my invention)  
+Sudoku  
+Mines (Minesweeper)  
+Reversi  
+Checkers  
+Battleship  
 
 ### Prerequisites
 
@@ -29,8 +29,7 @@ I am too lazy to write a script for this.
 
 ### How do these look like
 
-![Screenshot including the checkers game and the battleship one] (screenshot.png)
-
+![Screenshot including the checkers game and the battleship one] (screenshot.png)  
 
 ### License
 
