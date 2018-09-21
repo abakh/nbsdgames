@@ -28,8 +28,7 @@ cc "address_to_sourcefiles/game_name.c" -lncurses -o "address_to_binaries/game_n
 I am too lazy to write a script for this.
 
 ### How do these look like  
-
-! [Screenshot including the checkers game and the battleship one] (https://github.com/untakenstupidnick/new-bsd-games/blob/master/screenshot.png)  
+https://github.com/untakenstupidnick/new-bsd-games/blob/master/screenshot.png 
 
 ### License
 
