@@ -1,12 +1,16 @@
 New BSD Games
 -------------
-You have a computing machine from 1980's  and you wonder how can you use it?
+.. image:: https://raw.githubusercontent.com/untakenstupidnick/new-bsd-games/master/banner.png
+
+
+*You have a computing machine from 1980's  and you wonder how can you use it?
  You deal with a GUI-less machine at work and are looking for ways to kill time?
   You have to make a Reversi AI for your homework and you don't know where to copy it from?
    You have been so excited about the bsdgames, but have grown tired of playing tetris, snake and robots for billions of times?
-    You feel they have fooled you by bundling stuff like phantasia with a package you except to contain GAMES?
+    You feel they have fooled you by bundling stuff like phantasia with a package you except to contain GAMES?* 
 
-Don't worry anymore as you've got nbsdgames now!
+
+**Don't worry anymore** as you've got nbsdgames now!
 
 I originally made these to be added to NetBSD (but the few i talked with preferred to have games in the repositories rather than in /usr/games itself).
 
@@ -43,10 +47,11 @@ How to run
 
 Like this:
 
-.. code:: bash
+.. code::
 	cd ~/Downloads/sources
 	export PREFIX= ~/bin
 	make install 
+
 
 How do these look like
 -----------------------
