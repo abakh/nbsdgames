@@ -1,8 +1,5 @@
 New BSD Games
 -------------
-.. image:: https://raw.githubusercontent.com/untakenstupidnick/new-bsd-games/master/banner.png
-
-
 *You have a computing machine from 1980's  and you wonder how can you use it?*
  *You deal with a GUI-less machine at work and are looking for ways to kill time?*
   *You have to make a Reversi AI for your homework and you don't know where to copy it from?*
