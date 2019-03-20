@@ -19,12 +19,10 @@ Mines (Minesweeper)
 Reversi
 Checkers
 Battleship
-
-Post Made-for-NetBSD games:
-
 SOS
 Rabbithole (A maze-exploring game where you have to gather items from all around the maze rather reaching an end,the idea maybe mine)
 Pipes (Same as the famous Pipe Mania, unplayable on the environments that don't support the line characters)
+
 Prerequisites
 -------------
 
@@ -43,12 +41,10 @@ How to run
 
 Like this:
 
-.. code::
+.. code-block:: sh  
 	cd ~/Downloads/sources
 	export PREFIX= ~/bin
 	make install 
-
-
 
 How do these look like
 -----------------------
