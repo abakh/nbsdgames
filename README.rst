@@ -1,11 +1,10 @@
 New BSD Games
 -------------
 *You have a computing machine from 1980's  and you wonder how can you use it?*
- *You deal with a GUI-less machine at work and are looking for ways to kill time?*
-  *You have to make a Reversi AI for your homework and you don't know where to copy it from?*
-   *You have been so excited about the bsdgames, but have grown tired of playing tetris, snake and robots for billions of times?*
-    *You feel they have fooled you by bundling stuff like phantasia with a package you except to contain GAMES?*
-
+*You deal with a GUI-less machine at work and are looking for ways to kill time?*
+*You have to make a Reversi AI for your homework and you don't know where to copy it from?*
+*You have been so excited about the bsdgames, but have grown tired of playing tetris, snake and robots for billions of times?*
+*You feel they have betrayed you by bundling stuff like phantasia with a package you except to contain GAMES?*
 
 **Don't worry** anymore as you've got nbsdgames now!
 
@@ -48,6 +47,7 @@ Like this:
 	cd ~/Downloads/sources
 	export PREFIX= ~/bin
 	make install 
+
 
 
 How do these look like
