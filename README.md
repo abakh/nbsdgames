@@ -25,7 +25,7 @@ These include:
 
 ## Prerequisites
 
-* make (optional)
+* POSIX make (optional)
 * A C compiler with C99 enabled 
 * The standard library
 * libncurses (the dev package if you are on debian-based distros)
