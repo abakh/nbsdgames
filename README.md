@@ -8,7 +8,7 @@
 
 **Don't worry** anymore as you've got nbsdgames now!
 
-I originally made these to be added to NetBSD (but the few i talked with preferred to have games in the repositories rather than in /usr/games itself).
+I originally made these to be added to NetBSD ( but the few i talked with preferred to have games in the repositories rather than in /usr/games itself) .
 
 
 These include:
