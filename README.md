@@ -20,7 +20,7 @@ These include:
 * Checkers
 * Battleship
 * SOS
-* Rabbithole (A maze-exploring game where you have to gather items from all around the maze rather reaching an end,the idea maybe mine)
+* Rabbithole (A maze-exploring game where you have to gather items from all around the maze rather reaching an end, the idea maybe mine)
 * Pipes (Same as the famous Pipe Mania, unplayable on the environments that don't support the line characters)
 
 ## Prerequisites
