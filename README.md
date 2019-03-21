@@ -1,10 +1,10 @@
 # New BSD Games
-
-You have a computing machine from 1980's  and you wonder how can you use it? 
- You deal with a GUI-less machine at work and are looking for ways to kill time?
-  You have to make a Reversi AI for your homework and you don't know where to copy it from?
-   You have been so excited about the bsdgames, but have grown tired of playing tetris, snake and robots for billions of times?
-    You feel they have betrayed you by bundling stuff like phantasia with a package you except to contain GAMES?
+<!To anyone who has been involved in development of this display system: f.. fu.. FUCK Y'ALL ! WHAT KIND OF HELLISH SHIT IS THIS?!?!?!?!??>
+ *You have a computing machine from 1980's  and you wonder how you can use it? <br/>
+  You deal with a GUI-less machine at work and are looking for ways to kill time? <br/>
+   You have to make a Reversi AI for your homework and you don't know where to copy it from? <br/>
+    You have been so excited about the bsdgames, but have grown tired of playing tetris, snake and robots for billions of times? <br/>
+     You feel they have betrayed you by bundling stuff like phantasia with a package you except to contain GAMES?* <br/>
 
 **Don't worry** anymore as you've got nbsdgames now!
 
