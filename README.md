@@ -1,10 +1,10 @@
-#New BSD Games
+# New BSD Games
 
-*You have a computing machine from 1980's  and you wonder how can you use it?*
-*You deal with a GUI-less machine at work and are looking for ways to kill time?*
-*You have to make a Reversi AI for your homework and you don't know where to copy it from?*
-*You have been so excited about the bsdgames, but have grown tired of playing tetris, snake and robots for billions of times?*
-*You feel they have betrayed you by bundling stuff like phantasia with a package you except to contain GAMES?*
+*You have a computing machine from 1980's  and you wonder how can you use it?* 
+*You deal with a GUI-less machine at work and are looking for ways to kill time?* 
+*You have to make a Reversi AI for your homework and you don't know where to copy it from?* 
+*You have been so excited about the bsdgames, but have grown tired of playing tetris, snake and robots for billions of times?* 
+*You feel they have betrayed you by bundling stuff like phantasia with a package you except to contain GAMES?* 
 
 **Don't worry** anymore as you've got nbsdgames now!
 
@@ -23,14 +23,14 @@ These include:
 * Rabbithole (A maze-exploring game where you have to gather items from all around the maze rather reaching an end,the idea maybe mine)
 * Pipes (Same as the famous Pipe Mania, unplayable on the environments that don't support the line characters)
 
-##Prerequisites
+## Prerequisites
 
 * make (optional)
 * A C compiler with C99 enabled 
 * The standard library
 * libncurses (the dev package if you are on debian-based distros)
 
-##How to run
+## How to run
 
 
 1) Download the files
@@ -46,11 +46,11 @@ Like this:
         make install
 ```
 
-##How do these look like
+## How do these look like
 ![Screenshot from 4 games in tmux](https://raw.githubusercontent.com/untakenstupidnick/new-bsd-games/master/screenshot.png)
 
 
-##License
+## License
 No rights reserved.
 
 I am living outside the Berne convention and therefore no meaningful licensing can be applied (meaning that it's public domain in most of the world).
