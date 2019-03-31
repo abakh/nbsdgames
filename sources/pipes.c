@@ -51,7 +51,7 @@ byte scorewrite(void){// only saves the top 10, returns the place in the chart
         else{
                 deforno=0;
                 if( !(scorefile = fopen(getenv("PP_SCORES"),"r")) ){
-			sprintf(error,"No accessible score files found. You can make an empty text file in %s/%s or set PP_SCORES to such a file to solve this.",getenv("HOME"),PP_SCORES);
+			sprintf(error,"No accessible score files found. You can make an empty text file in %s or set PP_SCORES to such a file to solve this.",PP_SCORES);
 			return -1;
                 }
         }

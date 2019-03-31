@@ -40,7 +40,7 @@ byte scorewrite(long score){// only saves the top 10
 	else{
 		deforno=0;
 		if( !(scorefile = fopen(getenv("JW_SCORES"),"r")) ){
-			fprintf(stderr,"\nNo accessible score files found. You can make an empty text file in %s/%s or set JW_SCORES to such a file to solve this. \n",getenv("HOME"),JW_SCORES);
+			fprintf(stderr,"\nNo accessible score files found. You can make an empty text file in %s or set JW_SCORES to such a file to solve this. \n",JW_SCORES);
 			exit(EXIT_SUCCESS);
 		}
 	}
