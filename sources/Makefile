@@ -26,6 +26,6 @@ uninstall:
 	rm $(PREFIX)/jewels $(PREFIX)/sudoku $(PREFIX)/checkers $(PREFIX)/mines $(PREFIX)/reversi $(PREFIX)/battleship $(PREFIX)/rabbithole $(PREFIX)/sos $(PREFIX)/pipes
 copy_sources:
 	cp Makefile config.h jewels.c sudoku.c mines.c reversi.c checkers.c battleship.c rabbithole.c sos.c pipes.c $(PREFIX)
-install: all
+install: jewels sudoku mines reversi checkers battleship rabbithole sos pipes
 	cp jewels sudoku mines reversi checkers battleship rabbithole sos pipes $(PREFIX)
 
