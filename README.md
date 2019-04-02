@@ -57,4 +57,9 @@ No rights reserved.
 
 I am living outside the Berne convention and therefore no meaningful licensing can be applied (meaning that it's public domain in most of the world).
 
-
+## How to contribute
+Thanks for your generousity! You can...
+* Share these with your friends
+* Tell me your suggestions, bug reports, games you want to be added etc.
+* Make a package for your distro
+* Port it to other OSes with help from PDcurses (Not very hard, but there are incompatibilities between PDcurses and ncurses)
