@@ -46,6 +46,8 @@ Like this:
         make install
 ```
 
+Alas, If you are on a debian-based OS on a 64-bit PC you can simply download the deb package and simply install it with dpkg or apt.
+
 ## How do these look like
 ![Screenshot from 4 games in tmux](https://raw.githubusercontent.com/untakenstupidnick/new-bsd-games/master/screenshot.png)
 
