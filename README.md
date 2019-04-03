@@ -25,13 +25,13 @@ These include:
 
 ## Prerequisites
 
+* git (optional)
 * POSIX make (optional)
 * A C compiler with C99 enabled 
 * The standard library
 * libncurses (the dev package if you are on debian-based distros)
 
 ## How to run
-
 
 1) Download the files
 2) Go to the sources directory
@@ -41,7 +41,8 @@ These include:
 Like this:
 
 ``` sh
-        cd ~/Downloads/sources
+	git clone https://github.com/untakenstupidnick/nbsdgames
+        cd ~/nbsdgames/sources
         export PREFIX= ~/bin
         make install
 ```
