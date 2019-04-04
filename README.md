@@ -53,11 +53,6 @@ Also, If you are on a debian-based OS on a 64-bit PC you can download the deb pa
 ![Screenshot from 4 games in tmux](https://raw.githubusercontent.com/untakenstupidnick/new-bsd-games/master/screenshot.png)
 
 
-## License
-No rights reserved.
-
-I am living outside the Berne convention and therefore no meaningful licensing can be applied (meaning that it's public domain in most of the world).
-
 ## How to contribute
 Thanks for your generousity! You can...
 * Share these with your friends
