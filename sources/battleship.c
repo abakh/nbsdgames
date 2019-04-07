@@ -73,7 +73,7 @@ void rectangle(byte sy,byte sx){
 	}
 	mvaddch(sy,sx,ACS_ULCORNER);
 	mvaddch(sy+10+1,sx,ACS_LLCORNER);
-	mvaddch(sy,sx+10*2,ACS_URCORNER);-
+	mvaddch(sy,sx+10*2,ACS_URCORNER);
 	mvaddch(sy+10+1,sx+10*2,ACS_LRCORNER);
 }
 void print_type(byte type){
