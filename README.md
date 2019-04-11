@@ -61,5 +61,5 @@ It's been made available for openSUSE thanks to Zinjanthropus: https://build.ope
 Thanks for your generousity! You can...
 * Share these with your friends
 * Tell me your suggestions, bug reports, games you want to be added etc.
-* Make a package for your distro
+* Make a package for your distro ( This additional repo is made to make it easier https://github.com/untakenstupidnick/nbsdgames-sources )
 * Port it to other OSes with help from PDcurses (Not very hard, but there are incompatibilities between PDcurses and ncurses)
