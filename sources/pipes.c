@@ -22,8 +22,7 @@
 |_)
 | IPES
 
-
-copyright Hossein Bakhtiarifar 2018 (c)
+Authored by Hossein Bakhtiarifar <abakh@tuta.io>
 No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
 
 compile with -lncurses
