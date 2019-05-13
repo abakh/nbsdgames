@@ -4,7 +4,8 @@
   You deal with a GUI-less machine at work and are looking for ways to kill time? <br/>
    You have to make a Reversi AI for your homework and you don't know where to copy it from? <br/>
     You have been so excited about the bsdgames, but have grown tired of playing tetris, snake and robots for billions of times? <br/>
-     You feel they have betrayed you by bundling stuff like phantasia with a package you except to contain GAMES?* <br/>
+     You feel they have betrayed you by bundling stuff like phantasia with a package you except to contain GAMES? <br/>
+      You are the DSL developer and have cancelled the project because you lacked games?* <br/>
 
 **Don't worry** anymore as you've got nbsdgames now!
 
@@ -48,6 +49,7 @@ Like this:
 ```
 
 Also, If you are on a debian-based OS on a 64-bit PC you can download the deb package and simply install it with dpkg or apt.
+the deb package: https://github.com/untakenstupidnick/nbsdgames/releases/download/v2.0/nbsdgames_amd64.deb
 
 It's available on AUR thanks to Elias Riedel Gårding: https://aur.archlinux.org/packages/nbsdgames-git/
 (The commands start with  nbsd_ to avoid conflict)
@@ -58,8 +60,8 @@ It's been made available for openSUSE thanks to Zinjanthropus: https://build.ope
 
 
 ## How to contribute
-Oh, You are so kind! You can...
+Oh, so kind! You can...
 * Share these with your friends
 * Tell me your feature requests, bug reports, games you want to be added etc.
-* Make a package for your distro
+* Make a package for your distro (or put it on repos and tell me afterwards)
 * Tell me if you're interested in porting it to non-Unix (Possible in theory since there is PDCurses for SDL, and SDL for everything)
