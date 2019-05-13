@@ -1,5 +1,5 @@
 # New BSD Games
-<!To anyone who has been involved in development of this display system: f.. fu.. FUCK Y'ALL ! WHAT KIND OF HELLISH SHIT IS THIS?!?!?!?!??>
+<!To anyone who has been involved in development of this readme system: FUCK Y'ALL ! WHAT KIND OF HELLISH SHIT IS THIS?!?!?!?!??>
  *You have a computing machine from 1980's  and you wonder how you can use it? <br/>
   You deal with a GUI-less machine at work and are looking for ways to kill time? <br/>
    You have to make a Reversi AI for your homework and you don't know where to copy it from? <br/>
@@ -8,8 +8,7 @@
 
 **Don't worry** anymore as you've got nbsdgames now!
 
-I originally made these to be added to NetBSD ( but the few i talked with preferred to have games in the repositories rather than in /usr/games itself) .
-
+I originally made these in hope of them being added to NetBSD ( but the few i talked with preferred to have games in the repositories rather than in /usr/games itself) .
 
 These include:
 
@@ -22,7 +21,8 @@ These include:
 * SOS
 * Rabbithole (A maze-exploring game where you have to gather items from all around the maze rather than reaching an end, the idea maybe mine)
 * Pipes (Same as the famous Pipe Mania, unplayable on the environments that don't support the line characters)
-
+* Fifteen
+* Memoblocks (or Memory blocks. A similar game was included in Windows 7)
 ## Prerequisites
 
 * git (optional)
@@ -41,7 +41,7 @@ These include:
 Like this:
 
 ``` sh
-	git clone https://github.com/untakenstupidnick/nbsdgames
+	 git clone https://github.com/untakenstupidnick/nbsdgames
         cd ~/nbsdgames/sources
         export PREFIX= ~/bin
         make install
@@ -58,8 +58,8 @@ It's been made available for openSUSE thanks to Zinjanthropus: https://build.ope
 
 
 ## How to contribute
-Thanks for your generousity! You can...
+Oh, You are so kind! You can...
 * Share these with your friends
-* Tell me your suggestions, bug reports, games you want to be added etc.
-* Make a package for your distro ( This additional repo is made to make it easier https://github.com/untakenstupidnick/nbsdgames-sources )
-* Port it to other OSes with help from PDcurses (Not very hard, but there are incompatibilities between PDcurses and ncurses)
+* Tell me your feature requests, bug reports, games you want to be added etc.
+* Make a package for your distro
+* Tell me if you're interested in porting it to non-Unix (Possible in theory since there is PDCurses for SDL, and SDL for everything)

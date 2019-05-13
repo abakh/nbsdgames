@@ -552,6 +552,7 @@ int main(int argc,char** argv){
 	double adv = 1;//used to determine when the game is a draw
 	double previousadv =1;	
 	Turn:
+	curs_set(0);
 	jumpagainy=jumpagainx=-1;
 	kinged=0;
 	turn =-turn;
@@ -577,7 +578,7 @@ int main(int argc,char** argv){
 		result=-1;
 		goto End;
 	}
-	else if(todraw==50){ // 50 turns without any gains for each side
+	else if(todraw==50){ // 50 turns without any gain for either side
 		result=0;
 		goto End;
 	}
