@@ -5,7 +5,7 @@
    You are the DSL developer and have cancelled the project because you lacked games? <br/>
     You have to make a Reversi AI for your homework and you don't know where to copy it from? <br/>
      You have been so excited about the bsdgames, but have grown tired of playing tetris, snake and robots for billions of times? <br/>
-     You feel they have betrayed you by bundling stuff like phantasia with a package you except to contain GAMES?* <br/>
+     You feel they have betrayed you by bundling stuff like phantasia with a package you expect to contain GAMES?* <br/>
 
 
 **Don't worry** anymore as you've got nbsdgames now!
