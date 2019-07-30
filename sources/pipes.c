@@ -277,7 +277,11 @@ void draw(bitbox board[len][wid]){
 
 void mouseinput(void){
         MEVENT minput;
-        getmouse(&minput);
+	#ifdef PDCURSES
+	nc_getmouse(&minput);
+	#else
+	getmouse(&minput);
+	#endif
         if( minput.y-4 <len && minput.x-1<wid*2){
                 py=minput.y-(1+SY);
                 px=minput.x-(1+SX);

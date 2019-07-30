@@ -46,7 +46,11 @@ void sigint_handler(int x){
 }
 void mouseinput(bool ingame){
         MEVENT minput;
-        getmouse(&minput);
+	#ifdef PDCURSES
+	nc_getmouse(&minput);
+	#else
+	getmouse(&minput);
+	#endif
         if(minput.bstate & (BUTTON1_CLICKED|BUTTON1_RELEASED)){
 		if( minput.y-4 < 10){
 			if( (ingame && minput.x-23<20 && minput.x-23>=0 ) || (!ingame && minput.x-1<20) ){//it most be on the trackboard if ingame is true

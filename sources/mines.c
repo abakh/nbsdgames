@@ -148,7 +148,11 @@ void sigint_handler(int x){
 }
 void mouseinput(int sy, int sx){
 	MEVENT minput;
+	#ifdef PDCURSES
+	nc_getmouse(&minput);
+	#else
 	getmouse(&minput);
+	#endif
 	if( minput.y-4-sy<len && minput.x-1-sx<wid*2){
 		py=minput.y-4-sy;
 		px=(minput.x-1-sx)/2;
