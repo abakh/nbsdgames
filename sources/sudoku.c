@@ -105,7 +105,7 @@ bool fill_with(char board[s][s],char fillwith){//returns 1 on failure
 	if (tries>s)
 		return 1;
 	for(byte y=0;y<s;y++){//there should be only one occurence of a number in a row, and this function makes use of this fact to improve generation speed
-		firstx=x=random()%s;
+		firstx=x=rand()%s;
 		while(1){
 			if(!board[y][x]){
 				board[y][x]=fillwith;
@@ -179,13 +179,13 @@ void justfill(char board[s][s]){//sometimes fill() gets too much , and you just 
 		}
 	}
 	for(byte n=0;n<s*2;n++)//randomize
-		swap(board,int2sgn(1+(random()%s)),int2sgn(1+(random()%s)) );
+		swap(board,int2sgn(1+(rand()%s)),int2sgn(1+(rand()%s)) );
 }
 void mkpuzzle(char board[s][s],char empty[s][s],char game[s][s]){//makes a puzzle to solve
 	byte y,x;
 	for(y=0;y<s;y++){
 		for(x=0;x<s;x++){
-			if( !(random()%diff) ){
+			if( !(rand()%diff) ){
 				empty[y][x]=board[y][x];
 				game[y][x]=board[y][x];
 			}
@@ -327,7 +327,7 @@ int main(int argc,char** argv){
         noecho();
         cbreak();
         keypad(stdscr,1);
-        srandom(time(NULL)%UINT_MAX);
+        srand(time(NULL)%UINT_MAX);
 	if( has_colors() ){
                 start_color();
                 use_default_colors();

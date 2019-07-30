@@ -83,12 +83,12 @@ void drawmines(int sy,int sx,byte board[len][wid],bool mines[len][wid]){
 }
 //place mines
 void mine(bool mines[len][wid]){
-	int y=random()%len;
-	int x=random()%wid;
+	int y=rand()%len;
+	int x=rand()%wid;
 	for(int n=0;n<mscount;n++){
 		while(mines[y][x]){
-			y=random()%len;
-			x=random()%wid;
+			y=rand()%len;
+			x=rand()%wid;
 		}
 		mines[y][x]=true;
 	}
@@ -234,7 +234,7 @@ int main(int argc, char** argv){
 	}
 	else
 		mscount = len*wid/6;
-	srandom(time(NULL)%UINT_MAX);
+	srand(time(NULL)%UINT_MAX);
 	initscr();
         mousemask(ALL_MOUSE_EVENTS,NULL);
         noecho();
@@ -322,7 +322,7 @@ int main(int argc, char** argv){
 		}
 		if(input=='\n' && board[py][px] < 9){
 			if(mines[py][px]){
-				switch( random()%3){
+				switch( rand()%3){
 					case 0:
 						strcpy(result,"You lost The Game.");
 						break;

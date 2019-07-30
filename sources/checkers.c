@@ -388,7 +388,7 @@ double decide(byte side,byte depth,byte s){//s is the type of move, it doesn't s
 							if(fj)
 								game[(toy+y)/2][(tox+x)/2]=captured;
 
-							if(besty<0 || adv>bestadv || (adv==bestadv && ( random()%2 )) ){
+							if(besty<0 || adv>bestadv || (adv==bestadv && ( rand()%2 )) ){
 								besty=y;
 								bestx=x;
 								besttoy=toy;
@@ -537,7 +537,7 @@ int main(int argc,char** argv){
 	}
 	signal(SIGINT,sigint_handler);
 	Start:
-	srandom(time(NULL)%UINT_MAX);
+	srand(time(NULL)%UINT_MAX);
 	fill();
 	cy=cx=-1;
 	py=px=0;

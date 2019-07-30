@@ -112,7 +112,7 @@ bool issolved(char board[size][size],char check[size][size]){
 }
 void shuffle(char board[size][size]){
 	for(int m=0;m<1000;m++){
-		switch(random()%4){
+		switch(rand()%4){
 			case 0:
 				slide_one(board,ey,ex+1);
 				break;
@@ -187,7 +187,7 @@ int main(int argc, char** argv){
 		}
 	}
 	signal(SIGINT,sigint_handler);
-	srandom(time(NULL)%UINT_MAX);
+	srand(time(NULL)%UINT_MAX);
 	initscr();
         mousemask(ALL_MOUSE_EVENTS,NULL);
         noecho();

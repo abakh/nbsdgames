@@ -99,10 +99,10 @@ void shuffle(chtype board[size][size2]){
 	chtype a;
 	byte ay,ax,by,bx;
 	for(int m=0;m<n;m++){
-		ay=random()%size;
-		ax=random()%(size2);
-		by=random()%size;
-		bx=random()%(size2);
+		ay=rand()%size;
+		ax=rand()%(size2);
+		by=rand()%size;
+		bx=rand()%(size2);
 		a=board[ay][ax];
 		board[ay][ax]=board[by][bx];
 		board[by][bx]=a;
@@ -171,7 +171,7 @@ int main(int argc, char** argv){
 		}
         }
 	signal(SIGINT,sigint_handler);
-	srandom(time(NULL)%UINT_MAX);
+	srand(time(NULL)%UINT_MAX);
 	initscr();
         mousemask(ALL_MOUSE_EVENTS,NULL);
         noecho();

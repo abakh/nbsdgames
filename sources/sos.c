@@ -119,9 +119,9 @@ void color_sos(char board[len][wid],byte colored[len][wid], int y , int x ,bool 
         }
 }
 void randmove(int* y,int* x,byte* c){
-	*y=random()%len;
-	*x=random()%wid;
-	*c=random()%2;
+	*y=rand()%len;
+	*x=rand()%wid;
+	*c=rand()%2;
 }
 int decide ( char board[len][wid],byte colored[len][wid], byte depth , byte side ){ //the move is imaginary if side is negative
 	int adv,bestadv;
@@ -265,7 +265,7 @@ int main(int argc, char** argv){
 			return EXIT_FAILURE;
 		}
 	}
-	srandom(time(NULL)%UINT_MAX);
+	srand(time(NULL)%UINT_MAX);
 	int input;		
 	initscr();
 	mousemask(ALL_MOUSE_EVENTS,NULL);

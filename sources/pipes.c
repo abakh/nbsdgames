@@ -11,7 +11,6 @@
 #define LEFT 8
 #define CROSSOVER 15
 #define FILLED 16
-#define SPILL 13
 #define FLOWDELAY 5
 #define DELAY 3
 #define SAVE_TO_NUM 10
@@ -207,16 +206,16 @@ void rectangle(void){
 }
 //this generates the pipes...
 bitbox pipegen(void){
-	if(random()%17){//17 so all forms have the same chance
-		byte a=random()%4;
+	if(rand()%17){//17 so all forms have the same chance
+		byte a=rand()%4;
 		byte b;
 		do{
-			b=random()%4;
+			b=rand()%4;
 		}while(b==a);
 		return (1 << a) | ( 1 << b);
 	}
 	else
-		return CROSSOVER;//sum of all directions, the crossover
+		return CROSSOVER;//could not be generated like that
 	
 }
 //.. and this is only for display
@@ -364,7 +363,7 @@ int main(int argc, char** argv){
 	initscr();
 	mousemask(ALL_MOUSE_EVENTS,NULL);
 	time_t tstart , now, lasttime, giventime=len*wid/4;
-	srandom(time(NULL)%UINT_MAX);		
+	srand(time(NULL)%UINT_MAX);		
 	bitbox direction,board[len][wid];
 	int input;
 	byte foo;
@@ -375,9 +374,9 @@ int main(int argc, char** argv){
 	score=0;
 	memset(error,0,150);
 	memset(board,0,len*wid);
-	fy=1+(random()%(len-2) );
-	fx=1+(random()%(wid-2) );
-	board[fy][fx]= 1 << (random()%4);
+	fy=1+(rand()%(len-2) );
+	fx=1+(rand()%(wid-2) );
+	board[fy][fx]= 1 << (rand()%4);
 	direction= board[fy][fx];
 	board[fy][fx]|=FILLED;
 	for(foo=0;foo<5;foo++)

@@ -314,9 +314,9 @@ int main(void){
 		}
 	}
 
-	srandom(time(NULL)%UINT_MAX);
-	byte ran1= random()%6;
-	byte ran2= random()%6;
+	srand(time(NULL)%UINT_MAX);
+	byte ran1= rand()%6;
+	byte ran2= rand()%6;
 	next1= colors[ran1]|jwstr[ran1];
 	next2= colors[ran2]|jwstr[ran2];
 	while(1){
@@ -331,8 +331,8 @@ int main(void){
 		kx=-1;
 		board[jy][jx]=next2;
 		board[jy+ky][jx+kx]=next1;
-		ran1= random()%6;
-		ran2= random()%6;
+		ran1= rand()%6;
+		ran2= rand()%6;
 		next1=colors[ran1]|jwstr[ran1];
 		next2=colors[ran2]|jwstr[ran2];
 		falls = 1;

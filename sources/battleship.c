@@ -187,13 +187,13 @@ void autoset(bool side){
 	byte l;
 	for(byte type=2;type<7;type++){
 		SetLocation:
-		realy=random()%10;
-		realx=random()%10;
+		realy=rand()%10;
+		realx=rand()%10;
 		invain=0;
 		SetDirection:
 		y=realy;
 		x=realx;
-		direction=random()%4;
+		direction=rand()%4;
 		for(l=0;(type != 6 && l<type) || (type==6 && l<3) ; l++){//there are two kinds of ship sized 3 tiles
 			if( y<0 || x<0 || y>=10 || x>=10 || game[side][y][x] != SEA ){
 				genocide(side,type);
@@ -294,7 +294,7 @@ void set_the_board(bool side){
 void turn_shift(void){
 	if(!multiplayer)
 		return;
-	char key = 'a'+(random()%ENGLISH_LETTERS);
+	char key = 'a'+(rand()%ENGLISH_LETTERS);
 	int input1,input2,input3;
 	input1=input2=input3=0;
 	erase();
@@ -393,13 +393,13 @@ void decide(bool side){// sink_announce is responsible for unsetting the global 
 	byte y,x,r;
 	Again:
 	if( firstinrowy == NOTHING ){
-		if( score[side] > 14 && score[side]<score[!side] && random()%2 ){
+		if( score[side] > 14 && score[side]<score[!side] && rand()%2 ){
 			cheat(side);
 			return;
 		}
 		while(1){
-			y = random()%10;
-			x = random()%10;
+			y = rand()%10;
+			x = rand()%10;
 			r = shoot(side,y,x);
 			if(r == 1){
 				firstinrowy=y;
@@ -411,7 +411,7 @@ void decide(bool side){// sink_announce is responsible for unsetting the global 
 	}
 	else if( lastinrowy ==NOTHING ){
 		if(goindirection == NOTHING)
-			goindirection = random()%4;
+			goindirection = rand()%4;
 		while(1){
 			y= firstinrowy;//we know there is hit already
 			x= firstinrowx;
@@ -536,7 +536,7 @@ int main(void){
         shotinvain=0;
 	sunk[0]=sunk[1]=0;
 	memset(game,SEA,200);
-	srandom(time(NULL)%UINT_MAX);
+	srand(time(NULL)%UINT_MAX);
 	erase();
 
 	set_the_board(0);	

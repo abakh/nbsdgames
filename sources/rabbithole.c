@@ -94,10 +94,10 @@ void draw(int sy,int sx,bitbox board[len][wid]){
 }
 void make_maze(bitbox board[len][wid],point f){
 	byte ds_tried=0;
-	byte dnumber=random()%4;
+	byte dnumber=rand()%4;
 	bitbox direction= 1 << (dnumber);
 	while( direction == board[f.y][f.x] )
-		direction= 1 << (dnumber=random()%4);
+		direction= 1 << (dnumber=rand()%4);
 	
 	point pt = MID(f.y,f.x,direction);
 	while(ds_tried<4){
@@ -116,11 +116,11 @@ void make_maze(bitbox board[len][wid],point f){
 void carrotify(bitbox board[len][wid],int count){
 	int y,x,c=count;
 	while(c){
-		y=random()%len;
-		x=random()%wid;
+		y=rand()%len;
+		x=rand()%wid;
 		while( board[y][x] & CARROT ){
-			y=random()%len;
-			x=random()%wid;
+			y=rand()%len;
+			x=rand()%wid;
 		}
 		board[y][x] |= CARROT;
 		c--;
@@ -208,7 +208,7 @@ int main(int argc, char** argv){
 	int carrot_count= (len*wid)/50;
 	int carrots_found;
 	time_t tstart , now, giventime=len*wid/5;
-	srandom(time(NULL)%UINT_MAX);		
+	srand(time(NULL)%UINT_MAX);		
 	point start={0,0};
 	bitbox board[len][wid];
 	int sy,sx;
