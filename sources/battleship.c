@@ -525,6 +525,7 @@ int main(void){
         printw("Choose type of the game:\n");
 	printw("1 : Single Player*\n");
 	printw("2 : Multi Player\n");
+	refresh();
         input=getch();
         if(input == '2'){
 		multiplayer=1;

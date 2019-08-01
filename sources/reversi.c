@@ -285,6 +285,7 @@ int main(int argc , char** argv){
 	int input;
 	printw("Black plays first:\n");
 	printw("Choose type of the white player (H/c)\n");
+	refresh();
 	input=getch();
 	if(input == 'c'){
 		computer[0]=depth;
@@ -294,7 +295,9 @@ int main(int argc , char** argv){
 		computer[1]=0;
 		printw("Human.\n");
 	}
+	refresh();
 	printw("Choose type of the black player(h/C)\n");
+	refresh();
 	input=getch();
 	if(input == 'h'){
 		computer[1]=0;

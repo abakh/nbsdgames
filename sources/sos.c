@@ -278,6 +278,7 @@ int main(int argc, char** argv){
 	cbreak();
 	keypad(stdscr,1);
 	printw("Black plays first.\n Choose the type of the blue player(H/c)\n" );
+	refresh();
         input=getch();
         if(input=='c'){
                 computer[0]=dpt;
@@ -287,7 +288,9 @@ int main(int argc, char** argv){
                 computer[0]=0;
                 printw("Human.\n");
         }
+	refresh();
         printw("Choose the type of the yellow player(h/C)\n");
+	refresh();
         input=getch();
         if(input=='h'){
                 computer[1]=0;

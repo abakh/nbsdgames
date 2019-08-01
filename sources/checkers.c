@@ -515,6 +515,7 @@ int main(int argc,char** argv){
 	keypad(stdscr,1);
 	int input ;
 	printw("Dark plays first.\nChoose type of the dark player(H/c)\n" );
+	refresh();
 	input=getch();
 	if(input=='c'){
 		computer[0]=dpt;
@@ -525,6 +526,7 @@ int main(int argc,char** argv){
 		printw("Human.\n");
 	}
 	printw("Choose type of the light player(h/C)\n");
+	refresh();
 	input=getch();
 	if(input=='h'){
 		computer[1]=0;
