@@ -10,7 +10,10 @@
 
 **Don't worry** anymore as you've got nbsdgames now!
 
-I originally made these in hope of them being added to NetBSD ( but the few i talked with preferred to have games in the repositories rather than in /usr/games itself) .
+I originally made these in hope of them being added to NetBSD ( but the few i talked to preferred to have games in the repositories rather than in /usr/games itself) .
+
+They natively run on Linux, BSD, MacOS and are known to work on Windows as well (using PDCurses, thanks to lmemsm.dreamwidth.com for providing advice).
+The difficulty and/or dimensions are adjustable through simple command line options (exprience hexadecimal sudoku and 8x8 fifteen puzzles!).
 
 These include:
 
@@ -25,6 +28,7 @@ These include:
 * Pipes (Same as the famous Pipe Mania, unplayable on the environments that don't support the line characters)
 * Fifteen
 * Memoblocks (or Memory blocks. A similar game was included in Windows 7)
+
 ## Prerequisites
 
 * git (optional)
@@ -55,7 +59,7 @@ the deb package: https://github.com/untakenstupidnick/nbsdgames/releases/downloa
 It's available on AUR thanks to Elias Riedel Gårding: https://aur.archlinux.org/packages/nbsdgames-git/
 (The commands start with  nbsd_ to avoid conflict)
 
-It's been made available for openSUSE thanks to Zinjanthropus: https://build.opensuse.org/package/show/home:Zinjanthropus/nbsdgames
+It's been made available for openSUSE thanks to Jan Brezina: https://build.opensuse.org/package/show/home:Zinjanthropus/nbsdgames
 ## How do these look like
 ![Screenshot from 4 games in tmux](https://raw.githubusercontent.com/untakenstupidnick/new-bsd-games/master/screenshot.png)
 
@@ -63,6 +67,10 @@ It's been made available for openSUSE thanks to Zinjanthropus: https://build.ope
 ## How to contribute
 Oh, so kind! You can...
 * Share these with your friends
-* Tell me your feature requests, bug reports, games you want to be added etc.
+* Tell me your feature requests, bug reports, games you want to be added etc. (think of games in spirit of those already included and look if there is already not a good  terminal game for it)
 * Make a package for your distro (or put it on repos and tell me afterwards)
 * Tell me if you're interested in porting it to non-Unix (Possible in theory since there is PDCurses for SDL, and SDL for everything)
+
+The open-source community were such nice people that all those are known to be done, so I thought I can add more:
+* Email the website admin/Comment on every list of "Best terminal games" you find on Internet to add this
+* Stars are always welcome!
