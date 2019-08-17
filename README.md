@@ -12,7 +12,7 @@
 
 I originally made these in hope of them being added to NetBSD ( but the few i talked to preferred to have games in the repositories rather than in /usr/games itself) .
 
-They natively run on Linux, BSD, MacOS and are known to work on Windows as well (using PDCurses, thanks to lmemsm.dreamwidth.com for providing advice).
+They natively run on Linux, BSD, MacOS and are known to work on Windows as well (using PDCurses, thanks to Laura Michaels for providing advice).
 The difficulty and/or dimensions are adjustable through simple command line options (exprience hexadecimal sudoku and 8x8 fifteen puzzles!).
 
 These include:
@@ -70,7 +70,3 @@ Oh, so kind! You can...
 * Tell me your feature requests, bug reports, games you want to be added etc. (think of games in spirit of those already included and look if there is already not a good  terminal game for it)
 * Make a package for your distro (or put it on repos and tell me afterwards)
 * Tell me if you're interested in porting it to non-Unix (Possible in theory since there is PDCurses for SDL, and SDL for everything)
-
-The open-source community were such nice people that all those are known to be done, so I thought I can add more:
-* Email the website admin/Comment on every list of "Best terminal games" you find on Internet to add this
-* Stars are always welcome!
