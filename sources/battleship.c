@@ -323,13 +323,15 @@ void turn_shift(void){
 	erase();
 }
 byte shoot(bool turn, byte y , byte x){
+	if( y<0 || x<0 || y>9 || x>9 ){ //didn't shoot at all
+		return NOTHING;
+	}
 	byte s = game[!turn][y][x];
+	if(s==HIT || s==MISS)
+		return NOTHING;
 	if(s>0){
 		game[!turn][y][x]=HIT;
 		return 1;
-	}
-	else if(s==HIT || s==MISS || y<0 || x<0 || y>9 || x>9 ){ //didn't shoot at all
-		return NOTHING;
 	}
 	else{
 		game[!turn][y][x]=MISS;
@@ -347,7 +349,7 @@ void sink_announce(bool side){
 			}
 		}
 		//there is no instance of 'type' in the opponet's board
-		if( ( (1 << type) | sunk[!side] ) != sunk[!side] ){
+		if( ( (1 << type) | sunk[!side] ) != sunk[!side] ){//if it is not yet announced as sunk
 			sunk[!side] |= (1 << type);
 			if(computer[side]){
 				lastinrowy=lastinrowx=firstinrowy=firstinrowx=-1;
@@ -375,12 +377,14 @@ void you_sunk(bool side){
 	just_sunk[!side]=0;
 }
 void cheat(bool side){
-	/* its actually an anti-cheat, the player can place all their ships adjacent to the others and in the same direction,
+	/* its actually an anti-cheat, the player can place all their ships adjacent to one another and in the same direction,
 	and the algorithm will often play in a way that it will be left with one or two isolated tiles being unshot (with their respective ships being shot before).
 	in a such a situation a human will *very easily* find the tiles with logical thinking, but the computer shoots randomly and it will take such a long time for it
 	that it will often lose the winning game.
 
-	this function still doesn't make a win,it's randomly executed.*/
+	this function still doesn't make a win,it's randomly executed.
+		
+	if i implemented the logical thinking thing, it would become a difficult, unenjoyable game.*/
 	byte y,x;
 	for(y=0;y<10;y++){
 		for(x=0;x<10;x++){
@@ -537,7 +541,7 @@ int main(void){
 		computer[0]=0;
         }
 	Start:
-	firstinrowy=firstinrowx=lastinrowy=lastinrowx=goindirection=-1;
+	firstinrowy=firstinrowx=lastinrowy=lastinrowx=goindirection=NOTHING;
         shotinvain=0;
 	sunk[0]=sunk[1]=0;
 	memset(game,SEA,200);
@@ -595,7 +599,7 @@ int main(void){
 				sigint_handler(EXIT_SUCCESS);
 			if( input=='\n'){
 				byte r=shoot(turn,py,px-10);
-				if(r != -1){
+				if(r != NOTHING){
 					goto Turn;
 				}
 			}	

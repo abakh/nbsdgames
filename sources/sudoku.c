@@ -232,7 +232,11 @@ void sigint_handler(int x){
 }
 void mouseinput(int sy, int sx){
         MEVENT m;
-        getmouse(&m);
+	#ifdef PDCURSES
+        nc_getmouse(&m);
+	#else
+	getmouse(&m);
+	#endif
         if( m.y < (3+1+size+s)-sy && m.x<(2*s+1)-sx ){//it's a shame to include math.h only for round() but it was the only moral way to make gcc shut up
                 py= round( (float)(size*(m.y-4-sy))/(size+1) );//these are derived from the formulas in draw() by simple algebra
                 px=(m.x-1-sx)/2;
