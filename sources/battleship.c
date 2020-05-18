@@ -40,31 +40,31 @@ byte lastinrowy ,lastinrowx;
 byte goindirection;
 byte shotinvain;
 void sigint_handler(int x){
-        endwin();
-        puts("Quit.");
-        exit(x);
+	endwin();
+	puts("Quit.");
+	exit(x);
 }
 void mouseinput(bool ingame){
-        MEVENT minput;
+	MEVENT minput;
 	#ifdef PDCURSES
 	nc_getmouse(&minput);
 	#else
 	getmouse(&minput);
 	#endif
-        if(minput.bstate & (BUTTON1_CLICKED|BUTTON1_RELEASED)){
+	if(minput.bstate & (BUTTON1_CLICKED|BUTTON1_RELEASED)){
 		if( minput.y-4 < 10){
 			if( (ingame && minput.x-23<20 && minput.x-23>=0 ) || (!ingame && minput.x-1<20) ){//it most be on the trackboard if ingame is true
-                		py=minput.y-4;
-                		px=(minput.x-1-(ingame*2)) /2;
+				py=minput.y-4;
+				px=(minput.x-1-(ingame*2)) /2;
 			}
-        	}
+		}
 		else
 			return;
 	}
-        if(minput.bstate & (BUTTON1_CLICKED|BUTTON1_RELEASED))
-                ungetch('\n');
-        if(minput.bstate & (BUTTON2_CLICKED|BUTTON2_RELEASED|BUTTON3_CLICKED|BUTTON3_RELEASED) )
-                ungetch('r');
+	if(minput.bstate & (BUTTON1_CLICKED|BUTTON1_RELEASED))
+		ungetch('\n');
+	if(minput.bstate & (BUTTON2_CLICKED|BUTTON2_RELEASED|BUTTON3_CLICKED|BUTTON3_RELEASED) )
+		ungetch('r');
 }
 void rectangle(byte sy,byte sx){
 	for(byte y=0;y<=10+1;y++){
@@ -138,9 +138,17 @@ void header(bool side){
 	mvaddch(0,1,  '_');
 	mvprintw(1,0,"|_) %2d:%2d",score[side],score[!side]);
 	mvprintw(2,0,"|_)ATTLESHIP ");
+	if(multiplayer){
+		attron(colors[side]);
+		if(side)
+			printw("Yellow's turn");
+		else
+			printw("Green's turn");
+		attroff(colors[side]);
+	}
 }
 
-void draw(bool side,byte sy,byte sx){//the game's board 
+void draw(bool side,byte sy,byte sx,bool regular){//the game's board 
 	rectangle(sy,sx);
 	chtype ch ;
 	byte y,x;
@@ -151,12 +159,14 @@ void draw(bool side,byte sy,byte sx){//the game's board
 				ch |= A_STANDOUT;
 			if(game[side][y][x] == HIT)
 				ch |= 'X'|colors[RED];
-			else if(game[side][y][x] > 0 )
+			else if(game[side][y][x] > 0 && !(multiplayer&&regular) )
 				ch |= ACS_BLOCK|colors[side];
 			else if(game[side][y][x]== MISS)
 				ch |= 'O'|colors[CYAN];
-			else
+			else if(!(multiplayer&&regular))
 				ch |= '~'|colors[CYAN];
+			else
+				ch |=' ';
 
 			mvaddch(sy+1+y,sx+x*2+1,ch);
 		}
@@ -164,25 +174,25 @@ void draw(bool side,byte sy,byte sx){//the game's board
 }
 void draw_trackboard(bool side,byte sy,byte sx){
 	rectangle(sy,sx);
-        chtype ch ;
-        byte y,x;
-        for(y=0;y<10;y++){
-                for(x=0;x<10;x++){
-                        ch =A_NORMAL;
-                        if(y==py && x==px-10)
-                                ch |= A_STANDOUT;
+	chtype ch ;
+	byte y,x;
+	for(y=0;y<10;y++){
+		for(x=0;x<10;x++){
+			ch =A_NORMAL;
+			if(y==py && x==px-10)
+				ch |= A_STANDOUT;
 
-                        if(game[!side][y][x] == HIT)
-                                ch |= '*'|colors[RED];
-                        else if(game[!side][y][x]== MISS)
-                                ch |= '~'|colors[CYAN];
-                        else
-                                ch |= '.';
+			if(game[!side][y][x] == HIT)
+				ch |= '*'|colors[RED];
+			else if(game[!side][y][x]== MISS)
+				ch |= '~'|colors[CYAN];
+			else
+				ch |= '.';
 
-                        mvaddch(sy+1+y,sx+x*2+1,ch);
-                }
-        }
-        refresh();	
+			mvaddch(sy+1+y,sx+x*2+1,ch);
+		}
+	}
+	refresh();	
 }
 
 void autoset(bool side){
@@ -237,19 +247,19 @@ void set_the_board(bool side){
 		addstr(" in its position:    ");
 		SetLocation:
 		while(1){
-			draw(side,3,0);
+			draw(side,3,0,false);
 			refresh();
 			input = getch();
 			if( input == KEY_MOUSE )
 				mouseinput(0);
 			if( (input=='k' || input==KEY_UP) && py>0)
-                        	py--;
-          	      	if( (input=='j' || input==KEY_DOWN) && py<9)
-                	        py++;
-             		if( (input=='h' || input==KEY_LEFT) && px>0)
-                        	px--;
-                	if( (input=='l' || input==KEY_RIGHT) && px<9)
-                        	px++;
+				py--;
+	  	      	if( (input=='j' || input==KEY_DOWN) && py<9)
+				py++;
+	     		if( (input=='h' || input==KEY_LEFT) && px>0)
+				px--;
+			if( (input=='l' || input==KEY_RIGHT) && px<9)
+				px++;
 			if( input=='\n' )
 				break;
 			if( input=='q' )
@@ -280,7 +290,7 @@ void set_the_board(bool side){
 		}
 		while(1){
 			invain=0;
-			draw(side,3,0);
+			draw(side,3,0,false);
 			input=getch();
 			if( input== 'r' || input == 'R' ){
 				genocide(side,type);
@@ -480,41 +490,41 @@ void decide(bool side){// sink_announce is responsible for unsetting the global 
 	}
 }
 void help(bool side){//side is only there to feed header()
-        erase();
+	erase();
 	header(side);
-        attron(A_BOLD);
-        mvprintw(3,0,"  **** THE CONTROLS ****");
-        mvprintw(9,0,"YOU CAN ALSO USE THE MOUSE!");
-        attroff(A_BOLD);
-        mvprintw(4,0,"RETURN/ENTER : Shoot");
-        mvprintw(5,0,"R : Rotate");
-        mvprintw(6,0,"hjkl/ARROW KEYS : Move cursor");
-        mvprintw(7,0,"q : Quit");
+	attron(A_BOLD);
+	mvprintw(3,0,"  **** THE CONTROLS ****");
+	mvprintw(9,0,"YOU CAN ALSO USE THE MOUSE!");
+	attroff(A_BOLD);
+	mvprintw(4,0,"RETURN/ENTER : Shoot");
+	mvprintw(5,0,"R : Rotate");
+	mvprintw(6,0,"hjkl/ARROW KEYS : Move cursor");
+	mvprintw(7,0,"q : Quit");
 	mvprintw(8,0,"F1 & F2 : Help on controls & gameplay");
-        mvprintw(11,0,"Press a key to continue");
-        getch();
+	mvprintw(11,0,"Press a key to continue");
+	getch();
 	erase();
 }
 void gameplay(bool side){//side is only there to feed header()
-        erase();
-        header(side);
-        attron(A_BOLD);
-        mvprintw(3,0,"  **** THE GAMEPLAY ****");
-        attroff(A_BOLD);
+	erase();
+	header(side);
+	attron(A_BOLD);
+	mvprintw(3,0,"  **** THE GAMEPLAY ****");
+	attroff(A_BOLD);
 	move(4,0);
 	printw("Guess the location of your opponet's\n");
 	printw("ships and sink them! The player\n");
 	printw("who sinks all the opponet's ships wins.");
-        getch();
-        erase();
+	getch();
+	erase();
 }
 int main(void){
 	initscr();
 	mousemask(ALL_MOUSE_EVENTS,NULL);
-        curs_set(0);
-        noecho();
-        cbreak();
-        keypad(stdscr,1);
+	curs_set(0);
+	noecho();
+	cbreak();
+	keypad(stdscr,1);
 	if( has_colors() ){
 		start_color();
 		use_default_colors();
@@ -526,23 +536,23 @@ int main(void){
 			colors[b]=COLOR_PAIR(b+1);
 	}
 	int input;
-        printw("Choose type of the game:\n");
+	printw("Choose type of the game:\n");
 	printw("1 : Single Player*\n");
 	printw("2 : Multi Player\n");
 	refresh();
-        input=getch();
-        if(input == '2'){
+	input=getch();
+	if(input == '2'){
 		multiplayer=1;
-                computer[1]=computer[0]=0;
-        }
-        else{
+		computer[1]=computer[0]=0;
+	}
+	else{
 		multiplayer=0;
-                computer[1]=1;
+		computer[1]=1;
 		computer[0]=0;
-        }
+	}
 	Start:
 	firstinrowy=firstinrowx=lastinrowy=lastinrowx=goindirection=NOTHING;
-        shotinvain=0;
+	shotinvain=0;
 	sunk[0]=sunk[1]=0;
 	memset(game,SEA,200);
 	srand(time(NULL)%UINT_MAX);
@@ -558,16 +568,16 @@ int main(void){
 	py=0;
 	sink_announce(turn);
 	if( sunk[0]==ALL ){
-                won=1;
-                goto End;
-        }
-        else if( sunk[1]==ALL ){
-                won=0;
-                goto End;
-        }
+		won=1;
+		goto End;
+	}
+	else if( sunk[1]==ALL ){
+		won=0;
+		goto End;
+	}
 	//the turn starts HERE
 	turn=!turn;
-	turn_shift();
+	//turn_shift();
 	if( computer[turn] ){
 		decide(turn);
 		goto Turn;
@@ -577,7 +587,7 @@ int main(void){
 		you_sunk(turn);
 		while(1){
 			header(turn);
-			draw(turn,3,0);
+			draw(turn,3,0,true);
 			draw_trackboard(turn,3,22);
 			refresh();
 			input=getch();
@@ -588,14 +598,14 @@ int main(void){
 			if(input == KEY_MOUSE)
 				mouseinput(1);
 			if( (input=='k' || input==KEY_UP) && py>0)
-	                        py--;
-	                if( (input=='j' || input==KEY_DOWN) && py<9)
-	                        py++;
-	                if( (input=='h' || input==KEY_LEFT) && px>10)
-	                        px--;
-	                if( (input=='l' || input==KEY_RIGHT) && px<19)
-	                        px++;
-	                if( input=='q')
+				py--;
+			if( (input=='j' || input==KEY_DOWN) && py<9)
+				py++;
+			if( (input=='h' || input==KEY_LEFT) && px>10)
+				px--;
+			if( (input=='l' || input==KEY_RIGHT) && px<19)
+				px++;
+			if( input=='q')
 				sigint_handler(EXIT_SUCCESS);
 			if( input=='\n'){
 				byte r=shoot(turn,py,px-10);
@@ -608,7 +618,7 @@ int main(void){
 	End:
 	erase();
 	header(won);
-	draw(won,3,0);
+	draw(won,3,0,false);
 	draw_trackboard(won,3,22);
 	if( computer[won] )
 		mvaddstr(15,0,"Hahaha! I won! ");

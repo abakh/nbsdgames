@@ -55,7 +55,7 @@ byte sgn2int(char sgn){
 		return sgn-'a'+10;
 	if('A'<=sgn && sgn <= 'Z')
 		return sgn-'A'+36;
-        return 0;
+	return 0;
 }
 
 char int2sgn(byte num){// convert integer to representing sign
@@ -142,7 +142,7 @@ void fill(char board[s][s]){
 		if ( fill_with(board,int2sgn(num) ) ){
 			memset(board,0,s*s);
 			num=0;
-			mvaddstr(0,0,"My algorithm sucks, so you need to wait a bit                    ");//with animated dots to entertain the waiter
+			mvaddstr(0,0,"My algorithm sucks, so you need to wait a bit		    ");//with animated dots to entertain the waiter
 			if(waitcycles==3)
 				mvaddstr(2,0,"(You can set SUDOKU_FASTGEN if you just want to see if it works)");
 			move(0,45);
@@ -231,22 +231,22 @@ void sigint_handler(int x){
 	exit(x);
 }
 void mouseinput(int sy, int sx){
-        MEVENT m;
+	MEVENT m;
 	#ifdef PDCURSES
-        nc_getmouse(&m);
+	nc_getmouse(&m);
 	#else
 	getmouse(&m);
 	#endif
-        if( m.y < (3+1+size+s)-sy && m.x<(2*s+1)-sx ){//it's a shame to include math.h only for round() but it was the only moral way to make gcc shut up
-                py= round( (float)(size*(m.y-4-sy))/(size+1) );//these are derived from the formulas in draw() by simple algebra
-                px=(m.x-1-sx)/2;
-        }
-        else
-                return;
-        if(m.bstate & BUTTON1_CLICKED)
-                ungetch('\n');
-        if(m.bstate & (BUTTON2_CLICKED|BUTTON3_CLICKED) )
-                ungetch(' ');
+	if( m.y < (3+1+size+s)-sy && m.x<(2*s+1)-sx ){//it's a shame to include math.h only for round() but it was the only moral way to make gcc shut up
+		py= round( (float)(size*(m.y-4-sy))/(size+1) );//these are derived from the formulas in draw() by simple algebra
+		px=(m.x-1-sx)/2;
+	}
+	else
+		return;
+	if(m.bstate & BUTTON1_CLICKED)
+		ungetch('\n');
+	if(m.bstate & (BUTTON2_CLICKED|BUTTON3_CLICKED) )
+		ungetch(' ');
 }
 void help(void){
 	erase();
@@ -272,10 +272,10 @@ void help(void){
 	erase();
 }
 void gameplay(void){
-        erase();
-        header(0,0);
-        attron(A_BOLD);
-        mvprintw(3,0,"  **** THE GAMEPLAY ****");
+	erase();
+	header(0,0);
+	attron(A_BOLD);
+	mvprintw(3,0,"  **** THE GAMEPLAY ****");
 	attroff(A_BOLD);
 	move(4,0);
 	printw("Fill the table with digits");
@@ -295,9 +295,9 @@ void gameplay(void){
 		printw(" and all\nthe alphabet letters from 'a' to '%c'.",int2sgn(s));
 	}
 	printw("\n\nPress a key to continue.");
-        refresh();
-        getch();
-        erase();
+	refresh();
+	getch();
+	erase();
 }
 int main(int argc,char** argv){
 	signal(SIGINT,sigint_handler);
@@ -327,28 +327,28 @@ int main(int argc,char** argv){
 		diff=2;
 	bool fastgen= !(!getenv("SUDOKU_FASTGEN"));
 	initscr();
-        mousemask(ALL_MOUSE_EVENTS,NULL);
-        noecho();
-        cbreak();
-        keypad(stdscr,1);
-        srand(time(NULL)%UINT_MAX);
+	mousemask(ALL_MOUSE_EVENTS,NULL);
+	noecho();
+	cbreak();
+	keypad(stdscr,1);
+	srand(time(NULL)%UINT_MAX);
 	if( has_colors() ){
-                start_color();
-                use_default_colors();
-                init_pair(1,COLOR_YELLOW,-1);
-                init_pair(2,COLOR_GREEN,-1);
-                init_pair(3,COLOR_BLUE,-1);
-                init_pair(4,COLOR_CYAN,-1);
-                init_pair(5,COLOR_MAGENTA,-1);
-                init_pair(6,COLOR_RED,-1);
-                for(byte b=0;b<6;b++){
-                        colors[b]=COLOR_PAIR(b+1);
-                }
-        }
+		start_color();
+		use_default_colors();
+		init_pair(1,COLOR_YELLOW,-1);
+		init_pair(2,COLOR_GREEN,-1);
+		init_pair(3,COLOR_BLUE,-1);
+		init_pair(4,COLOR_CYAN,-1);
+		init_pair(5,COLOR_MAGENTA,-1);
+		init_pair(6,COLOR_RED,-1);
+		for(byte b=0;b<6;b++){
+			colors[b]=COLOR_PAIR(b+1);
+		}
+	}
 	s= size*size;
 	char board[s][s];
-        char empty[s][s];
-        char game[s][s];
+	char empty[s][s];
+	char game[s][s];
 	int input=0;
 	int sy,sx;
 	Start:
@@ -375,25 +375,25 @@ int main(int argc,char** argv){
 			break;
 		input = getch();
 		if( input==KEY_PPAGE && LINES< s+size+3){//the board starts in 3
-                        sy+=10;
-                        if(sy>0)
-                                sy=0;
-                }
-                if( input==KEY_NPAGE && LINES< s+size+3){
-                        sy-=10;
-                        if(sy< -(s+size+3) )
-                                sy=-(s+size+3);
-                }
-                if( input=='<' && COLS< s*2){
-                        sx+=10;
-                        if(sx>0)
-                                sx=0;
-                }
-                if( input=='>' && COLS< s*2){
-                        sx-=10;
-                        if(sx< -(s*2))
-                                sx=-(s*2);
-                }
+			sy+=10;
+			if(sy>0)
+				sy=0;
+		}
+		if( input==KEY_NPAGE && LINES< s+size+3){
+			sy-=10;
+			if(sy< -(s+size+3) )
+				sy=-(s+size+3);
+		}
+		if( input=='<' && COLS< s*2){
+			sx+=10;
+			if(sx>0)
+				sx=0;
+		}
+		if( input=='>' && COLS< s*2){
+			sx-=10;
+			if(sx< -(s*2))
+				sx=-(s*2);
+		}
 		if(input == KEY_F(1))
 			help();
 		if(input == KEY_F(2))

@@ -41,15 +41,15 @@ void logo(byte sy,byte sx){
 }
 //convert integer to representing sign
 char int2sgn(byte num){
-        if(0< num && num <= 9)
-                return num+'0';
-        else if(10<=num && num <=35)
-                return num-10+'a';
-        else if(36<=num && num <=51)
-                return num-36+'A';
+	if(0< num && num <= 9)
+		return num+'0';
+	else if(10<=num && num <=35)
+		return num-10+'a';
+	else if(36<=num && num <=51)
+		return num-36+'A';
 	else if(52<=num && num<=64)
 		return num-52+'!';
-        return 0;
+	return 0;
 }
 //display
 void draw(byte sy,byte sx,chtype board[size][size2],bool show[size][size2]){
@@ -131,79 +131,79 @@ void mouseinput(void){
 		ungetch('\n');
 }
 void help(void){
-        erase();
+	erase();
 	logo(0,0);
-        attron(A_BOLD);
-        mvprintw(3,0,"  **** THE CONTROLS ****");
+	attron(A_BOLD);
+	mvprintw(3,0,"  **** THE CONTROLS ****");
 	mvprintw(8,0,"YOU CAN ALSO USE THE MOUSE!");
-        attroff(A_BOLD);
+	attroff(A_BOLD);
 	mvprintw(4,0,"RETURN/ENTER : Reveal");
-        mvprintw(5,0,"hjkl/ARROW KEYS : Move cursor");
-        mvprintw(6,0,"q : Quit");
+	mvprintw(5,0,"hjkl/ARROW KEYS : Move cursor");
+	mvprintw(6,0,"q : Quit");
 	mvprintw(7,0,"F1 & F2 : Help on controls & gameplay");
-        mvprintw(10,0,"Press a key to continue");
+	mvprintw(10,0,"Press a key to continue");
 	refresh();
-        getch();
+	getch();
 	erase();
 }
 void gameplay(void){
-        erase();
+	erase();
 	logo(0,0);
-        attron(A_BOLD);
-        mvprintw(3,0,"  **** THE GAMEPLAY ****");
-        attroff(A_BOLD);
+	attron(A_BOLD);
+	mvprintw(3,0,"  **** THE GAMEPLAY ****");
+	attroff(A_BOLD);
 	mvprintw(4,0,"Click on a tile to see the gylph it contains,\n");
 	printw(      "then try to find a matching gylph the same way.\n");
 	printw(      "They form a pair only when you click a tile\n");
 	printw(	     "directly after the match. The game ends when \n");
 	printw(	     "you have found all the matching pairs.\n");
-        refresh();
-        getch();
-        erase();
+	refresh();
+	getch();
+	erase();
 }
 int main(int argc, char** argv){
 	size=8;
 	if(argc>=2){
-                size=atoi(argv[1]);
-                if(size<3 || size>19){
-                        fprintf(stderr,"3<=size<=19\n");
-                        return EXIT_FAILURE;
-                }
-                if(!strcmp("help",argv[1])){
-                        printf("Usage: %s [size]\n",argv[0]);
+		size=atoi(argv[1]);
+		if(size<3 || size>19){
+			fprintf(stderr,"3<=size<=19\n");
+			return EXIT_FAILURE;
+		}
+		if(!strcmp("help",argv[1])){
+			printf("Usage: %s [size]\n",argv[0]);
 			return EXIT_SUCCESS;
 		}
-        }
+	}
 	signal(SIGINT,sigint_handler);
 	srand(time(NULL)%UINT_MAX);
 	initscr();
-        mousemask(ALL_MOUSE_EVENTS,NULL);
-        noecho();
-        cbreak();
-        keypad(stdscr,1);
-        if(has_colors()){
-                start_color();
-                use_default_colors();
+	mousemask(ALL_MOUSE_EVENTS,NULL);
+	noecho();
+	cbreak();
+	keypad(stdscr,1);
+	if(has_colors()){
+		start_color();
+		use_default_colors();
 		if( has_colors() ){
-        	        start_color();
-        	        use_default_colors();
-        	        init_pair(1,COLOR_YELLOW,-1);
-        	        init_pair(2,COLOR_GREEN,-1);
-               		init_pair(3,COLOR_BLUE,-1);
-                	init_pair(4,COLOR_CYAN,-1);
-                	init_pair(5,COLOR_MAGENTA,-1);
-                	init_pair(6,COLOR_RED,-1);
-                	for(byte b=0;b<6;b++){
-                        	colors[b]=COLOR_PAIR(b+1);
-                	}
+			start_color();
+			use_default_colors();
+			init_pair(1,COLOR_YELLOW,-1);
+			init_pair(2,COLOR_GREEN,-1);
+	       		init_pair(3,COLOR_BLUE,-1);
+			init_pair(4,COLOR_CYAN,-1);
+			init_pair(5,COLOR_MAGENTA,-1);
+			init_pair(6,COLOR_RED,-1);
+			for(byte b=0;b<6;b++){
+				colors[b]=COLOR_PAIR(b+1);
+			}
 		}
-        }
+	}
 	else if(size>8)//big sizes depend on color display
 		size=8;
 	size2=size*2;
-        chtype board[size][size2];
+	chtype board[size][size2];
 	bool show[size][size2];
-        int input;
+	int input;
 	time_t tstart,now;
 	Start:
 	tstart=time(NULL);

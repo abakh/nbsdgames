@@ -165,31 +165,31 @@ void mouseinput(int sy, int sx){
 		ungetch(' ');
 }
 void help(void){
-        erase();
+	erase();
 	mvprintw(1,0,"|\\/|");
 	mvprintw(2,0,"|  |INES");
-        attron(A_BOLD);
-        mvprintw(3,0,"  **** THE CONTROLS ****");
+	attron(A_BOLD);
+	mvprintw(3,0,"  **** THE CONTROLS ****");
 	mvprintw(10,0,"YOU CAN ALSO USE THE MOUSE!");
-        attroff(A_BOLD);
+	attroff(A_BOLD);
 	mvprintw(4,0,"RETURN/ENTER : Examine for bombs");
-        mvprintw(5,0,"SPACE : Flag/Unflag");
-        mvprintw(6,0,"hjkl/ARROW KEYS : Move cursor");
-        mvprintw(7,0,"q : Quit");
+	mvprintw(5,0,"SPACE : Flag/Unflag");
+	mvprintw(6,0,"hjkl/ARROW KEYS : Move cursor");
+	mvprintw(7,0,"q : Quit");
 	mvprintw(8,0,"F1 & F2 : Help on controls & gameplay");
 	mvprintw(9,0,"PgDn,PgUp,<,> : Scroll"); 
-        mvprintw(12,0,"Press a key to continue");
+	mvprintw(12,0,"Press a key to continue");
 	refresh();
-        getch();
+	getch();
 	erase();
 }
 void gameplay(void){
-        erase();
-        mvprintw(1,0,"|\\/|");
-        mvprintw(2,0,"|  |INES");
-        attron(A_BOLD);
-        mvprintw(3,0,"  **** THE GAMEPLAY ****");
-        attroff(A_BOLD);
+	erase();
+	mvprintw(1,0,"|\\/|");
+	mvprintw(2,0,"|  |INES");
+	attron(A_BOLD);
+	mvprintw(3,0,"  **** THE GAMEPLAY ****");
+	attroff(A_BOLD);
 	mvprintw(4,0,"Try to find the landmines in the field\n");
 	printw("with logical reasoning: When you click\n");
 	printw("on a tile ( a '.' here), numbers may show\n");
@@ -198,9 +198,9 @@ void gameplay(void){
 	printw("avoid the landmines based on them; and\n");
 	printw("clicking on a landmine would make you\n");
 	printw("lose the game.");
-        refresh();
-        getch();
-        erase();
+	refresh();
+	getch();
+	erase();
 }
 int main(int argc, char** argv){
 	signal(SIGINT,sigint_handler);
@@ -240,34 +240,34 @@ int main(int argc, char** argv){
 		mscount = len*wid/6;
 	srand(time(NULL)%UINT_MAX);
 	initscr();
-        mousemask(ALL_MOUSE_EVENTS,NULL);
-        noecho();
-        cbreak();
-        keypad(stdscr,1);
-        if(has_colors()){
-                start_color();
-                use_default_colors();
-                init_pair(1,COLOR_BLUE,-1);
-                init_pair(2,COLOR_GREEN,-1);
-                init_pair(3,COLOR_YELLOW,-1);
-                init_pair(4,COLOR_RED,-1);
-                init_pair(5,COLOR_RED,COLOR_YELLOW);
-                init_pair(6,COLOR_RED,COLOR_MAGENTA);
-                for(byte b= 0;b<6;b++){
-                        colors[b]=COLOR_PAIR(b+1);
-                }
+	mousemask(ALL_MOUSE_EVENTS,NULL);
+	noecho();
+	cbreak();
+	keypad(stdscr,1);
+	if(has_colors()){
+		start_color();
+		use_default_colors();
+		init_pair(1,COLOR_BLUE,-1);
+		init_pair(2,COLOR_GREEN,-1);
+		init_pair(3,COLOR_YELLOW,-1);
+		init_pair(4,COLOR_RED,-1);
+		init_pair(5,COLOR_RED,COLOR_YELLOW);
+		init_pair(6,COLOR_RED,COLOR_MAGENTA);
+		for(byte b= 0;b<6;b++){
+			colors[b]=COLOR_PAIR(b+1);
+		}
 
-        }
-        byte board[len][wid];
-        bool mines[len][wid];
-        char result[70];
-        int input;
+	}
+	byte board[len][wid];
+	bool mines[len][wid];
+	char result[70];
+	int input;
 	int sy,sx;		
 	Start:
 	sy=sx=0;
 	py=px=0;
-        untouched=len*wid;
-        flags=0;
+	untouched=len*wid;
+	flags=0;
 	curs_set(0);
 	memset(board,-1,len*wid);
 	memset(mines,false,len*wid);
@@ -290,15 +290,15 @@ int main(int argc, char** argv){
 				sy=0;
 		}
 		if( input==KEY_NPAGE && LINES< len+3){
-                        sy-=10;
-                        if(sy< -(len+3) )
-                                sy=-(len+3);
-                }
+			sy-=10;
+			if(sy< -(len+3) )
+				sy=-(len+3);
+		}
 		if( input=='<' && COLS< wid*2+1){
-                        sx+=10;
-                        if(sx>0)
-                                sx=0;
-                }
+			sx+=10;
+			if(sx>0)
+				sx=0;
+		}
 		if( input=='>' && COLS< wid*2+1){
 			sx-=10;
 			if(sx< -(wid*2+1))

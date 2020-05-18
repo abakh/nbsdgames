@@ -37,10 +37,10 @@ byte jumpagainy , jumpagainx;
 bool kinged;//if a piece jumps over multiple others and becomes a king it cannot continue jumping
 
 bool in(byte A[4],byte B[4],byte a,byte b){
-        for(byte c=0;c<4;c++)
-                if(A[c]==a && B[c]==b)
-                        return true;
-        return false;
+	for(byte c=0;c<4;c++)
+		if(A[c]==a && B[c]==b)
+			return true;
+	return false;
 }
 void rectangle(byte sy,byte sx){
 	byte y,x;
@@ -97,7 +97,7 @@ void draw(byte sy,byte sx){//the game's board
 				else
 					ch |='K';
 			}
-			else if( (y%2) != (x%2) )                        
+			else if( (y%2) != (x%2) )			
 				ch|='.';
 			else
 				ch|=' ';
@@ -439,44 +439,44 @@ void sigint_handler(int x){
 }
 
 void mouseinput(void){
-        MEVENT minput;
+	MEVENT minput;
 	#ifdef PDCURSES
 	nc_getmouse(&minput);
 	#else
 	getmouse(&minput);
 	#endif
-        if( minput.y-4 <8 && minput.x-1<16){
-                py=minput.y-4;
-                px=(minput.x-1)/2;
-        }
-        else
-                return;
-        if(minput.bstate & (BUTTON1_CLICKED|BUTTON1_PRESSED|BUTTON1_RELEASED) )
-                ungetch('\n');
+	if( minput.y-4 <8 && minput.x-1<16){
+		py=minput.y-4;
+		px=(minput.x-1)/2;
+	}
+	else
+		return;
+	if(minput.bstate & (BUTTON1_CLICKED|BUTTON1_PRESSED|BUTTON1_RELEASED) )
+		ungetch('\n');
 }
 void help(void){
-        erase();
+	erase();
 	header();
-        attron(A_BOLD);
-        mvprintw(3,0,"  **** THE CONTROLS ****");
-        mvprintw(9,0,"YOU CAN ALSO USE THE MOUSE!");
-        attroff(A_BOLD);
-        mvprintw(4,0,"RETURN/ENTER : Select or move the piece");
-        mvprintw(5,0,"SPACE : Flag/Unflag");
-        mvprintw(6,0,"hjkl/ARROW KEYS : Move cursor");
-        mvprintw(7,0,"q : quit");
+	attron(A_BOLD);
+	mvprintw(3,0,"  **** THE CONTROLS ****");
+	mvprintw(9,0,"YOU CAN ALSO USE THE MOUSE!");
+	attroff(A_BOLD);
+	mvprintw(4,0,"RETURN/ENTER : Select or move the piece");
+	mvprintw(5,0,"SPACE : Flag/Unflag");
+	mvprintw(6,0,"hjkl/ARROW KEYS : Move cursor");
+	mvprintw(7,0,"q : quit");
 	mvprintw(8,0,"F1 & F2 : Help on controls & gameplay");
-        mvprintw(11,0,"Press a key to continue");
+	mvprintw(11,0,"Press a key to continue");
 	refresh();
-        getch();
+	getch();
 	erase();
 }
 void gameplay(void){
-        erase();
-        header();
-        attron(A_BOLD);
-        mvprintw(3,0,"  **** THE GAMEPLAY ****");
-        attroff(A_BOLD);
+	erase();
+	header();
+	attron(A_BOLD);
+	mvprintw(3,0,"  **** THE GAMEPLAY ****");
+	attroff(A_BOLD);
 	move(4,0);
 	printw("1) The game starts with each player having 12 men;\n");
 	printw("   men can only diagonally move forwards \n");
@@ -490,9 +490,9 @@ void gameplay(void){
 	printw("4) You have to do a jump if you can.\n\n");
 	printw("5) A player wins when the opponet can't do a move e. g. \n");
 	printw("   all of their pieces are captured.\n\n");
-        refresh();
-        getch();
-        erase();
+	refresh();
+	getch();
+	erase();
 }
 int main(int argc,char** argv){
 	dpt=4;
@@ -525,7 +525,7 @@ int main(int argc,char** argv){
 		computer[0]=0;
 		printw("Human.\n");
 	}
-	printw("Choose type of the light player(h/C)\n");
+	printw("Choose type of the bright player(h/C)\n");
 	refresh();
 	input=getch();
 	if(input=='h'){
@@ -604,6 +604,15 @@ int main(int argc,char** argv){
 		erase();
 		draw(3,0);
 		header();
+		if(!(computer[0]||computer[1])){
+			if(t)
+				addstr(" Bright's turn");
+			else{
+				attron(COLOR_PAIR(1));
+				addstr(" Dark's turn");
+				attroff(COLOR_PAIR(1));
+			}
+		}	
 		refresh();
 		input=getch();
 		if( input == KEY_F(1) || input=='?' )
@@ -661,7 +670,7 @@ int main(int argc,char** argv){
 			printw("Draw.");
 			break;
 		case 1:
-			printw("The light side has won the game.");
+			printw("The bright side has won the game.");
 			break;
 		case 2:
 			printw("You resigned.");

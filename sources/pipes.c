@@ -36,66 +36,66 @@ FILE* scorefile;
 char error [150]={0};
 
 void logo(void){
-        mvprintw(0,0," _ ");
-        mvprintw(1,0,"|_)");
-        mvprintw(2,0,"| IPES");
+	mvprintw(0,0," _ ");
+	mvprintw(1,0,"|_)");
+	mvprintw(2,0,"| IPES");
 }
 
 byte scorewrite(void){// only saves the top 10, returns the place in the chart
-        bool deforno;
-        if( !getenv("PP_SCORES") && (scorefile= fopen(PP_SCORES,"r")) ){
-                deforno=1;
-        }
-        else{
-                deforno=0;
-                if( !(scorefile = fopen(getenv("PP_SCORES"),"r")) ){
+	bool deforno;
+	if( !getenv("PP_SCORES") && (scorefile= fopen(PP_SCORES,"r")) ){
+		deforno=1;
+	}
+	else{
+		deforno=0;
+		if( !(scorefile = fopen(getenv("PP_SCORES"),"r")) ){
 			sprintf(error,"No accessible score files found. You can make an empty text file in %s or set PP_SCORES to such a file to solve this.",PP_SCORES);
 			return -1;
-                }
-        }
+		}
+	}
 
-        char namebuff[SAVE_TO_NUM][60];
-        long scorebuff[SAVE_TO_NUM];
+	char namebuff[SAVE_TO_NUM][60];
+	long scorebuff[SAVE_TO_NUM];
 
-        memset(namebuff,0,SAVE_TO_NUM*60*sizeof(char) );
-        memset(scorebuff,0,SAVE_TO_NUM*sizeof(long) );
+	memset(namebuff,0,SAVE_TO_NUM*60*sizeof(char) );
+	memset(scorebuff,0,SAVE_TO_NUM*sizeof(long) );
 
-        long fuckingscore =0;
-        char fuckingname[60]={0};
-        byte location=0;
+	long fuckingscore =0;
+	char fuckingname[60]={0};
+	byte location=0;
 
-        while( fscanf(scorefile,"%59s : %ld\n",fuckingname,&fuckingscore) == 2 && location<SAVE_TO_NUM ){
-                strcpy(namebuff[location],fuckingname);
-                scorebuff[location] = fuckingscore;
-                location++;
+	while( fscanf(scorefile,"%59s : %ld\n",fuckingname,&fuckingscore) == 2 && location<SAVE_TO_NUM ){
+		strcpy(namebuff[location],fuckingname);
+		scorebuff[location] = fuckingscore;
+		location++;
 
-                memset(fuckingname,0,60);
-                fuckingscore=0;
-        }
-        if(deforno)
-                scorefile = fopen(PP_SCORES,"w+");//get rid of the previous text first
-        else
-                scorefile = fopen(getenv("PP_SCORES"), "w+") ;
-        if(!scorefile){
-                strcpy(error, "The file cannot be opened in w+. ");
+		memset(fuckingname,0,60);
+		fuckingscore=0;
+	}
+	if(deforno)
+		scorefile = fopen(PP_SCORES,"w+");//get rid of the previous text first
+	else
+		scorefile = fopen(getenv("PP_SCORES"), "w+") ;
+	if(!scorefile){
+		strcpy(error, "The file cannot be opened in w+. ");
 		return -1;
  	}
 
-        byte itreached=location;
-        byte ret = -1;
-        bool wroteit=0;
+	byte itreached=location;
+	byte ret = -1;
+	bool wroteit=0;
 
-        for(location=0;location<=itreached && location<SAVE_TO_NUM-wroteit;location++){
-                if(!wroteit && (location>=itreached || score>=scorebuff[location]) ){
-                        fprintf(scorefile,"%s : %ld\n",getenv("USER"),score);
-                        ret=location;
-                        wroteit=1;
-                }
-                if(location<SAVE_TO_NUM-wroteit && location<itreached)
-                        fprintf(scorefile,"%s : %ld\n",namebuff[location],scorebuff[location]);
-        }
-        fflush(scorefile);
-        return ret;
+	for(location=0;location<=itreached && location<SAVE_TO_NUM-wroteit;location++){
+		if(!wroteit && (location>=itreached || score>=scorebuff[location]) ){
+			fprintf(scorefile,"%s : %ld\n",getenv("USER"),score);
+			ret=location;
+			wroteit=1;
+		}
+		if(location<SAVE_TO_NUM-wroteit && location<itreached)
+			fprintf(scorefile,"%s : %ld\n",namebuff[location],scorebuff[location]);
+	}
+	fflush(scorefile);
+	return ret;
 }
 
 void showscores(byte playerrank){
@@ -107,57 +107,57 @@ void showscores(byte playerrank){
 		refresh();
 		return;
 	}
-        if(playerrank == 0){
-                char formername[60]={0};
-                long formerscore=0;
-                rewind(scorefile);
-                fscanf(scorefile,"%*s : %*d");
-                if ( fscanf(scorefile,"%s : %ld",formername,&formerscore)==2  && formerscore>0){
+	if(playerrank == 0){
+		char formername[60]={0};
+		long formerscore=0;
+		rewind(scorefile);
+		fscanf(scorefile,"%*s : %*d");
+		if ( fscanf(scorefile,"%s : %ld",formername,&formerscore)==2  && formerscore>0){
 			byte a = (len-9)/2;
 			attron(A_BOLD);
-                        mvprintw(SY,SX,      "****                ***");
+			mvprintw(SY,SX,      "****		***");
 			mvprintw(SY+len+1,SX,"***********************");
 			attroff(A_BOLD);
 			attron(green);
-                        mvprintw(SY,SX+4,"CONGRATULATIONS!");
-                        attroff(green);
+			mvprintw(SY,SX+4,"CONGRATULATIONS!");
+			attroff(green);
 
-                        mvprintw(SY+a+1,SX,"     _____ You bet the");
-                        mvprintw(SY+a+2,SX,"   .'     |   previous");
-                        mvprintw(SY+a+3,SX," .'       |     record");
-                        mvprintw(SY+a+4,SX," |  .|    |         of");
-                        mvprintw(SY+a+5,SX," |.' |    |%11ld",formerscore);
-                        mvprintw(SY+a+6,SX,"     |    |    held by");
-                        mvprintw(SY+a+7,SX,"  ___|    |___%7s!",formername);
-                        mvprintw(SY+a+8,SX," |            |");
-                        mvprintw(SY+a+9,SX," |____________|");
+			mvprintw(SY+a+1,SX,"     _____ You bet the");
+			mvprintw(SY+a+2,SX,"   .'     |   previous");
+			mvprintw(SY+a+3,SX," .'       |     record");
+			mvprintw(SY+a+4,SX," |  .|    |	 of");
+			mvprintw(SY+a+5,SX," |.' |    |%11ld",formerscore);
+			mvprintw(SY+a+6,SX,"     |    |    held by");
+			mvprintw(SY+a+7,SX,"  ___|    |___%7s!",formername);
+			mvprintw(SY+a+8,SX," |	    |");
+			mvprintw(SY+a+9,SX," |____________|");
 			mvprintw(len+2,0,"Game over! Press a key to proceed:");
 			refresh();
 			getch();
 			erase();
 			logo();
-                }
+		}
 
-        }
+	}
 	attron(A_BOLD);
 	mvprintw(3,0," HIGH");
 	mvprintw(4,0,"SCORES");
 	attroff(A_BOLD);
-        //scorefile is still open with w+
-        char pname[60] = {0};
-        long pscore=0;
-        byte rank=0;
-        rewind(scorefile);
-        while( rank<SAVE_TO_NUM && fscanf(scorefile,"%s : %ld\n",pname,&pscore) == 2){
+	//scorefile is still open with w+
+	char pname[60] = {0};
+	long pscore=0;
+	byte rank=0;
+	rewind(scorefile);
+	while( rank<SAVE_TO_NUM && fscanf(scorefile,"%s : %ld\n",pname,&pscore) == 2){
 		move(SY+1+rank,SX+1);
 		attron(green);
-                if(rank == playerrank)
-                        printw(">>>");
-                printw("%d",rank+1);
+		if(rank == playerrank)
+			printw(">>>");
+		printw("%d",rank+1);
 		attroff(green);
 		printw(") %s : %ld",pname,pscore);
-                rank++;
-        }
+		rank++;
+	}
 	refresh();
 }
 //move in direction
@@ -276,20 +276,20 @@ void draw(bitbox board[len][wid]){
 }
 
 void mouseinput(void){
-        MEVENT minput;
+	MEVENT minput;
 	#ifdef PDCURSES
 	nc_getmouse(&minput);
 	#else
 	getmouse(&minput);
 	#endif
-        if( minput.y-4 <len && minput.x-1<wid*2){
-                py=minput.y-(1+SY);
-                px=minput.x-(1+SX);
-        }
-        else
-                return;
-        if(minput.bstate & BUTTON1_CLICKED)
-                ungetch('\n');
+	if( minput.y-4 <len && minput.x-1<wid*2){
+		py=minput.y-(1+SY);
+		px=minput.x-(1+SX);
+	}
+	else
+		return;
+	if(minput.bstate & BUTTON1_CLICKED)
+		ungetch('\n');
 }
 //peacefully close when ^C is pressed
 void sigint_handler(int x){
@@ -299,44 +299,44 @@ void sigint_handler(int x){
 }
 void help(void){
 	erase();
-        logo();
-        attron(A_BOLD);
-	mvprintw(SY,SX+5,"-*            *-");
-        mvprintw(3,0," HELP");
+	logo();
+	attron(A_BOLD);
+	mvprintw(SY,SX+5,"-*	    *-");
+	mvprintw(3,0," HELP");
 	mvprintw(4,0," PAGE");
 	mvprintw(SY+7,SX,"YOU CAN ALSO USE THE MOUSE!");
 	attroff(A_BOLD);
 	attron(green);
 	mvprintw(SY,SX+7,"THE CONTROLS");
 	attroff(green);
-        mvprintw(SY+1,SX,"RETURN/ENTER : Place/Replace a pipe");
-        mvprintw(SY+2,SX,"hjkl/ARROW KEYS : Move cursor");
+	mvprintw(SY+1,SX,"RETURN/ENTER : Place/Replace a pipe");
+	mvprintw(SY+2,SX,"hjkl/ARROW KEYS : Move cursor");
 	mvprintw(SY+3,SX,"p : Pause");
-        mvprintw(SY+4,SX,"q : Quit");
+	mvprintw(SY+4,SX,"q : Quit");
 	mvprintw(SY+5,SX,"f : Toggle fast flow");
 	mvprintw(SY+6,SX,"g : Go! (End the countdown.)");
-        mvprintw(SY+6,SX,"F1 & F2 : Help on controls & gameplay");
-        mvprintw(SY+9,SX,"Press a key to continue");
-        refresh();
-        while(getch()==ERR);
-        erase();
+	mvprintw(SY+6,SX,"F1 & F2 : Help on controls & gameplay");
+	mvprintw(SY+9,SX,"Press a key to continue");
+	refresh();
+	while(getch()==ERR);
+	erase();
 }
 void gameplay(void){
-        erase();
-        logo();
-        attron(A_BOLD);
-        mvprintw(SY,SX+5,"-*            *-");
-        mvprintw(3,0," HELP");
+	erase();
+	logo();
+	attron(A_BOLD);
+	mvprintw(SY,SX+5,"-*	    *-");
+	mvprintw(3,0," HELP");
 	mvprintw(4,0," PAGE");
-        attroff(A_BOLD);
-        attron(green);
-        mvprintw(SY,SX+7,"THE GAMEPLAY");
-        attroff(green);
-        mvprintw(SY+1,SX,"Keep maintaining the pipeline and");
-        mvprintw(SY+2,SX,"don't let the sewage leak.");
-        refresh();
-        while(getch()==ERR);
-        erase();
+	attroff(A_BOLD);
+	attron(green);
+	mvprintw(SY,SX+7,"THE GAMEPLAY");
+	attroff(green);
+	mvprintw(SY+1,SX,"Keep maintaining the pipeline and");
+	mvprintw(SY+2,SX,"don't let the sewage leak.");
+	refresh();
+	while(getch()==ERR);
+	erase();
 }
 int main(int argc, char** argv){
 	signal(SIGINT,sigint_handler);
@@ -447,7 +447,7 @@ int main(int argc, char** argv){
 		if( input == KEY_F(1) || input=='?' ){
 			help();
 			if(!flow)
-                                tstart += time(NULL)-now;
+				tstart += time(NULL)-now;
 		}
 		if( input == KEY_F(2) ){
 			gameplay();
@@ -520,8 +520,8 @@ int main(int argc, char** argv){
 	cbreak();
 	curs_set(1);
 	attron(A_BOLD|green);
-        mvprintw(3,0," OOPS!");
-        attroff(A_BOLD|green);
+	mvprintw(3,0," OOPS!");
+	attroff(A_BOLD|green);
 	draw(board);
 	mvprintw(len+2,0,"Game over! Press a key to see the high scores:");
 	getch();

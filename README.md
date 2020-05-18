@@ -24,22 +24,10 @@ These include:
 * Pipes (Same as the famous Pipe Mania, unplayable on the environments that don't support the line characters)
 * Fifteen
 * Memoblocks (or Memory blocks. A similar game was included in Windows 7)
-
-## Features
-* Modern looking TUI
-* Color
-* Mouse support
-* Multiplayer (not network)
-* Each game containing help pages on the controls and the gameplay
-* Very permissive license (Public Domain equivalent)
-* Clean code with documentation
-* Small size, with the deb package being less than 50 KB as I write this
-* Low in dependencies and very simple build, even in comparison to bsdgames
-* Low in CPU usage (Low if you are playing against AI, virtually nothing otherwise)
-* Low as possible in memory footprint
-* Diversity, you will like one at least
-* Portability
-* Flexiblity
+* Fisher
+* Muncher
+* Miketron
+* Redsquare
 
 They natively run on Linux, BSD, MacOS and are known to work on Windows as well (using PDCurses, thanks to Laura Michaels for providing advice).
 
@@ -81,10 +69,9 @@ It's been made available for openSUSE thanks to Jan Brezina: https://build.opens
 
 
 ## How to contribute
-Oh, so kind! You can...
 * Share these with your friends
-* Tell me your feature requests, bug reports, games you want to be added etc. (Think of games in spirit of those already included and look if there is not a good  terminal game for it already)
-* Make a package for your distro (or put it on repos and tell me afterwards)
-* Tell me if you're interested in porting it to non-Unix (Possible in theory since there is PDCurses for SDL, and SDL for everything)
-* With mouse support, PDCurses, SDL and NDK existing, now it is possible to port it to Android proper, feel free to tell me if you are doing it.
-* Pull requests are of course, welcome too!
+* Tell me your feature requests, bug reports, etc.
+* Tell me the games you want to be added (in the same genre, i can't port Angry Birds to curses! :)
+* Make a package for your distro (or put it on repos if it's not there)
+
+Also thank to all the people who helped in the previous versions, i didn't expect such assistance <3

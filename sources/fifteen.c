@@ -42,13 +42,13 @@ void logo(byte sy,byte sx){
 char int2sgn(byte num){
 	if(!num)
 		return ' ';
-        else if(0< num && num <= 9)
-                return num+'0';
-        else if(10<=num && num <=35)
-                return num-10+'a';
-        else if(36<=num && num <=51)
-                return num-36+'A';
-        return 0;
+	else if(0< num && num <= 9)
+		return num+'0';
+	else if(10<=num && num <=35)
+		return num-10+'a';
+	else if(36<=num && num <=51)
+		return num-36+'A';
+	return 0;
 }
 /*bool isinorder(byte board[size][size],byte y,byte x){ using check[][] is much cheaper
 	return (board[y][x] == y*size+x+1);
@@ -150,38 +150,38 @@ void mouseinput(void){
 		ungetch('\n');
 }
 void help(void){
-        erase();
+	erase();
 	logo(0,0);
-        attron(A_BOLD);
-        mvprintw(3,0,"  **** THE CONTROLS ****");
+	attron(A_BOLD);
+	mvprintw(3,0,"  **** THE CONTROLS ****");
 	mvprintw(8,0,"YOU CAN ALSO USE THE MOUSE!");
-        attroff(A_BOLD);
+	attroff(A_BOLD);
 	mvprintw(4,0,"RETURN/ENTER : Slide");
-        mvprintw(5,0,"hjkl/ARROW KEYS : Move cursor");
-        mvprintw(6,0,"q : Quit");
+	mvprintw(5,0,"hjkl/ARROW KEYS : Move cursor");
+	mvprintw(6,0,"q : Quit");
 	mvprintw(7,0,"F1 & F2 : Help on controls & gameplay");
-        mvprintw(10,0,"Press a key to continue");
+	mvprintw(10,0,"Press a key to continue");
 	refresh();
-        getch();
+	getch();
 	erase();
 }
 void gameplay(void){
-        erase();
+	erase();
 	logo(0,0);
-        attron(A_BOLD);
-        mvprintw(3,0,"  **** THE GAMEPLAY ****");
-        attroff(A_BOLD);
+	attron(A_BOLD);
+	mvprintw(3,0,"  **** THE GAMEPLAY ****");
+	attroff(A_BOLD);
 	mvprintw(4,0,"Slide the tiles until the numbers and characters are\n");
 	printw("in the right order.\n");
-        refresh();
-        getch();
-        erase();
+	refresh();
+	getch();
+	erase();
 }
 int main(int argc, char** argv){
 	size=4;
 	if(argc==2){
 		if(!strcmp("help",argv[1])){
-                        printf("Usage: %s [size]\n",argv[0]);
+			printf("Usage: %s [size]\n",argv[0]);
 			return EXIT_SUCCESS;
 		}
 		size=atoi(argv[1]);
@@ -193,20 +193,20 @@ int main(int argc, char** argv){
 	signal(SIGINT,sigint_handler);
 	srand(time(NULL)%UINT_MAX);
 	initscr();
-        mousemask(ALL_MOUSE_EVENTS,NULL);
-        noecho();
-        cbreak();
-        keypad(stdscr,1);
-        if(has_colors()){
-                start_color();
-                use_default_colors();
-                init_pair(1,COLOR_GREEN,-1);
-                green=COLOR_PAIR(1);
-        }
-        char board[size][size];
+	mousemask(ALL_MOUSE_EVENTS,NULL);
+	noecho();
+	cbreak();
+	keypad(stdscr,1);
+	if(has_colors()){
+		start_color();
+		use_default_colors();
+		init_pair(1,COLOR_GREEN,-1);
+		green=COLOR_PAIR(1);
+	}
+	char board[size][size];
 	char check[size][size];
 	fill(check);
-        int input;
+	int input;
 	Start:
 	py=px=0;
 	ey=ex=size-1;

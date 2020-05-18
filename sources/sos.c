@@ -95,28 +95,28 @@ byte did_sos(char board[len][wid], int y , int x ){
 }
 void color_sos(char board[len][wid],byte colored[len][wid], int y , int x ,bool side){
 	byte dy,dx;
-        if(board[y][x]== 'S'){
-                for(dy=-1;dy<2;dy++){
-                        for(dx=-1;dx<2;dx++){
-                                if(rd(board,y+dy,x+dx)=='O' && rd(board,y+2*dy,x+2*dx) == 'S' ){
+	if(board[y][x]== 'S'){
+		for(dy=-1;dy<2;dy++){
+			for(dx=-1;dx<2;dx++){
+				if(rd(board,y+dy,x+dx)=='O' && rd(board,y+2*dy,x+2*dx) == 'S' ){
 					color(colored,y,x,side);
-                               		color(colored,y+dy,x+dx,side);
-                                	color(colored,y+2*dy,x+2*dx,side);	
+			       		color(colored,y+dy,x+dx,side);
+					color(colored,y+2*dy,x+2*dx,side);	
 				}       
-                        }
-                }
-        }
-        else if(board[y][x]== 'O'){
-                for(dy=-1;dy<2;dy++){
-                        for(dx=-1;dx<2;dx++){
-                                if(rd(board,y+dy,x+dx)=='S' && rd(board,y-dy,x-dx) =='S'){
+			}
+		}
+	}
+	else if(board[y][x]== 'O'){
+		for(dy=-1;dy<2;dy++){
+			for(dx=-1;dx<2;dx++){
+				if(rd(board,y+dy,x+dx)=='S' && rd(board,y-dy,x-dx) =='S'){
 					color(colored,y,x,side);
-                              		color(colored,y+dy,x+dx,side);
-                                	color(colored,y-dy,x-dx,side);
+			      		color(colored,y+dy,x+dx,side);
+					color(colored,y-dy,x-dx,side);
 				}
-                        }
-                }
-        }
+			}
+		}
+	}
 }
 void randmove(int* y,int* x,byte* c){
 	*y=rand()%len;
@@ -178,59 +178,59 @@ void sigint_handler(int x){
 	exit(x);
 }
 void mouseinput(int sy,int sx){
-        MEVENT minput;
+	MEVENT minput;
 	#ifdef PDCURSES
 	nc_getmouse(&minput);
 	#else
 	getmouse(&minput);
 	#endif
-        if( minput.y-4-sy <len && minput.x-1-sx<wid*2){
-                py=minput.y-4-sy;
-                px=(minput.x-1-sx)/2;
-        }
-        else
-                return;
-        if(minput.bstate & BUTTON1_CLICKED)
-                ungetch('S');
-        if(minput.bstate & (BUTTON2_CLICKED|BUTTON3_CLICKED) )
-                ungetch('O');
+	if( minput.y-4-sy <len && minput.x-1-sx<wid*2){
+		py=minput.y-4-sy;
+		px=(minput.x-1-sx)/2;
+	}
+	else
+		return;
+	if(minput.bstate & BUTTON1_CLICKED)
+		ungetch('S');
+	if(minput.bstate & (BUTTON2_CLICKED|BUTTON3_CLICKED) )
+		ungetch('O');
 }
 void help(void){
-        erase();
+	erase();
 	mvprintw(0,0," _  _  _");
-        mvprintw(1,0,"(_'| |(_' ");
-        mvprintw(2,0,"._):_:._) ");
-        attron(A_BOLD);
-        mvprintw(3,0,"  **** THE CONTROLS ****");
-        mvprintw(9,0,"YOU CAN ALSO USE THE MOUSE!");
-        attroff(A_BOLD);
+	mvprintw(1,0,"(_'| |(_' ");
+	mvprintw(2,0,"._):_:._) ");
+	attron(A_BOLD);
+	mvprintw(3,0,"  **** THE CONTROLS ****");
+	mvprintw(9,0,"YOU CAN ALSO USE THE MOUSE!");
+	attroff(A_BOLD);
 	mvprintw(4,0,"hjkl/ARROW KEYS : Move cursor");
 	mvprintw(5,0,"S & O : Write S or O");
 	mvprintw(6,0,"q : Quit");
-        mvprintw(7,0,"F1 & F2: Help on controls & gameplay");
+	mvprintw(7,0,"F1 & F2: Help on controls & gameplay");
 	mvprintw(8,0,"PgDn,PgUp,<,> : Scroll");
-        mvprintw(11,0,"Press a key to continue");
-        refresh();
-        getch();
-        erase();
+	mvprintw(11,0,"Press a key to continue");
+	refresh();
+	getch();
+	erase();
 }
 void gameplay(void){
-        erase();
-        mvprintw(0,0," _  _  _");
-        mvprintw(1,0,"(_'| |(_' ");
-        mvprintw(2,0,"._):_:._) ");
-        attron(A_BOLD);
-        mvprintw(3,0,"  **** THE GAMEPLAY ****");
-        attroff(A_BOLD);
+	erase();
+	mvprintw(0,0," _  _  _");
+	mvprintw(1,0,"(_'| |(_' ");
+	mvprintw(2,0,"._):_:._) ");
+	attron(A_BOLD);
+	mvprintw(3,0,"  **** THE GAMEPLAY ****");
+	attroff(A_BOLD);
 	move(4,0);
 	printw("The game is similiar to Tic Tac Toe:\n");
 	printw("The players write S and O in the squares\n");
 	printw("and making the straight connected sequence\n");
 	printw("S-O-S makes you a score; obviously, the\n");
 	printw("player with a higher score wins.");
-        refresh();
-        getch();
-        erase();
+	refresh();
+	getch();
+	erase();
 }
 int main(int argc, char** argv){
 	int dpt=1;
@@ -279,27 +279,27 @@ int main(int argc, char** argv){
 	keypad(stdscr,1);
 	printw("Black plays first.\n Choose the type of the blue player(H/c)\n" );
 	refresh();
-        input=getch();
-        if(input=='c'){
-                computer[0]=dpt;
-                printw("Computer.\n");
-        }
-        else{
-                computer[0]=0;
-                printw("Human.\n");
-        }
+	input=getch();
+	if(input=='c'){
+		computer[0]=dpt;
+		printw("Computer.\n");
+	}
+	else{
+		computer[0]=0;
+		printw("Human.\n");
+	}
 	refresh();
-        printw("Choose the type of the yellow player(h/C)\n");
+	printw("Choose the type of the yellow player(h/C)\n");
 	refresh();
-        input=getch();
-        if(input=='h'){
-                computer[1]=0;
-                printw("Human.\n");
-        }
-        else{
-                computer[1]=dpt;
-                printw("Computer.\n");
-        }
+	input=getch();
+	if(input=='h'){
+		computer[1]=0;
+		printw("Human.\n");
+	}
+	else{
+		computer[1]=dpt;
+		printw("Computer.\n");
+	}
 	if(has_colors()){
 		start_color();
 		use_default_colors();
@@ -340,32 +340,32 @@ int main(int argc, char** argv){
 	//else
 	while(1){
 		erase();
-       	        mvprintw(sy+0,sx+0," _  _  _");
-                mvprintw(sy+1,sx+0,"(_'| |(_'  %d vs %d \n",score[0],score[1]);
-                mvprintw(sy+2,sx+0,"._):_:._) \n");
+       		mvprintw(sy+0,sx+0," _  _  _");
+		mvprintw(sy+1,sx+0,"(_'| |(_'  %d vs %d \n",score[0],score[1]);
+		mvprintw(sy+2,sx+0,"._):_:._) \n");
 		draw(sy+3,sx+0,board,colored);
 		refresh();
 		input = getch();
 		if( input==KEY_PPAGE && LINES< len+3){//the board starts in 3
-                        sy+=10;
-                        if(sy>0)
-                                sy=0;
-                }
-                if( input==KEY_NPAGE && LINES< len+3){
-                        sy-=10;
-                        if(sy< -(len+3) )
-                                sy=-(len+3);
-                }
-                if( input=='<' && COLS< wid*2+1){
-                        sx+=10;
-                        if(sx>0)
-                                sx=0;
-                }
-                if( input=='>' && COLS< wid*2+1){
-                        sx-=10;
-                        if(sx< -(wid*2+1))
-                                sx=-(wid*2+1);
-                }
+			sy+=10;
+			if(sy>0)
+				sy=0;
+		}
+		if( input==KEY_NPAGE && LINES< len+3){
+			sy-=10;
+			if(sy< -(len+3) )
+				sy=-(len+3);
+		}
+		if( input=='<' && COLS< wid*2+1){
+			sx+=10;
+			if(sx>0)
+				sx=0;
+		}
+		if( input=='>' && COLS< wid*2+1){
+			sx-=10;
+			if(sx< -(wid*2+1))
+				sx=-(wid*2+1);
+		}
 		if( input==KEY_F(1) || input=='?')
 			help();
 		if( input==KEY_F(2) )

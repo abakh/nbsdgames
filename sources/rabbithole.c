@@ -127,40 +127,39 @@ void carrotify(bitbox board[len][wid],int count){
 	}
 }
 void help(void){
-        erase();
+	erase();
 	mvprintw(0,0," _ ");
-        mvprintw(1,0,"|_)");
-        mvprintw(2,0,"| \\ABBITHOLE");	
-        attron(A_BOLD);
-        mvprintw(3,0,"  **** THE CONTROLS ****");
-        mvprintw(8,0,"YOU CAN ALSO USE THE MOUSE!");
-        attroff(A_BOLD);
-        mvprintw(4,0,"hjkl/ARROW KEYS : Move cursor");
-        mvprintw(5,0,"q : Quit");
-        mvprintw(6,0,"F1 & F2: Help on controls & gameplay (viewing these pages doesn't pause the timer!)");
+	mvprintw(1,0,"|_)");
+	mvprintw(2,0,"| \\ABBITHOLE");	
+	attron(A_BOLD);
+	mvprintw(3,0,"  **** THE CONTROLS ****");
+	attroff(A_BOLD);
+	mvprintw(4,0,"hjkl/ARROW KEYS : Move cursor");
+	mvprintw(5,0,"q : Quit");
+	mvprintw(6,0,"F1 & F2: Help on controls & gameplay (viewing these pages doesn't pause the timer!)");
 	mvprintw(7,0,"PgDn,PgUp,<,> : Scroll");
-        mvprintw(10,0,"Press a key to continue");
+	mvprintw(9,0,"Press a key to continue");
 	
-        refresh();
-        while ( getch()==ERR );
-        erase();
+	refresh();
+	while ( getch()==ERR );
+	erase();
 }
 void gameplay(void){
-        erase();
-        mvprintw(0,0," _ ");
-        mvprintw(1,0,"|_)");
-        mvprintw(2,0,"| \\ABBITHOLE");
-        attron(A_BOLD);
-        mvprintw(3,0,"  **** THE GAMEPLAY ****");
-        attroff(A_BOLD);
+	erase();
+	mvprintw(0,0," _ ");
+	mvprintw(1,0,"|_)");
+	mvprintw(2,0,"| \\ABBITHOLE");
+	attron(A_BOLD);
+	mvprintw(3,0,"  **** THE GAMEPLAY ****");
+	attroff(A_BOLD);
 	move(4,0);
 	printw("Try to gather all the carrots in the maze\n");
 	printw("in the given time. The determining factors\n");
 	printw("are your choice of paths and the speed of\n ");
 	printw("your fingers.\n");
-        refresh();
-        while ( getch()==ERR );
-        erase();
+	refresh();
+	while ( getch()==ERR );
+	erase();
 }
 void sigint_handler(int x){
 	endwin();
@@ -244,13 +243,13 @@ int main(int argc, char** argv){
 	while(1){
 		board[py][px] |= VISITED;
 		if( board[py][px] & CARROT ){
-                        carrots_found++;
-                        board[py][px] &= ~CARROT;
-                }
+			carrots_found++;
+			board[py][px] &= ~CARROT;
+		}
 		now=time(NULL);
 		erase();
 		mvprintw(sy+0,sx+0," _ ");
-		mvprintw(sy+1,sx+0,"|_)          Time left    :%ld",giventime-(now-tstart));
+		mvprintw(sy+1,sx+0,"|_)	  Time left    :%ld",giventime-(now-tstart));
 		mvprintw(sy+2,sx+0,"| \\ABBITHOLE Carrots left :%d",carrot_count-carrots_found);
 		draw(sy+3,sx+0,board);
 		refresh();
@@ -260,25 +259,27 @@ int main(int argc, char** argv){
 		}
 		input = getch();
 		if( input==KEY_PPAGE && LINES< len+3){//the board starts in 3
-                        sy+=10;
-                        if(sy>0)
-                                sy=0;
-                }
-                if( input==KEY_NPAGE && LINES< len+3){
-                        sy-=10;
-                        if(sy< -(len+3) )
-                                sy=-(len+3);
-                }
-                if( input=='<' && COLS< wid*2+1){
-                        sx+=10;
-                        if(sx>0)
-                                sx=0;
-                }
-                if( input=='>' && COLS< wid*2+1){
-                        sx-=10;
-                        if(sx< -(wid*2+1))
-                                sx=-(wid*2+1);
-                }
+			sy+=10;
+			if(sy>0)
+				sy=0;
+		}
+		if( input==KEY_NPAGE && LINES< len+3){
+			sy-=10;
+			if(sy< -(len+3) )
+				sy=-(len+3);
+		}
+		if( input=='<' && COLS< wid*2+1){
+			sx+=10;
+			if(sx>0)
+				sx=0;
+		}
+		if( input=='>' && COLS< wid*2+1){
+			sx-=10;
+			if(sx< -(wid*2+1))
+				sx=-(wid*2+1);
+		}
+		if( input == KEY_F(2) )
+			gameplay();
 		if( input == KEY_F(1) || input=='?' )
 			help();
 		if( (input=='k' || input==KEY_UP) && py>0 && (board[py][px]&UP) )

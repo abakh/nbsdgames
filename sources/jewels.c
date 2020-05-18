@@ -33,7 +33,7 @@ char* controls = "j,l-Move k-Rotate p-Pause q-Quit";
 FILE* scorefile;
 byte scorewrite(long score){// only saves the top 10
 	bool deforno;
-        if( !getenv("JW_SCORES") && (scorefile= fopen(JW_SCORES,"r")) ){
+	if( !getenv("JW_SCORES") && (scorefile= fopen(JW_SCORES,"r")) ){
 		deforno=1;
 	}
 	else{
@@ -44,26 +44,26 @@ byte scorewrite(long score){// only saves the top 10
 		}
 	}
 
-        char namebuff[SAVE_TO_NUM][60];
-        long scorebuff[SAVE_TO_NUM];
+	char namebuff[SAVE_TO_NUM][60];
+	long scorebuff[SAVE_TO_NUM];
 
-        memset(namebuff,0,SAVE_TO_NUM*60*sizeof(char) );
-        memset(scorebuff,0,SAVE_TO_NUM*sizeof(long) );
+	memset(namebuff,0,SAVE_TO_NUM*60*sizeof(char) );
+	memset(scorebuff,0,SAVE_TO_NUM*sizeof(long) );
 
-        long fuckingscore =0;
-        char fuckingname[60]={0};
-        byte location=0;
+	long fuckingscore =0;
+	char fuckingname[60]={0};
+	byte location=0;
 
-        while( fscanf(scorefile,"%59s : %ld\n",fuckingname,&fuckingscore) == 2 && location<SAVE_TO_NUM ){
-                strcpy(namebuff[location],fuckingname);
-                scorebuff[location] = fuckingscore;
-                location++;
+	while( fscanf(scorefile,"%59s : %ld\n",fuckingname,&fuckingscore) == 2 && location<SAVE_TO_NUM ){
+		strcpy(namebuff[location],fuckingname);
+		scorebuff[location] = fuckingscore;
+		location++;
 
-                memset(fuckingname,0,60);
-                fuckingscore=0;
-        }
+		memset(fuckingname,0,60);
+		fuckingscore=0;
+	}
 	if(deforno)
-        	scorefile = fopen(JW_SCORES,"w+");//get rid of the text
+		scorefile = fopen(JW_SCORES,"w+");//get rid of the text
 	else
 		scorefile = fopen(getenv("JW_SCORES"), "w+") ;
 	if(!scorefile){
@@ -71,21 +71,21 @@ byte scorewrite(long score){// only saves the top 10
 		exit(EXIT_SUCCESS);
 	}
 
-        byte itreached=location;
-        byte ret = -1;
-        bool wroteit=0;
+	byte itreached=location;
+	byte ret = -1;
+	bool wroteit=0;
 
-        for(location=0;location<=itreached && location<SAVE_TO_NUM-wroteit;location++){
-                if(!wroteit && (location>=itreached || score>=scorebuff[location]) ){
-                        fprintf(scorefile,"%s : %ld\n",getenv("USER"),score);
-                        ret=location;
-                        wroteit=1;
-                }
-                if(location<SAVE_TO_NUM-wroteit && location<itreached)
-                        fprintf(scorefile,"%s : %ld\n",namebuff[location],scorebuff[location]);
-        }
-        fflush(scorefile);
-        return ret;
+	for(location=0;location<=itreached && location<SAVE_TO_NUM-wroteit;location++){
+		if(!wroteit && (location>=itreached || score>=scorebuff[location]) ){
+			fprintf(scorefile,"%s : %ld\n",getenv("USER"),score);
+			ret=location;
+			wroteit=1;
+		}
+		if(location<SAVE_TO_NUM-wroteit && location<itreached)
+			fprintf(scorefile,"%s : %ld\n",namebuff[location],scorebuff[location]);
+	}
+	fflush(scorefile);
+	return ret;
 }
 void showscores(byte playerrank){
 	if(playerrank == 0){
@@ -97,12 +97,12 @@ void showscores(byte playerrank){
 			printf("\n*****CONGRATULATIONS!****\n");
 			printf("     _____    You bet the\n");
 			printf("   .'     |      previous\n");
-			printf(" .'       |        record\n");
-			printf(" |  .|    |            of\n");
+			printf(" .'       |	record\n");
+			printf(" |  .|    |	    of\n");
 			printf(" |.' |    |%14ld\n",formerscore);
 			printf("     |    |       held by\n");
 			printf("  ___|    |___%11s\n",formername);
-			printf(" |            |\n");
+			printf(" |	    |\n");
 			printf(" |____________|\n");
 			printf("*************************\n");
 		}
@@ -154,13 +154,14 @@ void clockwise(byte* y,byte* x){
 		 o		x
 		 x	xo	o    ox*/
 		chtype fx,fy;
-		if(*y)
+		if(*y){
 			fy=0;
 			fx=-*y;
-		
-		if(*x)
+		}
+		if(*x){
 			fx=0;
 			fy=*x;
+		}
 		*y=fy;
 		*x=fx;
 }
@@ -243,13 +244,13 @@ bool explode(byte combo){
 			uc=c;
 			c = board[y][x];
 			if(c && c == uc){
-                                n++;
+				n++;
 				if(n>=3 && y==LEN-1){
 					y++;
 					goto VrExplsn;
 				}
 			}
-                        else if(n>=3){
+			else if(n>=3){
 				VrExplsn:
 				score+=n*10*(n-2)*combo;
 				ret=1;

@@ -14,7 +14,7 @@ compile with -lncurses
 */
 typedef signed char byte;
 byte py,px;//cursor
-const char piece[2] = "OX";
+const char piece[2] = {'O','X'};
 char game[8][8];//main board
 byte computer[2] = {0,0};
 byte score[2];//set by header()
@@ -61,7 +61,7 @@ void draw(byte sy,byte sx){//the game's board
 				attr |= A_STANDOUT;
 			if(game[y][x])
 				mvaddch(sy+1+y,sx+x*2+1,attr|game[y][x]);
-			else                                
+			else				
 				mvaddch(sy+1+y,sx+x*2+1,attr|'.');
 		}
 	}
@@ -214,42 +214,42 @@ void sigint_handler(int x){
 	exit(x);
 }
 void mouseinput(void){
-        MEVENT minput;
+	MEVENT minput;
 	#ifdef PDCURSES
 	nc_getmouse(&minput);
 	#else
 	getmouse(&minput);
 	#endif
-        if( minput.y-4 <8 && minput.x-1<16){
-                py=minput.y-4;
-                px=(minput.x-1)/2;
-        }
-        else
-                return;
-        if(minput.bstate & BUTTON1_CLICKED)
-                ungetch('\n');
+	if( minput.y-4 <8 && minput.x-1<16){
+		py=minput.y-4;
+		px=(minput.x-1)/2;
+	}
+	else
+		return;
+	if(minput.bstate & BUTTON1_CLICKED)
+		ungetch('\n');
 }
 void help(void){
-        erase();
+	erase();
 	header();
-        attron(A_BOLD);
-        mvprintw(3,0,"  **** THE CONTROLS ****");
-        mvprintw(8,0,"YOU CAN ALSO USE THE MOUSE!");
-        attroff(A_BOLD);
-        mvprintw(4,0,"RETURN/ENTER : Put the piece");
-        mvprintw(5,0,"hjkl/ARROW KEYS : Move cursor");
-        mvprintw(6,0,"q : Quit");
+	attron(A_BOLD);
+	mvprintw(3,0,"  **** THE CONTROLS ****");
+	mvprintw(8,0,"YOU CAN ALSO USE THE MOUSE!");
+	attroff(A_BOLD);
+	mvprintw(4,0,"RETURN/ENTER : Put the piece");
+	mvprintw(5,0,"hjkl/ARROW KEYS : Move cursor");
+	mvprintw(6,0,"q : Quit");
 	mvprintw(7,0,"F1 & F2 : Help on controls & gameplay");
-        mvprintw(10,0,"Press a key to continue");
+	mvprintw(10,0,"Press a key to continue");
 	curs_set(1);
-        getch();
+	getch();
 }
 void gameplay(void){
-        erase();
-        header();
-        attron(A_BOLD);
-        mvprintw(3,0,"  **** THE GAMEPLAY ****");
-        attroff(A_BOLD);
+	erase();
+	header();
+	attron(A_BOLD);
+	mvprintw(3,0,"  **** THE GAMEPLAY ****");
+	attroff(A_BOLD);
 	move(4,0);
 	printw("Players take turns placing disks on the board:\n\n");
 	printw("1) Any pieces of the opponet's color that is bounded\n");
@@ -260,7 +260,7 @@ void gameplay(void){
 	printw("   opponet's pieces turns into your color.\n\n");
 	printw("3) The game ends when neither side can do a move and\n");
 	printw("   the player with more pieces wins.\n");
-        getch();
+	getch();
 }
 int main(int argc , char** argv){
 	int depth=2;
@@ -322,8 +322,8 @@ int main(int argc , char** argv){
 	Turn:
 	erase();
 	flushinp();
-	header();
 	draw(3,0);
+	header();
 	refresh();
 	if(cantmove >=2)//both sides cant move, the game ends
 		goto End;
@@ -350,8 +350,11 @@ int main(int argc , char** argv){
 		cantmove=0;
 		while(1){ //human control
 			erase();
-			header();
 			draw(3,0);
+			header();
+			if(!(computer[0]||computer[1]))
+				mvprintw(0,5,"%c's turn",piece[turn]);
+			refresh();
 			input=getch();
 			if( input==KEY_F(1) || input=='?' )
 				help();

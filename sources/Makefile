@@ -1,6 +1,6 @@
 # -*- Makefile -*-
 
-all: jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks
+all: jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare
 
 jewels: jewels.c config.h
 	$(CC) jewels.c -lncurses -o ./jewels
@@ -24,12 +24,20 @@ fifteen: fifteen.c
 	$(CC) fifteen.c -lncurses -o ./fifteen
 memoblocks: memoblocks.c
 	$(CC) memoblocks.c -lncurses -o ./memoblocks
+fisher: fisher.c config.h
+	$(CC) fisher.c -lncurses -o ./fisher
+muncher: muncher.c config.h
+	$(CC) muncher.c -lncurses -o ./muncher
+miketron: miketron.c config.h
+	$(CC) miketron.c -lncurses -o ./miketron
+redsquare: redsquare.c
+	$(CC) redsquare.c -lncurses -o ./redsquare
 clean:
-	rm ./jewels ./sudoku ./checkers ./mines ./reversi ./battleship ./rabbithole ./sos ./pipes ./fifteen ./memoblocks
+	rm ./jewels ./sudoku ./checkers ./mines ./reversi ./battleship ./rabbithole ./sos ./pipes ./fifteen ./memoblocks ./fisher ./muncher ./miketron ./redsquare
 uninstall:
-	rm $(PREFIX)/jewels $(PREFIX)/sudoku $(PREFIX)/checkers $(PREFIX)/mines $(PREFIX)/reversi $(PREFIX)/battleship $(PREFIX)/rabbithole $(PREFIX)/sos $(PREFIX)/pipes $(PREFIX)/fifteen $(PREFIX)/memoblocks 
+	rm $(PREFIX)/jewels $(PREFIX)/sudoku $(PREFIX)/checkers $(PREFIX)/mines $(PREFIX)/reversi $(PREFIX)/battleship $(PREFIX)/rabbithole $(PREFIX)/sos $(PREFIX)/pipes $(PREFIX)/fifteen $(PREFIX)/memoblocks $(PREFIX)/fisher $(PREFIX)/muncher $(PREFIX)/miketron $(PREFIX)/redsquare
 copy_sources:
-	cp Makefile config.h jewels.c sudoku.c mines.c reversi.c checkers.c battleship.c rabbithole.c sos.c pipes.c fifteen.c memoblocks.c $(PREFIX)
-install: jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks
-	cp jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks $(PREFIX)
+	cp Makefile config.h jewels.c sudoku.c mines.c reversi.c checkers.c battleship.c rabbithole.c sos.c pipes.c fifteen.c memoblocks.c fisher.c muncher.c miketron.c redsquare.c $(PREFIX)
+install: jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare
+	cp jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare $(PREFIX)
 
