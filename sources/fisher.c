@@ -329,6 +329,7 @@ int main(void){
 	hook=0;
 	hooknum=HOOKS;
 	score=0;
+	memset(count,0,10*sizeof(unsigned int) );
 	while(1){
 		draw();
 		refresh();
