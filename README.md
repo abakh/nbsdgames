@@ -27,12 +27,13 @@ These include:
 * Fisher
 * Muncher
 * Miketron
-* Redsquare
+* Redsquare (Conway's Game of Life made playable!)
 
 They natively run on Linux, BSD, MacOS and are known to work on Windows as well (using PDCurses, thanks to Laura Michaels for providing advice).
 
 The difficulty and/or dimensions are adjustable through simple command line options, you can play a minesweeper game that take hours to complete, or exprience hexadecimal sudoku and 8x8 fifteen-like puzzles!
 
+I have encounterd Fisher, Muncher and Miketron on MikeOS and RedSquare on KolibriOS. 
 ## Prerequisites
 
 * git (optional)
@@ -71,7 +72,7 @@ It's been made available for openSUSE thanks to Jan Brezina: https://build.opens
 ## How to contribute
 * Share these with your friends
 * Tell me your feature requests, bug reports, etc.
-* Tell me the games you want to be added (in the same genre, i can't port Angry Birds to curses! :)
+* Tell me the games you want to be added (but in the same genre, i can't port Angry Birds to curses! :)
 * Make a package for your distro (or put it on repos if it's not there)
-
-Also thank to all the people who helped in the previous versions, i didn't expect such assistance <3
+* Does anyone understand debian's .orig.tar.gz and the process to make packages to the repos? Any help would be appreciated.
+Also thank to all the people who helped in the previous versions, i didn't expect such an amount of assistance <3

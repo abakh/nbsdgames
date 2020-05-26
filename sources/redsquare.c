@@ -468,6 +468,8 @@ int main(void){
 	int prey,prex;
 	int cinred;
 	Start:
+	curs_set(0);
+	halfdelay(9);
 	cinred=0;
 	py=LEN*3/4;
 	px=WID/2;
@@ -575,12 +577,31 @@ int main(void){
 		DidntMove:
 		if( input=='q')
 			sigint_handler(0);
+		if( input=='p'){
+			nocbreak();
+			cbreak();
+			erase();
+			logo();
+			attron(A_BOLD);
+			addstr("\n    PAUSED");
+			attroff(A_BOLD);
+			refresh();
+
+			getch();
+
+			halfdelay(9);
+		}
+
 	}
 	
 	printw("Wanna play again?(y/n)");
+	nocbreak();
+	cbreak();
 	curs_set(1);
 	flushinp();
+	
 	input=getch();
+
 	if(input != 'N' && input != 'n' && input != 'q')
 		goto Start;
 	endwin();
