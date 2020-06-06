@@ -4,6 +4,7 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <stdbool.h>
 #define MISS -2
 #define SEA -1 
 #define HIT 0

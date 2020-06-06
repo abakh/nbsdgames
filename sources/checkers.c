@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <math.h>
+#include <stdbool.h>
 #define LIGHT -1
 #define DARK 1
 #define KING 2

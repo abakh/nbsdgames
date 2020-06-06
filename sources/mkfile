@@ -1,0 +1,35 @@
+APE=/sys/src/ape
+<$APE/config
+
+TARG=\
+    battleship \
+    checkers \
+    fifteen \
+    fisher \
+    jewels \
+    memoblocks \
+    miketron \
+    mines \
+    muncher \
+    pipes \
+    rabbithole \
+    redsquare \
+    reversi \
+    sos \
+    sudoku
+
+HFILES=\
+	/sys/include/ape/curses.h\
+	/sys/include/ape/panel.h\
+
+UPDATE=\
+	mkfile\
+	$HFILES\
+	${OFILES:%.$O=%.c}\
+	/$objtype/ape/lib/libcurses.a
+
+</sys/src/cmd/mkmany
+
+CFLAGS= -c -D_POSIX_SOURCE -D_BSD_EXTENSION -DPlan9 
+
+$O.out:	/$objtype/lib/ape/libcurses.a

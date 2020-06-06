@@ -6,6 +6,7 @@
 #include <time.h>
 #include <signal.h>
 #include <unistd.h>
+#include <stdbool.h>
 #include "config.h"
 #define SAVE_TO_NUM 10
 #define MINLEN 10

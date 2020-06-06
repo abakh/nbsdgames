@@ -4,6 +4,7 @@
 #include <limits.h>
 #include <time.h>
 #include <signal.h>
+#include <stdbool.h>
 #define FLAG 9
 #define UNCLEAR 10
 /* 
