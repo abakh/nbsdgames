@@ -304,7 +304,7 @@ void sigint_handler(int x){
 	puts("Quit.");
 	exit(x);
 }
-int main(void){
+void main(void){
 	signal(SIGINT,sigint_handler);
 	initscr();
 	noecho();
@@ -394,7 +394,7 @@ int main(void){
 		if(!hooknum)
 			break;	
 		if(input!=ERR){
-			usleep(100000);
+			sleep(1);
 			flushinp();
 		}
 	}

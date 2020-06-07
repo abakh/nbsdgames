@@ -1,35 +1,32 @@
 APE=/sys/src/ape
 <$APE/config
 
+#comment out all that depend on variable size arrays
 TARG=\
     battleship \
     checkers \
-    fifteen \
+#    fifteen \
     fisher \
     jewels \
-    memoblocks \
-    miketron \
-    mines \
-    muncher \
-    pipes \
-    rabbithole \
+#    memoblocks \
+#    miketron \
+#    mines \
+#    muncher \
+#    pipes \
+#    rabbithole \
     redsquare \
     reversi \
-    sos \
-    sudoku
+#    sos \
+#    sudoku
 
-HFILES=\
-	/sys/include/ape/curses.h\
-	/sys/include/ape/panel.h\
+BIN=/$objtype/bin/games
 
 UPDATE=\
 	mkfile\
-	$HFILES\
 	${OFILES:%.$O=%.c}\
-	/$objtype/ape/lib/libcurses.a
 
 </sys/src/cmd/mkmany
 
-CFLAGS= -c -D_POSIX_SOURCE -D_BSD_EXTENSION -DPlan9 
+CFLAGS= -c -D_POSIX_SOURCE -D_BSD_EXTENSION -DPlan9 -Ddraw=nb_draw
 
 $O.out:	/$objtype/lib/ape/libcurses.a
