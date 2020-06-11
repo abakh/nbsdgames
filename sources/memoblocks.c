@@ -14,6 +14,13 @@ No rights are reserved and this software comes with no warranties of any kind to
 
 compile with -lncurses
 */
+
+/* The Plan9 compiler can not handle VLAs */
+#ifdef Plan9
+#define size 8
+#define size2 16
+#endif
+
 typedef signed char byte;
 typedef unsigned char ubyte;
 byte size,size2;//size2 is there to avoid a lot of multiplications
@@ -162,7 +169,9 @@ void gameplay(void){
 	erase();
 }
 int main(int argc, char** argv){
-	size=8;
+#ifndef Plan9
+    size=8;
+#endif
 	if(argc>=2){
 		size=atoi(argv[1]);
 		if(size<3 || size>19){
@@ -199,9 +208,11 @@ int main(int argc, char** argv){
 		}
 	}
 	else if(size>8)//big sizes depend on color display
+#ifndef Plan9
 		size=8;
 	size2=size*2;
-	chtype board[size][size2];
+#endif
+    chtype board[size][size2];
 	bool show[size][size2];
 	int input;
 	time_t tstart,now;

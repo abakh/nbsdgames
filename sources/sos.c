@@ -15,6 +15,12 @@ No rights are reserved and this software comes with no warranties of any kind to
 
 compile with -lncurses
 */
+
+#ifdef Plan9
+#define len 5
+#define wid 6
+#endif
+
 typedef signed char byte;
 int len,wid,py,px;
 chtype colors[6]={A_BOLD};
@@ -256,8 +262,10 @@ int main(int argc, char** argv){
 	
 	}
 	else{
+#ifndef Plan9
 		len=5;
 		wid=6;
+#endif
 	}
 	if(argc==4){
 		if( !sscanf(argv[3],"%d",&dpt)){

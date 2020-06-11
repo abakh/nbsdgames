@@ -14,6 +14,11 @@
 #define HLEN LEN/2
 #define WID 80
 #define HWID WID/2
+
+#ifdef Plan9
+#define usleep(1000x) sleep(x) /*milliseconds*/
+#endif
+
 typedef signed char byte;
 chtype colors[4]={A_NORMAL,A_STANDOUT};
 byte fish[10]={0};//positions
@@ -394,7 +399,7 @@ void main(void){
 		if(!hooknum)
 			break;	
 		if(input!=ERR){
-			sleep(1);
+			usleep(100000);
 			flushinp();
 		}
 	}

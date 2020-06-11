@@ -16,6 +16,13 @@ No rights are reserved and this software comes with no warranties of any kind to
 
 compile with -lncurses
 */
+
+/* The Plan9 compiler can not handle VLAs */
+#ifdef Plan9
+#define len 8
+#define wid 8
+#endif
+
 typedef signed char byte;
 int len,wid,py,px,flags;
 int untouched;
@@ -226,7 +233,9 @@ int main(int argc, char** argv){
 	
 	}
 	else
+#ifndef Plan9
 		len=wid=8;
+#endif
 	if(argc==4){
 		if( !sscanf(argv[3],"%d",&mscount)){
 			puts("Invalid input.");

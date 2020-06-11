@@ -20,6 +20,13 @@ No rights are reserved and this software comes with no warranties of any kind to
 
 compile with -lncurses
 */
+
+/* The Plan9 compiler can not handle VLAs */
+#ifdef Plan9
+#define len 10
+#define wid 20
+#endif
+
 typedef signed char byte;
 typedef unsigned char bitbox;
 int len,wid,py,px;
@@ -193,6 +200,7 @@ int main(int argc, char** argv){
 		autoset=1;
 	}
 	initscr();
+#ifndef Plan9
 	if(autoset){
 		if((LINES-7)/2 < 10)
 			len=10;
@@ -204,6 +212,7 @@ int main(int argc, char** argv){
 		else
 			wid=(COLS-5)/2;
 	}
+#endif
 	int carrot_count= (len*wid)/50;
 	int carrots_found;
 	time_t tstart , now, giventime=len*wid/5;

@@ -26,6 +26,13 @@ No rights are reserved and this software comes with no warranties of any kind to
 
 compile with -lncurses
 */
+
+/* The Plan9 compiler can not handle VLAs */
+#ifdef Plan9
+#define wid 20
+#define len 14
+#endif
+
 typedef signed char byte;
 typedef unsigned char bitbox;
 int len,wid,py,px,fy,fx;//p: pointer f: fluid
@@ -361,8 +368,10 @@ int main(int argc, char** argv){
 	
 	}
 	else{
+#ifndef Plan9
 		wid=20;
 		len=14;	
+#endif
 	}
 	initscr();
 	mousemask(ALL_MOUSE_EVENTS,NULL);

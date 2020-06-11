@@ -14,6 +14,12 @@ No rights are reserved and this software comes with no warranties of any kind to
 
 compile with -lncurses
 */
+
+/* The Plan9 compiler can not handle VLAs */
+#ifdef Plan9
+#define size 4
+#endif
+
 typedef signed char byte;
 byte size;
 byte py,px;
@@ -178,7 +184,9 @@ void gameplay(void){
 	erase();
 }
 int main(int argc, char** argv){
+#ifndef Plan9
 	size=4;
+#endif
 	if(argc==2){
 		if(!strcmp("help",argv[1])){
 			printf("Usage: %s [size]\n",argv[0]);

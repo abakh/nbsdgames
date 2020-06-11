@@ -23,6 +23,13 @@ No rights are reserved and this software comes with no warranties of any kind to
 
 compile with -lncurses
 */
+
+/* The Plan9 compiler can not handle VLAs */
+#ifdef Plan9
+#define len 10
+#define wid 40
+#endif
+
 typedef signed char byte;
 int len,wid,py,px;
 int immunity,flight,notrail;
