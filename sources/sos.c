@@ -22,7 +22,11 @@ compile with -lncurses
 #endif
 
 typedef signed char byte;
+#ifndef Plan9
 int len,wid,py,px;
+#else
+int py,px;
+#endif
 chtype colors[6]={A_BOLD};
 int score[2] ={0};
 int computer[2]={0};
@@ -250,7 +254,11 @@ int main(int argc, char** argv){
 		return EXIT_FAILURE;
 	}
 	if(argc>=3){
+#ifndef Plan9
 		bool lool = sscanf(argv[1],"%d",&len) && sscanf(argv[2],"%d",&wid);
+#else
+		bool lool = sscanf(argv[1],"%d",len) && sscanf(argv[2],"%d",wid);        
+#endif
 		if(!lool){
 			puts("Invalid input.");
 			return EXIT_FAILURE;

@@ -26,10 +26,15 @@ compile with -lncurses
 #ifdef Plan9
 #define len 10
 #define wid 40
+#define usleep(x) sleep(x/1000000)
 #endif
 
 typedef signed char byte;
+#ifndef Plan9
 int len,wid,py,px;
+#else
+int py,px;
+#endif
 int immunity;
 byte direction;
 long score;
@@ -293,7 +298,11 @@ int main(int argc, char** argv){
 		return EXIT_FAILURE;
 	}
 	if(argc==3){
+#ifndef Plan9
 		bool lool = sscanf(argv[1],"%d",&len) && sscanf(argv[2],"%d",&wid);
+#else
+		bool lool = sscanf(argv[1],"%d",len) && sscanf(argv[2],"%d",wid);        
+#endif
 		if(!lool){
 			puts("Invalid input.");
 			return EXIT_FAILURE;
@@ -309,6 +318,7 @@ int main(int argc, char** argv){
 	}
 	initscr();
 	if(autoset){
+#ifndef Plan9
 		len=LINES-7;
 		if(len<MINLEN)
 			len=MINLEN;
@@ -320,6 +330,7 @@ int main(int argc, char** argv){
 			wid=MINWID;
 		else if(wid>MAXWID)
 			wid=MAXWID;
+#endif
 	}
 	srand(time(NULL)%UINT_MAX);		
 	byte board[len][wid];

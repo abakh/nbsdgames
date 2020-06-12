@@ -21,7 +21,9 @@ compile with -lncurses
 #endif
 
 typedef signed char byte;
+#ifndef Plan9
 byte size;
+#endif
 byte py,px;
 byte ey,ex; //the empty tile
 chtype green=A_BOLD; //bold when there is no color
@@ -192,7 +194,9 @@ int main(int argc, char** argv){
 			printf("Usage: %s [size]\n",argv[0]);
 			return EXIT_SUCCESS;
 		}
+#ifndef Plan9
 		size=atoi(argv[1]);
+#endif
 		if(size<3 || size>7){
 			fprintf(stderr,"3<=size<=7\n");
 			return EXIT_FAILURE;

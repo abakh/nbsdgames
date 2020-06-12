@@ -35,7 +35,11 @@ compile with -lncurses
 
 typedef signed char byte;
 typedef unsigned char bitbox;
+#ifndef Plan9
 int len,wid,py,px,fy,fx;//p: pointer f: fluid
+#else
+int py,px,fy,fx;//p: pointer f: fluid
+#endif
 bitbox tocome[5]={0};//the row of pipes in the left side
 chtype green=A_BOLD;//will use bold font instead of green if colors are not available
 long score;
@@ -356,7 +360,11 @@ int main(int argc, char** argv){
 		return EXIT_FAILURE;
 	}
 	if(argc==3){
+#ifndef Plan9
 		bool lool = sscanf(argv[1],"%d",&len) && sscanf(argv[2],"%d",&wid);
+#else
+		bool lool = sscanf(argv[1],"%d",len) && sscanf(argv[2],"%d",wid);        
+#endif
 		if(!lool){
 			puts("Invalid input.");
 			return EXIT_FAILURE;

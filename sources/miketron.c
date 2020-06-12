@@ -28,6 +28,7 @@ compile with -lncurses
 #ifdef Plan9
 #define len 10
 #define wid 40
+#define usleep(x) sleep(x/1000000) 
 #endif
 
 typedef signed char byte;
@@ -353,7 +354,11 @@ int main(int argc, char** argv){
 		return EXIT_FAILURE;
 	}
 	if(argc==3){
+#ifndef Plan9
 		bool lool = sscanf(argv[1],"%d",&len) && sscanf(argv[2],"%d",&wid);
+#else 
+		bool lool = sscanf(argv[1],"%d",len) && sscanf(argv[2],"%d",wid);
+#endif
 		if(!lool){
 			puts("Invalid input.");
 			return EXIT_FAILURE;

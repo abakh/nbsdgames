@@ -23,7 +23,9 @@ compile with -lncurses
 
 typedef signed char byte;
 typedef unsigned char ubyte;
+#ifndef Plan9
 byte size,size2;//size2 is there to avoid a lot of multiplications
+#endif
 byte py,px;
 byte fy,fx; //the first tile
 chtype colors[6]={0};
@@ -173,7 +175,9 @@ int main(int argc, char** argv){
     size=8;
 #endif
 	if(argc>=2){
+#ifndef Plan9
 		size=atoi(argv[1]);
+#endif
 		if(size<3 || size>19){
 			fprintf(stderr,"3<=size<=19\n");
 			return EXIT_FAILURE;

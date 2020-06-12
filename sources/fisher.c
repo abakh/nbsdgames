@@ -16,7 +16,7 @@
 #define HWID WID/2
 
 #ifdef Plan9
-#define usleep(1000x) sleep(x) /*milliseconds*/
+#define usleep(x) sleep(x/1000000) 
 #endif
 
 typedef signed char byte;

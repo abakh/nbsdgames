@@ -26,7 +26,9 @@ NOTE: This program is only made for entertainment porpuses. The puzzles are gene
 
 typedef signed char byte;
 byte _wait=0, waitcycles=0;//apparently 'wait' conflicts with a variable in a library macOS includes by default
+#ifndef Plan9
 byte size,s;//s=size*size
+#endif
 byte py,px;
 byte diff;
 unsigned int filled;
@@ -245,7 +247,9 @@ void mouseinput(int sy, int sx){
 	getmouse(&m);
 	#endif
 	if( m.y < (3+1+size+s)-sy && m.x<(2*s+1)-sx ){//it's a shame to include math.h only for round() but it was the only moral way to make gcc shut up
+#ifndef Plan9
 		py= round( (float)(size*(m.y-4-sy))/(size+1) );//these are derived from the formulas in draw() by simple algebra
+#endif
 		px=(m.x-1-sx)/2;
 	}
 	else
@@ -317,8 +321,10 @@ int main(int argc,char** argv){
 			printf("2 <= size <= 7\n");
 			return EXIT_FAILURE;
 		}
+#ifndef Plan9
 		else
 			size = *argv[1]-'0';
+#endif
 	}	
 	else
 #ifndef Plan9
