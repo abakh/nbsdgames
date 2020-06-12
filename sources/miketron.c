@@ -32,7 +32,11 @@ compile with -lncurses
 #endif
 
 typedef signed char byte;
+#ifndef Plan9
 int len,wid,py,px;
+#else 
+int py,px;
+#endif
 int immunity,flight,notrail;
 byte direction;
 long score;
@@ -373,6 +377,7 @@ int main(int argc, char** argv){
 		autoset=1;
 	}
 	initscr();
+#ifndef Plan9
 	if(autoset){
 		len=LINES-7;
 		if(len<MINLEN)
@@ -386,6 +391,7 @@ int main(int argc, char** argv){
 		else if(wid>MAXWID)
 			wid=MAXWID;
 	}
+#endif
 	srand(time(NULL)%UINT_MAX);		
 	byte board[len][wid];
 	byte predirection;
