@@ -8,7 +8,7 @@ TARG=\
     fifteen \
     fisher \
     jewels \
-#    memoblocks \
+    memoblocks \
     miketron \
     mines \
     muncher \

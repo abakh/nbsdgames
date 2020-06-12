@@ -211,9 +211,9 @@ int main(int argc, char** argv){
 			}
 		}
 	}
-	else if(size>8)//big sizes depend on color display
 #ifndef Plan9
-		size=8;
+	else if(size>8)//big sizes depend on color display
+        size=8;
 	size2=size*2;
 #endif
     chtype board[size][size2];
