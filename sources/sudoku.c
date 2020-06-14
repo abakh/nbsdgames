@@ -34,7 +34,7 @@ int round(float x)
             z = y;
     if(x<0)
         if(x-y < -0.5)
-            z = int(x -0.5);
+            z = (int)(x -0.5);
         else
             z = y;
     return z;
