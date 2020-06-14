@@ -27,11 +27,11 @@ compile with -lncurses
 #define len 10
 #define wid 40
 int usleep(long usec) {
-    int seconds = usec/1000000;
-    long nano = usec*1000 - seconds*1000000;
+    int second = usec/1000000;
+    long nano = usec*1000 - second*1000000;
     struct timespec sleepy = {0};
-    sleepy.ts_sec = second;
-    sleepy.ts_nsec = nano;
+    sleepy.tv_sec = second;
+    sleepy.tv_nsec = nano;
     nanosleep(&sleepy, (struct timespec *) NULL);
     return 0;
 }
