@@ -26,16 +26,18 @@ NOTE: This program is only made for entertainment porpuses. The puzzles are gene
 int round(float x)
 {
     int y=(int) x;
-    if x>0
-        if x-y >0.5
-            return (int)(x + 0.5);
+    int z;
+    if(x > 0)
+        if(x-y > 0.5)
+            z = (int)(x + 0.5);
         else
-            return y;
-    if x<0
-        if x-y <-0.5
-            return int(x -0.5);
+            z = y;
+    if(x<0)
+        if(x-y < -0.5)
+            z = int(x -0.5);
         else
-            return y;
+            z = y;
+    return z;
 }   
 #endif
 
