@@ -22,6 +22,21 @@ NOTE: This program is only made for entertainment porpuses. The puzzles are gene
 #if defined Plan9
 #define size 3
 #define s 9
+/* I hope this is approximately right */
+int round(float x)
+{
+    int y=(int) x;
+    if x>0
+        if x-y >0.5
+            return (int)(x + 0.5);
+        else
+            return y;
+    if x<0
+        if x-y <-0.5
+            return int(x -0.5);
+        else
+            return y;
+}   
 #endif
 
 typedef signed char byte;
@@ -247,9 +262,7 @@ void mouseinput(int sy, int sx){
 	getmouse(&m);
 	#endif
 	if( m.y < (3+1+size+s)-sy && m.x<(2*s+1)-sx ){//it's a shame to include math.h only for round() but it was the only moral way to make gcc shut up
-#ifndef Plan9
 		py= round( (float)(size*(m.y-4-sy))/(size+1) );//these are derived from the formulas in draw() by simple algebra
-#endif
 		px=(m.x-1-sx)/2;
 	}
 	else

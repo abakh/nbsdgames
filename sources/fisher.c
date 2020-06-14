@@ -16,7 +16,15 @@
 #define HWID WID/2
 
 #ifdef Plan9
-#define usleep(x) sleep(x/1000000) 
+int usleep(long usec) {
+    int seconds = usec/1000000;
+    long nano = usec*1000 - seconds*1000000;
+    struct timespec sleepy = {0};
+    sleepy.ts_sec = second;
+    sleepy.ts_nsec = nano;
+    nanosleep(&sleepy, (struct timespec *) NULL);
+    return 0;
+}
 #endif
 
 typedef signed char byte;
