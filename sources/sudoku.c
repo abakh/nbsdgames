@@ -25,19 +25,12 @@ NOTE: This program is only made for entertainment porpuses. The puzzles are gene
 /* I hope this is approximately right */
 int round(float x)
 {
-    int y=(int) x;
-    int z;
+    int y;
     if(x > 0)
-        if(x-y > 0.5)
-            z = (int)(x + 0.5);
-        else
-            z = y;
-    if(x<0)
-        if(x-y < -0.5)
-            z = (int)(x -0.5);
-        else
-            z = y;
-    return z;
+        y = (int)(x + 0.5); //int will round down, so if the decimal of x is .5 or higher this will round up.
+    else if(x < 0)
+        y = (int)(x - 0.5); // the same but opposite
+    return y;
 }   
 #endif
 
