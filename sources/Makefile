@@ -1,7 +1,18 @@
 # -*- Makefile -*-
 
 all: jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare
-
+scorefiles:
+	touch /usr/games/pp_scores
+	touch /usr/games/jw_scores
+	touch /usr/games/mt_scores
+	touch /usr/games/mnch_scores
+	touch /usr/games/fsh_scores
+	chmod 666 /usr/games/pp_scores
+	chmod 666 /usr/games/jw_scores
+	chmod 666 /usr/games/mt_scores
+	chmod 666 /usr/games/mnch_scores
+	chmod 666 /usr/games/fsh_scores
+	
 jewels: jewels.c config.h
 	$(CC) jewels.c -lncurses -o ./jewels
 sudoku: sudoku.c
@@ -38,6 +49,6 @@ uninstall:
 	rm $(PREFIX)/jewels $(PREFIX)/sudoku $(PREFIX)/checkers $(PREFIX)/mines $(PREFIX)/reversi $(PREFIX)/battleship $(PREFIX)/rabbithole $(PREFIX)/sos $(PREFIX)/pipes $(PREFIX)/fifteen $(PREFIX)/memoblocks $(PREFIX)/fisher $(PREFIX)/muncher $(PREFIX)/miketron $(PREFIX)/redsquare
 copy_sources:
 	cp Makefile config.h jewels.c sudoku.c mines.c reversi.c checkers.c battleship.c rabbithole.c sos.c pipes.c fifteen.c memoblocks.c fisher.c muncher.c miketron.c redsquare.c $(PREFIX)
-install: jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare
+install: scorefiles jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare
 	cp jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare $(PREFIX)
 

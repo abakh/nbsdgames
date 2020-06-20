@@ -1,3 +1,12 @@
+/* 
+|\/|
+|  |INES
+
+Authored by abakh <abakh@tuta.io>
+No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
+
+compile with -lncurses
+*/
 #include <curses.h>
 #include <string.h>
 #include <stdlib.h>
@@ -7,37 +16,26 @@
 #include <stdbool.h>
 #define FLAG 9
 #define UNCLEAR 10
-/* 
-|\/|
-|  |INES
+typedef signed char byte;
 
-Authored by Hossein Bakhtiarifar <abakh@tuta.io>
-No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
-
-compile with -lncurses
-*/
-
-/* The Plan9 compiler can not handle VLAs */
-#ifdef Plan9
+#ifdef Plan9 //The Plan9 compiler can not handle VLAs
 #define len 8
 #define wid 8
+#else
+int len,wid;
 #endif
 
-typedef signed char byte;
-#ifndef Plan9
-int len,wid,py,px,flags;
-#else
 int py,px,flags;
-#endif
 int untouched;
 int mscount;
 chtype colors[6]={0};
+
 void rectangle(int sy,int sx){
-	for(int y=0;y<=len+1;y++){
+	for(int y=0;y<=len+1;++y){
 		mvaddch(sy+y,sx,ACS_VLINE);
 		mvaddch(sy+y,sx+wid*2,ACS_VLINE);
 	}
-	for(int x=0;x<=wid*2;x++){
+	for(int x=0;x<=wid*2;++x){
 		mvaddch(sy,sx+x,ACS_HLINE);
 		mvaddch(sy+len+1,sx+x,ACS_HLINE);
 	}
@@ -52,8 +50,8 @@ void draw(int sy,int sx,byte board[len][wid]){
 	chtype attr ;
 	char prnt;
 	int y,x;
-	for(y=0;y<len;y++){
-		for(x=0;x<wid;x++){
+	for(y=0;y<len;++y){
+		for(x=0;x<wid;++x){
 			attr=A_NORMAL;
 			if(y==py && x==px)
 				attr |= A_STANDOUT;
@@ -80,8 +78,8 @@ void draw(int sy,int sx,byte board[len][wid]){
 //show the mines
 void drawmines(int sy,int sx,byte board[len][wid],bool mines[len][wid]){
 	int y,x;
-	for(y=0;y<len;y++){
-		for(x=0;x<wid;x++){
+	for(y=0;y<len;++y){
+		for(x=0;x<wid;++x){
 			if(mines[y][x]){
 				if(y==py&&x==px)
 					mvaddch(sy+y+1,sx+x*2+1,'X');
@@ -97,7 +95,7 @@ void drawmines(int sy,int sx,byte board[len][wid],bool mines[len][wid]){
 void mine(bool mines[len][wid]){
 	int y=rand()%len;
 	int x=rand()%wid;
-	for(int n=0;n<mscount;n++){
+	for(int n=0;n<mscount;++n){
 		while(mines[y][x]){
 			y=rand()%len;
 			x=rand()%wid;
@@ -111,18 +109,18 @@ bool click(byte board[len][wid],bool mines[len][wid],int ty,int tx){
 		return 0;
 	else{//untouched
 		if(board[ty][tx]==FLAG)
-			flags--;
+			--flags;
 		board[ty][tx]=0;
-		untouched--;
+		--untouched;
 		
 	}
 	int y,x;
-	for(y=ty-1;y<ty+2;y++){
+	for(y=ty-1;y<ty+2;++y){
 		if(y<0)
 			y=0;
 		if(y>=len)
 			break;
-		for (x=tx-1;x<tx+2;x++){
+		for (x=tx-1;x<tx+2;++x){
 			if(x<0)
 				x=0;
 			if(x>=wid)
@@ -134,12 +132,12 @@ bool click(byte board[len][wid],bool mines[len][wid],int ty,int tx){
 	}
 
 	if(!board[ty][tx]){//there are  no mines in the adjacent tiles
-		for(y=ty-1;y<ty+2;y++){
+		for(y=ty-1;y<ty+2;++y){
 			if(y<0)
 				y=0;
 			if(y>=len)
 				break;
-			for(x=tx-1;x<tx+2;x++){
+			for(x=tx-1;x<tx+2;++x){
 					if(x<0)
 						x=0;
 					if(x>=wid)
@@ -216,6 +214,7 @@ void gameplay(void){
 }
 int main(int argc, char** argv){
 	signal(SIGINT,sigint_handler);
+#ifndef Plan9
 	if(argc>4 || (argc==2 && !strcmp("help",argv[1])) ){
 		printf("Usage: %s [len wid [minescount]]\n",argv[0]);
 		return EXIT_FAILURE;
@@ -225,11 +224,7 @@ int main(int argc, char** argv){
 		return EXIT_FAILURE;
 	}
 	if(argc>=3){
-#ifndef Plan9
 		bool lool = sscanf(argv[1],"%d",&len) && sscanf(argv[2],"%d",&wid);
-#else
-		bool lool = sscanf(argv[1],"%d",len) && sscanf(argv[2],"%d",wid);
-#endif
 		if(!lool){
 			puts("Invalid input.");
 			return EXIT_FAILURE;
@@ -241,9 +236,7 @@ int main(int argc, char** argv){
 	
 	}
 	else
-#ifndef Plan9
 		len=wid=8;
-#endif
 	if(argc==4){
 		if( !sscanf(argv[3],"%d",&mscount)){
 			puts("Invalid input.");
@@ -256,6 +249,9 @@ int main(int argc, char** argv){
 	}
 	else
 		mscount = len*wid/6;
+#else
+	mscount=len*wid/6;
+#endif
 	srand(time(NULL)%UINT_MAX);
 	initscr();
 	mousemask(ALL_MOUSE_EVENTS,NULL);
@@ -271,7 +267,7 @@ int main(int argc, char** argv){
 		init_pair(4,COLOR_RED,-1);
 		init_pair(5,COLOR_RED,COLOR_YELLOW);
 		init_pair(6,COLOR_RED,COLOR_MAGENTA);
-		for(byte b= 0;b<6;b++){
+		for(byte b= 0;b<6;++b){
 			colors[b]=COLOR_PAIR(b+1);
 		}
 
@@ -329,13 +325,13 @@ int main(int argc, char** argv){
 		if( input==KEY_MOUSE )
 			mouseinput(sy,sx);
 		if( (input=='k' || input==KEY_UP) && py>0)
-			py--;
+			--py;
 		if( (input=='j' || input==KEY_DOWN) && py<len-1)
-			py++;
+			++py;
 		if( (input=='h' || input==KEY_LEFT) && px>0)
-			px--;
+			--px;
 		if( (input=='l' || input==KEY_RIGHT) && px<wid-1)
-			px++;
+			++px;
 		if( input=='q')
 			sigint_handler(0);
 		if(input=='x' && getch()=='y' && getch()=='z' && getch()=='z' && getch()=='y' ){
@@ -361,11 +357,11 @@ int main(int argc, char** argv){
 		if(input==' '){
 			 if(board[py][px] == -1){
 				board[py][px]=FLAG;
-				flags++;
+				++flags;
 			 }
 			 else if(board[py][px] == FLAG){
 				board[py][px]=UNCLEAR;
-				flags--;
+				--flags;
 			 }
 			 else if(board[py][px] == UNCLEAR)
 				board[py][px]=-1;

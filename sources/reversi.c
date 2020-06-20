@@ -1,19 +1,20 @@
-#include <curses.h>
-#include <string.h>
-#include <stdlib.h>
-#include <signal.h>
-#include <stdbool.h>
 /* 
  _  
 |_)
 | \EVERSI
 
-Authored by Hossein Bakhtiarifar <abakh@tuta.io>
+Authored by abakh <abakh@tuta.io>
 No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
 
 compile with -lncurses
 */
+#include <curses.h>
+#include <string.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <stdbool.h>
 typedef signed char byte;
+
 byte py,px;//cursor
 const char piece[2] = {'O','X'};
 char game[8][8];//main board
@@ -21,11 +22,11 @@ byte computer[2] = {0,0};
 byte score[2];//set by header()
 
 void rectangle(byte sy,byte sx){
-	for(byte y=0;y<=8+1;y++){
+	for(byte y=0;y<=8+1;++y){
 		mvaddch(sy+y,sx,ACS_VLINE);
 		mvaddch(sy+y,sx+8*2,ACS_VLINE);
 	}
-	for(byte x=0;x<=8*2;x++){
+	for(byte x=0;x<=8*2;++x){
 		mvaddch(sy,sx+x,ACS_HLINE);
 		mvaddch(sy+8+1,sx+x,ACS_HLINE);
 	}
@@ -37,8 +38,8 @@ void rectangle(byte sy,byte sx){
 
 void header(void){//abuse, used to count the pieces on each side too
 	score[0]=score[1]=0;
-	for(byte y=0;y<8;y++){
-		for(byte x=0;x<8;x++){
+	for(byte y=0;y<8;++y){
+		for(byte x=0;x<8;++x){
 			if(game[y][x]){
 				if(game[y][x]==piece[0])
 					score[0]++;
@@ -55,8 +56,8 @@ void header(void){//abuse, used to count the pieces on each side too
 void draw(byte sy,byte sx){//the game's board 
 	rectangle(sy,sx);
 	chtype attr ;
-	for(byte y=0;y<8;y++){
-		for(byte x=0;x<8;x++){
+	for(byte y=0;y<8;++y){
+		for(byte x=0;x<8;++x){
 			attr=A_NORMAL;
 			if(y==py && x==px)
 				attr |= A_STANDOUT;
@@ -72,8 +73,8 @@ bool can_reverse(byte ty , byte tx,char board[8][8],char piece){//can place a pi
 	byte y,x,count;
 	if(board[ty][tx])
 		return false;
-	for(byte dy=-1;dy<2;dy++){ //changes the direction
-		for(byte dx=-1;dx<2;dx++){
+	for(byte dy=-1;dy<2;++dy){ //changes the direction
+		for(byte dx=-1;dx<2;++dx){
 			if(dx==0&&dy==0)//it would be itself
 				dx=1;
 			count=0;
@@ -90,7 +91,7 @@ bool can_reverse(byte ty , byte tx,char board[8][8],char piece){//can place a pi
 				}
 
 				if(board[y][x]!=piece){
-					count++;
+					++count;
 					y+=dy;
 					x+=dx;
 				}
@@ -107,8 +108,8 @@ bool can_reverse(byte ty , byte tx,char board[8][8],char piece){//can place a pi
 void reverse(byte ty,byte tx,char board[8][8],char piece){//place a piece there
 	board[ty][tx]=piece;
 	byte y,x;
-	for(byte dy=-1;dy<2;dy++){//changes the direction
-		for(byte dx=-1;dx<2;dx++){
+	for(byte dy=-1;dy<2;++dy){//changes the direction
+		for(byte dx=-1;dx<2;++dx){
 			if(dy==0 && dx==0)
 				dx=1;
 			y=ty+dy;
@@ -136,8 +137,8 @@ void reverse(byte ty,byte tx,char board[8][8],char piece){//place a piece there
 }
 
 bool can_move(char board[8][8],char piece){//can move at all?
-	for(byte y=0;y<8;y++)
-		for(byte x=0;x<8;x++)
+	for(byte y=0;y<8;++y)
+		for(byte x=0;x<8;++x)
 			if(can_reverse(y,x,board,piece))
 				return true;
 	return false;
@@ -146,18 +147,18 @@ bool can_move(char board[8][8],char piece){//can move at all?
 double advantage(char board[8][8],char piece){
 	double own=0;
 	double opp=0;
-	for(byte y=0;y<8;y++){
-		for(byte x=0;x<8;x++){
+	for(byte y=0;y<8;++y){
+		for(byte x=0;x<8;++x){
 			if(board[y][x]){
 				if(board[y][x]==piece){
-					own++;
+					++own;
 					if( ((y==7 || y==0)&&(x!=7 && x!=0)) || ((x==7 || x==0)&&(y!=7 && y!=0)) )//edges
 						own+=100;
 					if( (y==7 || y==0)&&(x==7 || x==0) )//corners
 						own+=10000;
 				}
 				else{
-					opp++;
+					++opp;
 					if( ((y==7 || y==0)&&(x!=7 && x!=0)) || ((x==7 || x==0)&&(y!=7 && y!=0)) )
 						opp+=100;
 					if( (y==7 || y==0)&&(x==7 || x==0) )
@@ -171,8 +172,8 @@ double advantage(char board[8][8],char piece){
 }
 
 void cp(char A[8][8],char B[8][8]){//copy the board A to B
-	for(byte y=0;y<8;y++)
-		for(byte x=0;x<8;x++)
+	for(byte y=0;y<8;++y)
+		for(byte x=0;x<8;++x)
 			B[y][x]=A[y][x];
 }
 
@@ -183,8 +184,8 @@ double decide(char board[8][8],char piece,char opponet,byte depth){//AI algorith
 	double adv,bestadv;
 	adv=bestadv=0;
 	byte besty,bestx;
-	for(byte y=0;y<8;y++){
-		for(byte x=0;x<8;x++){
+	for(byte y=0;y<8;++y){
+		for(byte x=0;x<8;++x){
 			if(can_reverse(y,x,board,piece) ){
 				cp(board,plan);//backtrack
 				reverse(y,x,plan,piece);
@@ -338,13 +339,13 @@ int main(int argc , char** argv){
 			cantmove=0;
 		}
 		else
-			cantmove++;
+			++cantmove;
 		goto Turn;
 			
 	}
 	
 	if(!can_move(game,piece[turn])){
-		cantmove++;
+		++cantmove;
 		goto Turn;
 	}
 	else{
@@ -364,13 +365,13 @@ int main(int argc , char** argv){
 			if( input==KEY_MOUSE )
 				mouseinput();
 			if( (input=='k' || input==KEY_UP) && py>0)
-				py--;
+				--py;
 			if( (input=='j' || input==KEY_DOWN) && py<7)
-				py++;
+				++py;
 			if( (input=='h' || input==KEY_LEFT) && px>0)
-				px--;
+				--px;
 			if( (input=='l' || input==KEY_RIGHT) && px<7)
-				px++;
+				++px;
 			if( input=='q'){
 				resign=1;
 				goto End;

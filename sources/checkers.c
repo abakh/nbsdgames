@@ -1,3 +1,14 @@
+/* 
+ .-.
+|  '
+'._.HECKERS
+
+Authored by abakh <abakh@tuta.io>
+No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
+
+Compile with -lncurses
+*/
+
 #include <curses.h>
 #include <string.h>
 #include <time.h>
@@ -16,17 +27,8 @@
 #define ALT_IMG 2
 #define ALT_NRM 3
 #define WIN 100000
-/* 
- .-.
-|  '
-'._.HECKERS
-
-Authored by Hossein Bakhtiarifar <abakh@tuta.io>
-No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
-
-Compile with -lncurses
-*/
 typedef signed char byte;
+
 byte py,px;//cursor
 byte cy,cx;//selected(choosen) piece
 int dpt;
@@ -38,18 +40,18 @@ byte jumpagainy , jumpagainx;
 bool kinged;//if a piece jumps over multiple others and becomes a king it cannot continue jumping
 
 bool in(byte A[4],byte B[4],byte a,byte b){
-	for(byte c=0;c<4;c++)
+	for(byte c=0;c<4;++c)
 		if(A[c]==a && B[c]==b)
 			return true;
 	return false;
 }
 void rectangle(byte sy,byte sx){
 	byte y,x;
-	for(y=0;y<=8+1;y++){
+	for(y=0;y<=8+1;++y){
 		mvaddch(sy+y,sx,ACS_VLINE);
 		mvaddch(sy+y,sx+8*2,ACS_VLINE);
 	}
-	for(x=0;x<=8*2;x++){
+	for(x=0;x<=8*2;++x){
 		mvaddch(sy,sx+x,ACS_HLINE);
 		mvaddch(sy+8+1,sx+x,ACS_HLINE);
 	}
@@ -61,8 +63,8 @@ void rectangle(byte sy,byte sx){
 void header(void){
 	score[0]=score[1]=0;
 	byte y,x;
-	for(y=0;y<8;y++){
-		for(x=0;x<8;x++){
+	for(y=0;y<8;++y){
+		for(x=0;x<8;++x){
 			if(game[y][x]){
 				if(game[y][x]<0)
 					score[0]++;
@@ -79,8 +81,8 @@ void draw(byte sy,byte sx){//the game's board
 	rectangle(sy,sx);
 	chtype ch ;
 	byte y,x;
-	for(y=0;y<8;y++){
-		for(x=0;x<8;x++){
+	for(y=0;y<8;++y){
+		for(x=0;x<8;++x){
 			ch=A_NORMAL;
 			if(y==py && x==px)
 				ch |= A_STANDOUT;
@@ -109,8 +111,8 @@ void draw(byte sy,byte sx){//the game's board
 //place the pieces on the board
 void fill(void){
 	byte y,x;
-	for(y=0;y<8;y++){
-		for(x=0;x<8;x++){
+	for(y=0;y<8;++y){
+		for(x=0;x<8;++x){
 			game[y][x]=0;
 			if( (y%2) != (x%2)){
 				if(y<3) game[y][x]=1;
@@ -126,18 +128,18 @@ bool moves(byte ty,byte tx,byte mvy[4],byte mvx[4]){
 	byte t= game[ty][tx];
 	move(15,0);
 	byte dy,dx;
-	for(dy=-1;dy<2;dy++){
-		for(dx=-1;dx<2;dx++){
+	for(dy=-1;dy<2;++dy){
+		for(dx=-1;dx<2;++dx){
 			if( !dy || !dx || (!ty && dy<0) || (!tx && dx<0) || (dy==-t) || (ty+dy>=8) || (tx+dx>=8) )
 				;
 			else if(!game[ty+dy][tx+dx]){
 				ret=1;
 				mvy[ndx]=ty+dy;
 				mvx[ndx]=tx+dx;
-				ndx++;
+				++ndx;
 			}
 			else
-				ndx++;
+				++ndx;
 		}
 	}
 	return ret;
@@ -145,11 +147,11 @@ bool moves(byte ty,byte tx,byte mvy[4],byte mvx[4]){
 //would be much faster than applying moves() on every tile
 bool can_move(byte side){
 	byte y , x ,t, dy , dx;
-	for(y=0;y<8;y++){
-		for(x=0;x<8;x++){
+	for(y=0;y<8;++y){
+		for(x=0;x<8;++x){
 			if( (t=game[y][x])*side > 0 ){
-				for(dy=-1;dy<2;dy++){
-					for(dx=-1;dx<2;dx++){
+				for(dy=-1;dy<2;++dy){
+					for(dx=-1;dx<2;++dx){
 						if( !dy || !dx || (!y && dy<0) || (!x && dx<0) || (dy==-t) || (y+dy>=8) || (x+dx>=8) )
 							;
 						else if( !game[y+dy][x+dx] )
@@ -169,8 +171,8 @@ bool jumps(byte ty,byte tx,byte mvy[4],byte mvx[4]){
 	byte ey,ex;
 	byte t= game[ty][tx];
 	byte dy,dx;
-	for(dy=-1;dy<2;dy++){
-		for(dx=-1;dx<2;dx++){
+	for(dy=-1;dy<2;++dy){
+		for(dx=-1;dx<2;++dx){
 			ey = dy*2;
 			ex = dx*2;
 			if(!dy || !dx ||(dy==-t)|| (ty+ey<0) || (tx+ex<0) || (ty+ey>=8) || (tx+ex>=8) )
@@ -179,10 +181,10 @@ bool jumps(byte ty,byte tx,byte mvy[4],byte mvx[4]){
 				ret=1;
 				mvy[ndx]=ty+ey;
 				mvx[ndx]=tx+ex;
-				ndx++;
+				++ndx;
 			}
 			else
-				ndx++;
+				++ndx;
 		}
 	}
 	return ret;
@@ -192,14 +194,14 @@ byte can_jump(byte ty,byte tx){
 	byte dy,dx,t=game[ty][tx];
 	byte ey,ex;
 	byte ret=0;
-	for(dy=-1;dy<2;dy++){
-		for(dx=-1;dx<2;dx++){
+	for(dy=-1;dy<2;++dy){
+		for(dx=-1;dx<2;++dx){
 			ey=dy*2;
 			ex=dx*2;
 			if((dy==-t)||(ty+ey<0)||(tx+ex<0)||(ty+ey>=8)||(tx+ex>=8) )
 				;
 			else if(!game[ty+dy*2][tx+dx*2]&&game[ty+dy][tx+dx]*t<0){
-				ret++;
+				++ret;
 				if(ret>1)
 					return ret;
 			}
@@ -213,8 +215,8 @@ byte forced_jump(byte side){
 	byte y,x;
 	byte foo,ret;
 	foo=ret=0;
-	for(y=0;y<8;y++){
-		for(x=0;x<8;x++){
+	for(y=0;y<8;++y){
+		for(x=0;x<8;++x){
 			if(game[y][x]*side>0 && (foo=can_jump(y,x)) )
 				ret+=foo;
 			if(ret>1)
@@ -248,15 +250,15 @@ double advantage(byte side){
 	own=opp=0;
 	byte foo;
 	byte y,x;
-	for(y=0;y<8;y++){
-		for(x=0;x<8;x++){
+	for(y=0;y<8;++y){
+		for(x=0;x<8;++x){
 			foo=game[y][x]*side;
 			if(foo>0){
-				own++;//so it wont sacrfice two pawns for a king ( 2 kings == 3 pawns)
+				++own;//so it wont sacrfice two pawns for a king ( 2 kings == 3 pawns)
 				own+=foo;
 			}
 			else if(foo<0){
-				opp++;
+				++opp;
 				opp-=foo;
 			}
 		}
@@ -277,12 +279,12 @@ double posadvantage(byte side){
 	/*This encourages the AI to king its pawns and concentrate its kings in the center.
 	The idea is : With forces concentrated in the center, movements to all of the board would be in the game tree's horizon of sight(given enough depth);
 	and with forces being focused , its takes less movements to make an attack. */
-	for(y=0;y<8;y++){
-		for(x=0;x<8;x++){
+	for(y=0;y<8;++y){
+		for(x=0;x<8;++x){
 			foo=game[y][x]*side;
 			if(foo>0){
 				adv+=foo;
-				adv++;
+				++adv;
 				if(foo==1)
 					adv+= 1/( abs(y-goal) );//adding positional value 
 				else if(foo==2)
@@ -290,7 +292,7 @@ double posadvantage(byte side){
 			}
 			else if( foo<0 ){
 				oppadv-=foo;
-				oppadv++;
+				++oppadv;
 				if(foo==-1)
 					adv+=1/( abs(y-oppgoal) );
 				else if(foo==-2)
@@ -335,8 +337,8 @@ double decide(byte side,byte depth,byte s){//s is the type of move, it doesn't s
 	else
 		nexts=ALT_IMG;
 
-	for(y=0;y<8;y++){
-		for(x=0;x<8;x++){
+	for(y=0;y<8;++y){
+		for(x=0;x<8;++x){
 			if(fj && (s==NORMAL || s==ALT_NRM) && jumpagainy>=0 && (jumpagainy!=y || jumpagainx!=x) )
 				continue;
 			if(game[y][x]*side>0){
@@ -348,7 +350,7 @@ double decide(byte side,byte depth,byte s){//s is the type of move, it doesn't s
 				else
 					canmove=moves(y,x,mvy,mvx);
 				if(canmove){
-					for(n=0;n<4;n++){
+					for(n=0;n<4;++n){
 						if(mvy[n] != -1){//a real move
 							toy=mvy[n];
 							tox=mvx[n];
@@ -573,7 +575,7 @@ int main(int argc,char** argv){
 		previousadv=adv;
 		adv= advantage(1) + (score[0]*score[1]);//just taking the dry scores to account too,nothing special
 		if(previousadv==adv)
-			todraw++;
+			++todraw;
 		else 
 			todraw=0;
 	}
@@ -623,13 +625,13 @@ int main(int argc,char** argv){
 		if( input == KEY_MOUSE )
 			mouseinput();
 		if( (input=='k' || input==KEY_UP) && py>0)
-			py--;
+			--py;
 		if( (input=='j' || input==KEY_DOWN) && py<7)
-			py++;
+			++py;
 		if( (input=='h' || input==KEY_LEFT) && px>0)
-			px--;
+			--px;
 		if( (input=='l' || input==KEY_RIGHT) && px<7)
-			px++;
+			++px;
 		if( input=='q'){
 			result=2;
 			goto End;

@@ -1,3 +1,13 @@
+/* 
+ _  _  _
+(_'| |(_'
+._):_:._)
+
+Authored by abakh <abakh@tuta.io>
+No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
+
+compile with -lncurses
+*/
 #include <curses.h>
 #include <string.h>
 #include <stdlib.h>
@@ -5,28 +15,16 @@
 #include <time.h>
 #include <signal.h>
 #define NOTHING 123
-/* 
- _  _  _
-(_'| |(_'
-._):_:._)
-
-Authored by Hossein Bakhtiarifar <abakh@tuta.io>
-No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
-
-compile with -lncurses
-*/
+typedef signed char byte;
 
 #ifdef Plan9
 #define len 5
 #define wid 6
+#else
+int len,wid;
 #endif
 
-typedef signed char byte;
-#ifndef Plan9
-int len,wid,py,px;
-#else
 int py,px;
-#endif
 chtype colors[6]={A_BOLD};
 int score[2] ={0};
 int computer[2]={0};
@@ -45,11 +43,11 @@ void color(byte colored[len][wid],int y,int x,bool side){
 		colored[y][x]=side;
 }
 void rectangle(int sy,int sx){
-	for(int y=0;y<=len+1;y++){
+	for(int y=0;y<=len+1;++y){
 		mvaddch(sy+y,sx,ACS_VLINE);
 		mvaddch(sy+y,sx+wid*2,ACS_VLINE);
 	}
-	for(int x=0;x<=wid*2;x++){
+	for(int x=0;x<=wid*2;++x){
 		mvaddch(sy,sx+x,ACS_HLINE);
 		mvaddch(sy+len+1,sx+x,ACS_HLINE);
 	}
@@ -64,8 +62,8 @@ void draw(int sy,int sx,char board[len][wid],byte colored[len][wid]){
 	chtype attr ;
 	char prnt;
 	int y,x;
-	for(y=0;y<len;y++){
-		for(x=0;x<wid;x++){
+	for(y=0;y<len;++y){
+		for(x=0;x<wid;++x){
 			attr=A_NORMAL;
 			if(y==py && x==px)
 				attr |= A_STANDOUT;
@@ -84,19 +82,19 @@ byte did_sos(char board[len][wid], int y , int x ){
 	byte dy,dx;
 	byte soses=0;
 	if(board[y][x]== 'S'){
-		for(dy=-1;dy<2;dy++){
-			for(dx=-1;dx<2;dx++){
+		for(dy=-1;dy<2;++dy){
+			for(dx=-1;dx<2;++dx){
 				if(rd(board,y+dy,x+dx)=='O' && rd(board,y+2*dy,x+2*dx) == 'S' )
-					soses++;
+					++soses;
 			}
 		}
 		return soses;
 	}
 	else if(board[y][x]== 'O'){
-		for(dy=-1;dy<2;dy++){
-			for(dx=-1;dx<2;dx++){
+		for(dy=-1;dy<2;++dy){
+			for(dx=-1;dx<2;++dx){
 				if(rd(board,y+dy,x+dx)=='S' && rd(board,y-dy,x-dx) =='S')
-					soses++;
+					++soses;
 			}
 		}
 		return soses/2;
@@ -106,8 +104,8 @@ byte did_sos(char board[len][wid], int y , int x ){
 void color_sos(char board[len][wid],byte colored[len][wid], int y , int x ,bool side){
 	byte dy,dx;
 	if(board[y][x]== 'S'){
-		for(dy=-1;dy<2;dy++){
-			for(dx=-1;dx<2;dx++){
+		for(dy=-1;dy<2;++dy){
+			for(dx=-1;dx<2;++dx){
 				if(rd(board,y+dy,x+dx)=='O' && rd(board,y+2*dy,x+2*dx) == 'S' ){
 					color(colored,y,x,side);
 			       		color(colored,y+dy,x+dx,side);
@@ -117,8 +115,8 @@ void color_sos(char board[len][wid],byte colored[len][wid], int y , int x ,bool 
 		}
 	}
 	else if(board[y][x]== 'O'){
-		for(dy=-1;dy<2;dy++){
-			for(dx=-1;dx<2;dx++){
+		for(dy=-1;dy<2;++dy){
+			for(dx=-1;dx<2;++dx){
 				if(rd(board,y+dy,x+dx)=='S' && rd(board,y-dy,x-dx) =='S'){
 					color(colored,y,x,side);
 			      		color(colored,y+dy,x+dx,side);
@@ -146,10 +144,10 @@ int decide ( char board[len][wid],byte colored[len][wid], byte depth , byte side
 	int ry,rx;
 	byte rc;
 	randmove(&ry,&rx,&rc);//provides efficient randomization
-	for(y=0;y<len;y++){
-		for(x=0;x<wid;x++){
+	for(y=0;y<len;++y){
+		for(x=0;x<wid;++x){
 			if(!board[y][x]){
-				for(c=0;c<2;c++){
+				for(c=0;c<2;++c){
 					board[y][x]=so[c];
 					adv=did_sos(board,y,x);
 					if(depth>0)
@@ -176,8 +174,8 @@ int decide ( char board[len][wid],byte colored[len][wid], byte depth , byte side
 }
 bool isfilled(char board[len][wid]){
 	int y,x;
-	for(y=0;y<len;y++)
-		for(x=0;x<wid;x++)
+	for(y=0;y<len;++y)
+		for(x=0;x<wid;++x)
 			if(!board[y][x])
 				return 0;
 	return 1;
@@ -245,6 +243,7 @@ void gameplay(void){
 int main(int argc, char** argv){
 	int dpt=1;
 	signal(SIGINT,sigint_handler);
+#ifndef Plan9
 	if(argc>4 || (argc==2 && !strcmp("help",argv[1])) ){
 		printf("Usage: %s [len wid [AIpower]]\n",argv[0]);
 		return EXIT_FAILURE;
@@ -254,11 +253,7 @@ int main(int argc, char** argv){
 		return EXIT_FAILURE;
 	}
 	if(argc>=3){
-#ifndef Plan9
 		bool lool = sscanf(argv[1],"%d",&len) && sscanf(argv[2],"%d",&wid);
-#else
-		bool lool = sscanf(argv[1],"%d",len) && sscanf(argv[2],"%d",wid);        
-#endif
 		if(!lool){
 			puts("Invalid input.");
 			return EXIT_FAILURE;
@@ -270,10 +265,8 @@ int main(int argc, char** argv){
 	
 	}
 	else{
-#ifndef Plan9
 		len=5;
 		wid=6;
-#endif
 	}
 	if(argc==4){
 		if( !sscanf(argv[3],"%d",&dpt)){
@@ -285,6 +278,24 @@ int main(int argc, char** argv){
 			return EXIT_FAILURE;
 		}
 	}
+#else
+	if(argc>2 || (argc==2 && !strcmp("help",argv[1])) ){
+		printf("Usage: %s [AIpower]\n",argv[0]);
+		return EXIT_FAILURE;
+	}
+
+	if(argc==2){
+		if( !sscanf(argv[1],"%d",&dpt)){
+			puts("Invalid input.");
+			return EXIT_FAILURE;
+		}
+		if( dpt<1 || dpt>= 127){
+			puts("That should be between 1 and 127.");
+			return EXIT_FAILURE;
+		}
+	}
+	
+#endif
 	srand(time(NULL)%UINT_MAX);
 	int input;		
 	initscr();
@@ -322,7 +333,7 @@ int main(int argc, char** argv){
 		init_pair(1,COLOR_BLUE,-1);
 		init_pair(2,COLOR_YELLOW,-1);
 		init_pair(3,COLOR_GREEN,-1);
-		for(byte b= 0;b<6;b++){
+		for(byte b= 0;b<6;++b){
 			colors[b]=COLOR_PAIR(b+1);
 		}
 
@@ -389,13 +400,13 @@ int main(int argc, char** argv){
 		if( input==KEY_MOUSE )
 			mouseinput(sy,sx);
 		if( (input=='k' || input==KEY_UP) && py>0)
-			py--;
+			--py;
 		if( (input=='j' || input==KEY_DOWN) && py<len-1)
-			py++;
+			++py;
 		if( (input=='h' || input==KEY_LEFT) && px>0)
-			px--;
+			--px;
 		if( (input=='l' || input==KEY_RIGHT) && px<wid-1)
-			px++;
+			++px;
 		if( input=='q')
 			sigint_handler(0);
 		if(!board[py][px] && (input=='s'||input=='S'||input=='o'||input=='O') ){

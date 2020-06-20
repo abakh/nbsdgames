@@ -1,3 +1,13 @@
+/* 
+ _  
+|_)
+|_)ATTLESHIP
+
+Authored by abakh <abakh@tuta.io> 
+No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
+
+compile with -lncurses
+*/
 #include <curses.h>
 #include <string.h>
 #include <time.h>
@@ -13,18 +23,9 @@
 #define ALL 0x7c
 #define RED 3
 #define CYAN 2
-/* 
- _  
-|_)
-|_)ATTLESHIP
-
-Authored by Hossein Bakhtiarifar <abakh@tuta.io> 
-No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
-
-compile with -lncurses
-*/
 typedef signed char byte;
 typedef unsigned char bitbox;
+
 bool multiplayer;
 byte py,px;//cursor
 
@@ -68,11 +69,11 @@ void mouseinput(bool ingame){
 		ungetch('r');
 }
 void rectangle(byte sy,byte sx){
-	for(byte y=0;y<=10+1;y++){
+	for(byte y=0;y<=10+1;++y){
 		mvaddch(sy+y,sx,ACS_VLINE);
 		mvaddch(sy+y,sx+10*2,ACS_VLINE);
 	}
-	for(byte x=0;x<=10*2;x++){
+	for(byte x=0;x<=10*2;++x){
 		mvaddch(sy,sx+x,ACS_HLINE);
 		mvaddch(sy+10+1,sx+x,ACS_HLINE);
 	}
@@ -118,8 +119,8 @@ void MID(byte *y , byte *x, byte direction){
 }
 void genocide(bool side , byte type){
 	byte y,x;
-	for(y=0;y<10;y++){
-		for(x=0;x<10;x++){
+	for(y=0;y<10;++y){
+		for(x=0;x<10;++x){
 			if(game[side][y][x] == type)
 				game[side][y][x] = SEA;
 		}
@@ -128,8 +129,8 @@ void genocide(bool side , byte type){
 void header(bool side){
 	score[0]=score[1]=0;
 	byte y,x;
-	for(y=0;y<10;y++){
-		for(x=0;x<10;x++){
+	for(y=0;y<10;++y){
+		for(x=0;x<10;++x){
 			if(game[!side][y][x] == HIT)
 					score[side]++;
 			if(game[side][y][x] == HIT)
@@ -153,8 +154,8 @@ void draw(bool side,byte sy,byte sx,bool regular){//the game's board
 	rectangle(sy,sx);
 	chtype ch ;
 	byte y,x;
-	for(y=0;y<10;y++){
-		for(x=0;x<10;x++){
+	for(y=0;y<10;++y){
+		for(x=0;x<10;++x){
 			ch =A_NORMAL;
 			if(y==py && x==px)
 				ch |= A_STANDOUT;
@@ -177,8 +178,8 @@ void draw_trackboard(bool side,byte sy,byte sx){
 	rectangle(sy,sx);
 	chtype ch ;
 	byte y,x;
-	for(y=0;y<10;y++){
-		for(x=0;x<10;x++){
+	for(y=0;y<10;++y){
+		for(x=0;x<10;++x){
 			ch =A_NORMAL;
 			if(y==py && x==px-10)
 				ch |= A_STANDOUT;
@@ -200,7 +201,7 @@ void autoset(bool side){
 	byte y=0,x=0,direction=0, invain=0;
 	byte realy,realx;
 	byte l;
-	for(byte type=2;type<7;type++){
+	for(byte type=2;type<7;++type){
 		SetLocation:
 		realy=rand()%10;
 		realx=rand()%10;
@@ -209,10 +210,10 @@ void autoset(bool side){
 		y=realy;
 		x=realx;
 		direction=rand()%4;
-		for(l=0;(type != 6 && l<type) || (type==6 && l<3) ; l++){//there are two kinds of ship sized 3 tiles
+		for(l=0;(type != 6 && l<type) || (type==6 && l<3) ; ++l){//there are two kinds of ship sized 3 tiles
 			if( y<0 || x<0 || y>=10 || x>=10 || game[side][y][x] != SEA ){
 				genocide(side,type);
-				invain++;
+				++invain;
 				direction= (direction+1)%4;
 				if(invain<4)
 					goto SetDirection;
@@ -242,7 +243,7 @@ void set_the_board(bool side){
 	byte realy,realx;
 	byte l;
 	py=px=0;
-	for(byte type=2;type<7;type++){
+	for(byte type=2;type<7;++type){
 		mvaddstr(15,0,"Put your ");
 		print_type(type);
 		addstr(" in its position:    ");
@@ -254,13 +255,13 @@ void set_the_board(bool side){
 			if( input == KEY_MOUSE )
 				mouseinput(0);
 			if( (input=='k' || input==KEY_UP) && py>0)
-				py--;
+				--py;
 	  	      	if( (input=='j' || input==KEY_DOWN) && py<9)
-				py++;
+				++py;
 	     		if( (input=='h' || input==KEY_LEFT) && px>0)
-				px--;
+				--px;
 			if( (input=='l' || input==KEY_RIGHT) && px<9)
-				px++;
+				++px;
 			if( input=='\n' )
 				break;
 			if( input=='q' )
@@ -274,10 +275,10 @@ void set_the_board(bool side){
 		SetDirection:
 		y=realy;
 		x=realx;
-		for(l=0;(type != 6 && l<type) || (type==6 && l<3) ; l++){//there are two kinds of ship sized 3 tiles
+		for(l=0;(type != 6 && l<type) || (type==6 && l<3) ; ++l){//there are two kinds of ship sized 3 tiles
 			if( y<0 || x<0 || y>=10 || x>=10 || game[side][y][x] != SEA ){
 				genocide(side,type);
-				invain++;
+				++invain;
 				direction= (direction+1)%4;
 				if(invain<4)
 					goto SetDirection;
@@ -352,9 +353,9 @@ byte shoot(bool turn, byte y , byte x){
 }
 void sink_announce(bool side){
 	byte type,y,x;
-	for(type=2;type<7;type++){
-		for(y=0;y<10;y++){
-			for(x=0;x<10;x++){
+	for(type=2;type<7;++type){
+		for(y=0;y<10;++y){
+			for(x=0;x<10;++x){
 				if( game[!side][y][x] == type )
 					goto Next;
 			}
@@ -397,8 +398,8 @@ void cheat(bool side){
 		
 	if i implemented the logical thinking thing, it would become a difficult, unenjoyable game.*/
 	byte y,x;
-	for(y=0;y<10;y++){
-		for(x=0;x<10;x++){
+	for(y=0;y<10;++y){
+		for(x=0;x<10;++x){
 			if(game[!side][y][x]>0){
 				shoot(side,y,x);
 				firstinrowy=y;
@@ -438,7 +439,7 @@ void decide(bool side){// sink_announce is responsible for unsetting the global 
 			r= shoot(side,y,x);
 			if( r != 1 ){ 
 				goindirection = (goindirection+1)%4;//the ship is oriented in another way then
-				shotinvain++;
+				++shotinvain;
 
 				if(shotinvain==4){ // this only occurs in case of a ship being shot before but not sunk ( e.g. in exprimenting for the direction)
 					shotinvain=0;
@@ -533,7 +534,7 @@ int main(void){
 		init_pair(2,COLOR_YELLOW,-1);
 		init_pair(3,COLOR_CYAN,-1);
 		init_pair(4,COLOR_RED,-1);
-		for(byte b=0;b<4;b++)
+		for(byte b=0;b<4;++b)
 			colors[b]=COLOR_PAIR(b+1);
 	}
 	int input;
@@ -599,13 +600,13 @@ int main(void){
 			if(input == KEY_MOUSE)
 				mouseinput(1);
 			if( (input=='k' || input==KEY_UP) && py>0)
-				py--;
+				--py;
 			if( (input=='j' || input==KEY_DOWN) && py<9)
-				py++;
+				++py;
 			if( (input=='h' || input==KEY_LEFT) && px>10)
-				px--;
+				--px;
 			if( (input=='l' || input==KEY_RIGHT) && px<19)
-				px++;
+				++px;
 			if( input=='q')
 				sigint_handler(EXIT_SUCCESS);
 			if( input=='\n'){

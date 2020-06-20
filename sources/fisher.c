@@ -1,3 +1,8 @@
+/*
+    O__/|
+ ___|_/ |    __
+|     / |   |__
+	    |  ISHER*/
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -14,7 +19,7 @@
 #define HLEN LEN/2
 #define WID 80
 #define HWID WID/2
-
+typedef signed char byte;
 #ifdef Plan9
 int usleep(long usec) {
     int second = usec/1000000;
@@ -26,8 +31,9 @@ int usleep(long usec) {
     return 0;
 }
 #endif
+// 12 lines of water
+// 80 columns
 
-typedef signed char byte;
 chtype colors[4]={A_NORMAL,A_STANDOUT};
 byte fish[10]={0};//positions
 byte caught=-1;
@@ -41,41 +47,34 @@ byte clb,clbtime=0;
 FILE* scorefile;
 
 int input;
-/*
-    O__/|
- ___|_/ |    __
-|     / |   |__
-	    |  ISHER*/
-// 12 lines of water
-// 80 columns
 byte digit_count(int num){
 	byte ret=0;
 	do{
-		ret++;
+		++ret;
 		num/=10;
 	}while(num);
 	return ret;
 }
 void filled_rect(byte sy,byte sx,byte ey,byte ex){
 	byte y,x;
-	for(y=sy;y<ey;y++)
-		for(x=sx;x<ex;x++)
+	for(y=sy;y<ey;++y)
+		for(x=sx;x<ex;++x)
 			mvaddch(y,x,' ');
 }
 void green_border(void){
 	byte y,x;
-	for(y=0;y<LEN;y++){
+	for(y=0;y<LEN;++y){
 		mvaddch(y,WID-1,' '|colors[2]);
 		mvaddch(y,0,' '|colors[2]);
 	}
-	for(x=0;x<WID;x++){
+	for(x=0;x<WID;++x){
 		mvaddch(LEN-1,x,' '|colors[2]);
 		mvaddch(0,x,' '|colors[2]);
 	}
 		
 }
 void star_line(byte y){
-	for(byte x=1;x<WID-1;x++)
+	for(byte x=1;x<WID-1;++x)
 		mvaddch(y,x,'.');
 }
 void draw(void){
@@ -162,18 +161,18 @@ void draw(void){
 			}
 		}
 	}
-	for(y=-3;y<0;y++)
+	for(y=-3;y<0;++y)
 		mvaddch(HLEN+y,HWID,ACS_VLINE);
 	attroff(colors[0]);
 	attron(colors[1]);
 	filled_rect(HLEN,0,LEN,WID);
-	for(y=0;y<hook;y++)
+	for(y=0;y<hook;++y)
 		mvaddch(HLEN+y,HWID,ACS_VLINE);
 	if(caught==-1)
 		mvaddch(HLEN+hook,HWID,')');
 	else
 		mvaddch(HLEN+hook,HWID,sym[caught]);
-	for(y=0;y<10;y++)
+	for(y=0;y<10;++y)
 		mvaddch(HLEN+1+y,fish[y],sym[y]);
 	attroff(colors[1]);
 	
@@ -204,7 +203,7 @@ byte scorewrite(void){// only saves the top 10, returns the place in the chart
 	while( fscanf(scorefile,"%59s : %ld\n",fuckingname,&fuckingscore) == 2 && location<SAVE_TO_NUM ){
 		strcpy(namebuff[location],fuckingname);
 		scorebuff[location] = fuckingscore;
-		location++;
+		++location;
 
 		memset(fuckingname,0,60);
 		fuckingscore=0;
@@ -221,7 +220,7 @@ byte scorewrite(void){// only saves the top 10, returns the place in the chart
 	byte itreached=location;
 	byte ret = -1;
 	bool wroteit=0;
-	for(location=0;location<=itreached && location<SAVE_TO_NUM-wroteit;location++){
+	for(location=0;location<=itreached && location<SAVE_TO_NUM-wroteit;++location){
 		if(!wroteit && (location>=itreached || score>=scorebuff[location]) ){
 			fprintf(scorefile,"%s : %ld\n",getenv("USER"),score);
 			ret=location;
@@ -287,7 +286,7 @@ void showscores(byte playerrank){
 			printw(">>>");
 		printw("%s",pname);
 		mvprintw(2+2*rank,WID-1-digit_count(pscore),"%d",pscore);
-		rank++;
+		++rank;
 	}
 	attroff(colors[3]);
 	refresh();
@@ -317,14 +316,14 @@ void sigint_handler(int x){
 	puts("Quit.");
 	exit(x);
 }
-void main(void){
+int main(void){
 	signal(SIGINT,sigint_handler);
 	initscr();
 	noecho();
 	cbreak();
 	keypad(stdscr,1);
 	srand(time(NULL)%UINT_MAX);
-	for(byte n=0;n<10;n++)
+	for(byte n=0;n<10;++n)
 		fish[n]=rand()%80;
 	if(has_colors()){
 		start_color();
@@ -332,7 +331,7 @@ void main(void){
 		init_pair(2,COLOR_BLACK,COLOR_BLUE);
 		init_pair(3,COLOR_WHITE,COLOR_GREEN);
 		init_pair(4,COLOR_BLACK,COLOR_WHITE);
-		for(byte b=0;b<4;b++)
+		for(byte b=0;b<4;++b)
 			colors[b]=COLOR_PAIR(b+1);
 	}
 	byte n;
@@ -347,7 +346,7 @@ void main(void){
 		draw();
 		refresh();
 		input=getch();
-		for(n=0;n<10;n++){
+		for(n=0;n<10;++n){
 			if(stop[n]){
 				if(rand()%(n+15)==0)//this is to make the fish move
 					stop[n]=0;
@@ -365,7 +364,7 @@ void main(void){
 				if(hook>n+1){
 					caught= -1;
 					hook=0;
-					hooknum--;
+					--hooknum;
 				}
 				if(hook==n+1 && caught==-1){
 					caught=n;
@@ -378,9 +377,9 @@ void main(void){
 			if(rand()%(14-n)==0)//this is to make it stop
 				stop[n]=1;
 		}
-		if(input==KEY_UP)
+		if(input==KEY_UP){
 			if(hook>0)
-				hook--;
+				--hook;
 			if(hook==0 && caught!=-1){
 				count[caught]++;
 				score+=(caught+1)*(caught+1);
@@ -388,10 +387,10 @@ void main(void){
 				clbtime=10;//celebrate catching the fish
 				caught=-1;
 			}
-				
+		}
 		if(input==KEY_DOWN){
 			if(hook<11)
-				hook++;
+				++hook;
 			if(fish[hook-1]==40 && caught==-1){
 				caught=hook-1;
 				if(n%2)
@@ -426,4 +425,5 @@ void main(void){
 	if(input!='q' && input!='n' && input!='N')
 		goto Start;
 	endwin();
+	return 0;
 }

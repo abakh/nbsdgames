@@ -31,6 +31,8 @@ These include:
 
 They natively run on Linux, BSD, MacOS and are known to work on Windows as well (using PDCurses, thanks to Laura Michaels for providing advice).
 
+They have been ported to Plan9 by Jens Staal!
+
 The difficulty and/or dimensions are adjustable through simple command line options, you can play a minesweeper game that take hours to complete, or exprience hexadecimal sudoku and 8x8 fifteen-like puzzles!
 
 I have encounterd Fisher, Muncher and Miketron on MikeOS and RedSquare on KolibriOS. 
@@ -64,15 +66,21 @@ the deb package: https://github.com/untakenstupidnick/nbsdgames/releases/downloa
 It's available on AUR thanks to Elias Riedel Gårding: https://aur.archlinux.org/packages/nbsdgames-git/
 (The commands start with  nbsd_ to avoid conflict)
 
-It's been made available for openSUSE thanks to Jan Brezina: https://build.opensuse.org/package/show/home:Zinjanthropus/nbsdgames
+It's been made available for openSUSE thanks to Zinjanthropus: https://build.opensuse.org/package/show/home:Zinjanthropus/nbsdgames
 ## How do these look like
-![Screenshot from 4 games in tmux](https://raw.githubusercontent.com/untakenstupidnick/new-bsd-games/master/screenshot.png)
+Linux+xterm+tmux
+![Screenshot from 4 games in tmux](https://raw.githubusercontent.com/untakenstupidnick/nbsdgames/master/screenshot.png)
 
+Plan9
+![Screenshot from the games in Plan9](https://raw.githubusercontent.com/untakenstupidnick/nbsdgames/master/screenshot_plan9.png)
 
 ## How to contribute
-* Share these with your friends
+* Share these with your friends and others
+* Your stars make the repo more findable in github
 * Tell me your feature requests, bug reports, etc.
 * Tell me the games you want to be added (but in the same genre, i can't port Angry Birds to curses! :)
-* Make a package for your distro (or put it on repos if it's not there)
+* Make a package for your distro (or put it on repos if the package is not there)
 * Does anyone understand debian's .orig.tar.gz and the process to make packages to the repos? Any help would be appreciated.
-Also thank to all the people who helped in the previous versions, i didn't expect such an amount of assistance <3
+
+
+Also thank to all the people who helped in the previous versions, all what i requested was done! i didn't expect such an amount of assistance on this project :heart:

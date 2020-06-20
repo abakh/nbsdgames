@@ -1,3 +1,14 @@
+/* 
+ _
+|_)
+| IPES
+
+Authored by abakh <abakh@tuta.io>
+No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
+
+compile with -lncurses
+*/
+
 #include <curses.h>
 #include <string.h>
 #include <stdlib.h>
@@ -16,30 +27,18 @@
 #define SAVE_TO_NUM 10
 #define SY 0
 #define SX 7
-/* 
- _
-|_)
-| IPES
-
-Authored by Hossein Bakhtiarifar <abakh@tuta.io>
-No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
-
-compile with -lncurses
-*/
+typedef signed char byte;
+typedef unsigned char bitbox;
 
 /* The Plan9 compiler can not handle VLAs */
 #ifdef Plan9
 #define wid 20
 #define len 14
+#else
+int len,wid;
 #endif
 
-typedef signed char byte;
-typedef unsigned char bitbox;
-#ifndef Plan9
-int len,wid,py,px,fy,fx;//p: pointer f: fluid
-#else
 int py,px,fy,fx;//p: pointer f: fluid
-#endif
 bitbox tocome[5]={0};//the row of pipes in the left side
 chtype green=A_BOLD;//will use bold font instead of green if colors are not available
 long score;
@@ -78,7 +77,7 @@ byte scorewrite(void){// only saves the top 10, returns the place in the chart
 	while( fscanf(scorefile,"%59s : %ld\n",fuckingname,&fuckingscore) == 2 && location<SAVE_TO_NUM ){
 		strcpy(namebuff[location],fuckingname);
 		scorebuff[location] = fuckingscore;
-		location++;
+		++location;
 
 		memset(fuckingname,0,60);
 		fuckingscore=0;
@@ -96,7 +95,7 @@ byte scorewrite(void){// only saves the top 10, returns the place in the chart
 	byte ret = -1;
 	bool wroteit=0;
 
-	for(location=0;location<=itreached && location<SAVE_TO_NUM-wroteit;location++){
+	for(location=0;location<=itreached && location<SAVE_TO_NUM-wroteit;++location){
 		if(!wroteit && (location>=itreached || score>=scorebuff[location]) ){
 			fprintf(scorefile,"%s : %ld\n",getenv("USER"),score);
 			ret=location;
@@ -167,7 +166,7 @@ void showscores(byte playerrank){
 		printw("%d",rank+1);
 		attroff(green);
 		printw(") %s : %ld",pname,pscore);
-		rank++;
+		++rank;
 	}
 	refresh();
 }
@@ -175,16 +174,16 @@ void showscores(byte playerrank){
 void MID(bitbox direction){
 	switch(direction){
 		case UP:
-			fy--;
+			--fy;
 			break;
 		case DOWN:
-			fy++;
+			++fy;
 			break;
 		case LEFT:
-			fx--;
+			--fx;
 			break;
 		case RIGHT:
-			fx++;
+			++fx;
 			break;
 	}
 }
@@ -202,11 +201,11 @@ bitbox opposite(bitbox direction){
 	return 0;
 }
 void rectangle(void){
-	for(int y=0;y<=len;y++){
+	for(int y=0;y<=len;++y){
 		mvaddch(SY+y,SX,ACS_VLINE);
 		mvaddch(SY+y,SX+wid+1,ACS_VLINE);
 	}
-	for(int x=0;x<=wid;x++){
+	for(int x=0;x<=wid;++x){
 		mvaddch(SY,SX+x,ACS_HLINE);
 		mvaddch(SY+len+1,SX+x,ACS_HLINE);
 	}
@@ -278,8 +277,8 @@ void addpipe(int y,int x,bitbox pipe , bool highlight){
 //display
 void draw(bitbox board[len][wid]){
 	int y,x;
-	for(y=0;y<len;y++){
-		for(x=0;x<wid;x++){
+	for(y=0;y<len;++y){
+		for(x=0;x<wid;++x){
 				addpipe(SY+1+y,SX+x+1,board[y][x], (y==py&&x==px) );//its highlighted when y==py and x==px
 		}
 	}
@@ -351,6 +350,7 @@ void gameplay(void){
 }
 int main(int argc, char** argv){
 	signal(SIGINT,sigint_handler);
+#ifndef Plan9
 	if(argc>3 || (argc==2 && !strcmp("help",argv[1])) ){
 		printf("Usage: %s [len wid]\n",argv[0]);
 		return EXIT_FAILURE;
@@ -360,11 +360,7 @@ int main(int argc, char** argv){
 		return EXIT_FAILURE;
 	}
 	if(argc==3){
-#ifndef Plan9
 		bool lool = sscanf(argv[1],"%d",&len) && sscanf(argv[2],"%d",&wid);
-#else
-		bool lool = sscanf(argv[1],"%d",len) && sscanf(argv[2],"%d",wid);        
-#endif
 		if(!lool){
 			puts("Invalid input.");
 			return EXIT_FAILURE;
@@ -376,11 +372,10 @@ int main(int argc, char** argv){
 	
 	}
 	else{
-#ifndef Plan9
 		wid=20;
 		len=14;	
-#endif
 	}
+#endif
 	initscr();
 	mousemask(ALL_MOUSE_EVENTS,NULL);
 	time_t tstart , now, lasttime, giventime=len*wid/4;
@@ -389,7 +384,7 @@ int main(int argc, char** argv){
 	int input;
 	byte foo;
 	bool flow,fast;
-	Start: //TODO in all the games, some things have to be moved behind the start . definize sy and sx
+	Start:
 	flow=0;
 	fast=0;
 	score=0;
@@ -400,7 +395,7 @@ int main(int argc, char** argv){
 	board[fy][fx]= 1 << (rand()%4);
 	direction= board[fy][fx];
 	board[fy][fx]|=FILLED;
-	for(foo=0;foo<5;foo++)
+	for(foo=0;foo<5;++foo)
 		tocome[foo]=pipegen();
 	tstart = time(NULL);
 	lasttime=0;
@@ -437,7 +432,7 @@ int main(int argc, char** argv){
 			mvprintw(4,0,"Score:");
 			mvprintw(5,0,"%ld",score);
 		}
-		for(foo=0;foo<5;foo++)
+		for(foo=0;foo<5;++foo)
 			addpipe(11-foo,4,tocome[foo],0); 
 		draw(board);
 		refresh();
@@ -451,9 +446,9 @@ int main(int argc, char** argv){
 			if(fy<len && fx<wid && fy>=0&& fx>=0 && ( board[fy][fx]&opposite(direction) ) ){
 				if(board[fy][fx] != CROSSOVER && board[fy][fx] != (CROSSOVER|FILLED) )
 					direction = board[fy][fx] & ~opposite(direction);
-				score++;
+				++score;
 				if(fast)
-					score++;
+					++score;
 			}
 			else 
 				goto End;
@@ -474,18 +469,18 @@ int main(int argc, char** argv){
 		if( input == KEY_MOUSE )
 			mouseinput();
 		if( (input=='k' || input==KEY_UP) && py>0 )
-			py--;
+			--py;
 		if( (input=='j' || input==KEY_DOWN) && py<len-1 )
-			py++;
+			++py;
 		if( (input=='h' || input==KEY_LEFT) && px>0 )
-			px--;
+			--px;
 		if( (input=='l' || input==KEY_RIGHT) && px<wid-1 )
-			px++;
+			++px;
 		if( input == '\n' && !(board[py][px] & FILLED) ){
 			if(board[py][px])
 				score-=3;
 			board[py][px]=tocome[0];
-			for(foo=0;foo<4;foo++)
+			for(foo=0;foo<4;++foo)
 				tocome[foo]=tocome[foo+1];
 			tocome[4]= pipegen();
 		}

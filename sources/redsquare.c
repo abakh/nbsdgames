@@ -1,3 +1,13 @@
+/*
+ _   _
+|_) (_
+| \ed_)quare
+
+authored by abakh <abakh@tuta.io>
+no rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
+
+compile with -lncurses
+*/
 #include <curses.h>
 #include <string.h>
 #include <stdlib.h>
@@ -11,17 +21,8 @@
 #define DEAD 0
 #define ALIVE 1
 #define RED 2
-/*
- _   _
-|_) (_
-| \ED_)QUARE
-
-Authored by Hossein Bakhtiarifar <abakh@tuta.io>
-No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
-
-compile with -lncurses
-*/
 typedef signed char byte;
+
 int level;
 byte py,px;
 byte cy,cx;//cross
@@ -30,8 +31,8 @@ int anum,rnum;//reds and otherwise alive cell counts
 chtype colors[6]={0};
 void cp(byte a[RLEN][RWID],byte b[RLEN][RWID]){
 	byte y,x;
-	for(y=0;y<RLEN;y++)
-		for(x=0;x<RWID;x++)
+	for(y=0;y<RLEN;++y)
+		for(x=0;x<RWID;++x)
 			b[y][x]=a[y][x];
 }
 void logo(void){
@@ -41,11 +42,11 @@ void logo(void){
 	addstr("| \\ED_)QUARE");
 }
 void rectangle(int sy,int sx){
-	for(int y=0;y<=LEN;y++){
+	for(int y=0;y<=LEN;++y){
 		mvaddch(sy+y,sx,ACS_VLINE);
 		mvaddch(sy+y,sx+WID+1,ACS_VLINE);
 	}
-	for(int x=0;x<=WID;x++){
+	for(int x=0;x<=WID;++x){
 		mvaddch(sy,sx+x,ACS_HLINE);
 		mvaddch(sy+LEN+1,sx+x,ACS_HLINE);
 	}
@@ -57,12 +58,12 @@ void rectangle(int sy,int sx){
 void count(byte board[LEN][WID]){
 	byte y,x;
 	anum=rnum=0;
-	for(y=0;y<LEN;y++){
-		for(x=0;x<WID;x++){
+	for(y=0;y<LEN;++y){
+		for(x=0;x<WID;++x){
 			if(board[y][x]==ALIVE)
-				anum++;
+				++anum;
 			else if(board[y][x]==RED)
-				rnum++;
+				++rnum;
 		}
 	}
 }
@@ -71,8 +72,8 @@ void draw(byte board[RLEN][RWID]){
 	rectangle(3,0);
 	chtype prnt;
 	byte y,x;
-	for(y=0;y<LEN;y++){
-		for(x=0;x<WID;x++){
+	for(y=0;y<LEN;++y){
+		for(x=0;x<WID;++x){
 			if(y==cy && x==cx){
 				prnt='X';
 				if(board[y][x]==ALIVE)
@@ -98,8 +99,8 @@ void draw(byte board[RLEN][RWID]){
 }
 void rand_level(byte board[RLEN][RWID]){
 	byte y,x;
-	for(y=0;y<LEN/2;y++){
-		for(x=0;x<WID;x++){
+	for(y=0;y<LEN/2;++y){
+		for(x=0;x<WID;++x){
 			if(rand()%2){
 				if(rand()%3)
 					board[y][x]=ALIVE;
@@ -116,11 +117,11 @@ void live(byte board[RLEN][RWID]){
 	byte alives,reds;
 	byte preboard[RLEN][RWID];
 	cp(board,preboard);
-	for(y=0;y<LEN;y++){
-		for(x=0;x<WID;x++){
+	for(y=0;y<LEN;++y){
+		for(x=0;x<WID;++x){
 			alives=reds=0;
-			for(dy=-1;dy<2;dy++){
-				for(dx=-1;dx<2;dx++){
+			for(dy=-1;dy<2;++dy){
+				for(dx=-1;dx<2;++dx){
 					if(!dy && !dx)
 						continue;
 					ry=y+dy;
@@ -135,9 +136,9 @@ void live(byte board[RLEN][RWID]){
 						rx=0;
 
 					if(preboard[ry][rx]==ALIVE)
-						alives++;
+						++alives;
 					else if(preboard[ry][rx]==RED)
-						reds++;
+						++reds;
 				}
 			}
 			if(board[y][x]){
@@ -163,7 +164,7 @@ void live(byte board[RLEN][RWID]){
 	}
 }
 void add_line(byte board[LEN][WID],byte line,const char* str){
-	for(byte x=0;str[x]!='\0';x++){
+	for(byte x=0;str[x]!='\0';++x){
 		if(str[x]=='#')
 			board[line][x]=ALIVE;
 		/*else	
@@ -171,7 +172,7 @@ void add_line(byte board[LEN][WID],byte line,const char* str){
 	}
 }
 void new_level(byte board[LEN][WID]){
-	level++;
+	++level;
 	memset(board,0,RLEN*RWID);
 	switch(level){
 		case 0:
@@ -317,8 +318,8 @@ void new_level(byte board[LEN][WID]){
 }
 void rm_square(byte board[LEN][WID],byte prey,byte prex){
 	byte dy,dx,ry,rx;
-	for(dy=0;dy<2;dy++){
-		for(dx=0;dx<2;dx++){
+	for(dy=0;dy<2;++dy){
+		for(dx=0;dx<2;++dx){
 			ry=prey+dy;
 			if(ry==-1)
 				ry=LEN-1;
@@ -335,8 +336,8 @@ void rm_square(byte board[LEN][WID],byte prey,byte prex){
 }
 void mk_square(byte board[LEN][WID]){
 	byte dy,dx,ry,rx;
-	for(dy=0;dy<2;dy++){
-		for(dx=0;dx<2;dx++){
+	for(dy=0;dy<2;++dy){
+		for(dx=0;dx<2;++dx){
 			ry=py+dy;
 			if(ry==-1)
 				ry=LEN-1;
@@ -354,13 +355,13 @@ void mk_square(byte board[LEN][WID]){
 //detect if there is a square and enable the player to move
 void reemerge(byte board[LEN][WID]){
 	byte y,x,dy,dx,ry,rx;
-	for(y=0;y<LEN;y++)
-		for(x=0;x<WID;x++)
+	for(y=0;y<LEN;++y)
+		for(x=0;x<WID;++x)
 			if(board[y][x]==RED)
 				goto FoundTheFirst;
 	FoundTheFirst:
-	for(dy=0;dy<2;dy++){
-		for(dx=0;dx<2;dx++){
+	for(dy=0;dy<2;++dy){
+		for(dx=0;dx<2;++dx){
 			ry=y+dy;
 			if(ry==-1)
 				ry=LEN-1;
@@ -456,7 +457,7 @@ int main(void){
 		init_pair(4,COLOR_RED,-1);
 		init_pair(5,COLOR_RED,COLOR_YELLOW);
 		init_pair(6,COLOR_RED,COLOR_MAGENTA);
-		for(byte b= 0;b<6;b++){
+		for(byte b= 0;b<6;++b){
 			colors[b]=COLOR_PAIR(b+1);
 		}
 
@@ -480,22 +481,22 @@ int main(void){
 	while(1){
 		switch(rand()%5){//move the cross
 			case 0:
-				cx++;
+				++cx;
 				if(cx==WID)
 					cx=0;
 			break;
 			case 1:
-				cy--;
+				--cy;
 				if(cy==-1)
 					cy=LEN-1;
 			break;
 			case 2:
-				cx--;
+				--cx;
 				if(cx==-1)
 					cx=WID-1;
 			break;
 			case 3:
-				cy++;
+				++cy;
 				if(cy==LEN)
 					cy=0;
 			break;
@@ -503,7 +504,7 @@ int main(void){
 			;//stay there
 		}
 		if(board[cy][cx]==RED)
-			cinred++;
+			++cinred;
 		else
 			cinred=0;	
 		count(board);
@@ -549,22 +550,22 @@ int main(void){
 		prey=py;
 		prex=px;
 		if(input=='k' || input==KEY_UP){
-			py--;
+			--py;
 			if(py==-1)
 				py=LEN-1;
 		}
 		else if(input=='j' || input==KEY_DOWN){
-			py++;
+			++py;
 			if(py==LEN)
 				py=0;
 		}
 		else if(input=='h' || input==KEY_LEFT){
-			px--;
+			--px;
 			if(px==-1)
 				px=WID-1;
 		}
 		else if(input=='l' || input==KEY_RIGHT){
-			px++;
+			++px;
 			if(px==WID)
 				px=0;
 		}

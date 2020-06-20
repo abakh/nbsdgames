@@ -1,40 +1,38 @@
+/* 
+.  .      _
+|\/|     |_)
+|  |EMORY|_)LOCKS
+
+Authored by abakh <abakh@tuta.io>
+No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
+
+compile with -lncurses
+*/
 #include <curses.h>
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
 #include <time.h>
 #include <signal.h>
-/* 
-.  .      _
-|\/|     |_)
-|  |EMORY|_)LOCKS
-
-Authored by Hossein Bakhtiarifar <abakh@tuta.io>
-No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
-
-compile with -lncurses
-*/
+typedef signed char byte;
+typedef unsigned char ubyte;
 
 /* The Plan9 compiler can not handle VLAs */
 #ifdef Plan9
 #define size 8
 #define size2 16
-#endif
-
-typedef signed char byte;
-typedef unsigned char ubyte;
-#ifndef Plan9
+#else
 byte size,size2;//size2 is there to avoid a lot of multiplications
 #endif
 byte py,px;
 byte fy,fx; //the first tile
 chtype colors[6]={0};
 void rectangle(byte sy,byte sx){
-	for(byte y=0;y<=size+1;y++){
+	for(byte y=0;y<=size+1;++y){
 		mvaddch(sy+y,sx,ACS_VLINE);
 		mvaddch(sy+y,sx+size2+1,ACS_VLINE);
 	}
-	for(byte x=0;x<=size2+1;x++){
+	for(byte x=0;x<=size2+1;++x){
 		mvaddch(sy,sx+x,ACS_HLINE);
 		mvaddch(sy+size+1,sx+x,ACS_HLINE);
 	}
@@ -65,8 +63,8 @@ void draw(byte sy,byte sx,chtype board[size][size2],bool show[size][size2]){
 	rectangle(sy,sx);
 	byte y,x;
 	chtype prnt;
-	for(y=0;y<size;y++){
-		for(x=0;x<size2;x++){
+	for(y=0;y<size;++y){
+		for(x=0;x<size2;++x){
 			if(show[y][x] || (y==fy && x==fx) )
 				prnt=board[y][x];
 			else
@@ -81,8 +79,8 @@ void draw(byte sy,byte sx,chtype board[size][size2],bool show[size][size2]){
 void fill(chtype board[size][size2]){
 	ubyte y,x,m;
 	int n;
-	for(y=0;y<size;y++){
-		for(x=0;x<size2;x++){
+	for(y=0;y<size;++y){
+		for(x=0;x<size2;++x){
 			n=(y*size2+x)/2;
 			if(size*size<193) //(1+0*64)%6 == (1+3*64)%6 so this won't work in n=193 and above
 				m=n%6;
@@ -95,8 +93,8 @@ void fill(chtype board[size][size2]){
 }
 bool issolved(bool show[size][size2]){
 	byte y,x;
-	for(y=0;y<size;y++){
-		for(x=0;x<size2;x++){
+	for(y=0;y<size;++y){
+		for(x=0;x<size2;++x){
 			if(!show[y][x])
 				return 0;
 		}
@@ -107,7 +105,7 @@ void shuffle(chtype board[size][size2]){
 	int n=size*size*3;
 	chtype a;
 	byte ay,ax,by,bx;
-	for(int m=0;m<n;m++){
+	for(int m=0;m<n;++m){
 		ay=rand()%size;
 		ax=rand()%(size2);
 		by=rand()%size;
@@ -206,7 +204,7 @@ int main(int argc, char** argv){
 			init_pair(4,COLOR_CYAN,-1);
 			init_pair(5,COLOR_MAGENTA,-1);
 			init_pair(6,COLOR_RED,-1);
-			for(byte b=0;b<6;b++){
+			for(byte b=0;b<6;++b){
 				colors[b]=COLOR_PAIR(b+1);
 			}
 		}
@@ -243,13 +241,13 @@ int main(int argc, char** argv){
 		if( input==KEY_MOUSE )
 			mouseinput();
 		if( (input=='k' || input==KEY_UP) && py>0)
-			py--;
+			--py;
 		if( (input=='j' || input==KEY_DOWN) && py<size-1)
-			py++;
+			++py;
 		if( (input=='h' || input==KEY_LEFT) && px>0)
-			px--;
+			--px;
 		if( (input=='l' || input==KEY_RIGHT) && px<size2-1)
-			px++;
+			++px;
 		if( input=='q')
 			sigint_handler(0);
 		if(input=='\n'){

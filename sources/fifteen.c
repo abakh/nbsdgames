@@ -1,38 +1,36 @@
+/* 
+--.
+|__
+|  IFTEEN
+
+Authored by abakh <abakh@tuta.io>
+No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
+
+compile with -lncurses
+*/
 #include <curses.h>
 #include <string.h>
 #include <stdlib.h>
 #include <limits.h>
 #include <time.h>
 #include <signal.h>
-/* 
-.--
-|__
-|  IFTEEN
-
-Authored by Hossein Bakhtiarifar <abakh@tuta.io>
-No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
-
-compile with -lncurses
-*/
+typedef signed char byte;
 
 /* The Plan9 compiler can not handle VLAs */
 #ifdef Plan9
 #define size 4
-#endif
-
-typedef signed char byte;
-#ifndef Plan9
+#else
 byte size;
 #endif
 byte py,px;
 byte ey,ex; //the empty tile
 chtype green=A_BOLD; //bold when there is no color
 void rectangle(byte sy,byte sx){
-	for(byte y=0;y<=size+1;y++){
+	for(byte y=0;y<=size+1;++y){
 		mvaddch(sy+y,sx,ACS_VLINE);
 		mvaddch(sy+y,sx+size*2,ACS_VLINE);
 	}
-	for(byte x=0;x<=size*2;x++){
+	for(byte x=0;x<=size*2;++x){
 		mvaddch(sy,sx+x,ACS_HLINE);
 		mvaddch(sy+size+1,sx+x,ACS_HLINE);
 	}
@@ -42,7 +40,7 @@ void rectangle(byte sy,byte sx){
 	mvaddch(sy+size+1,sx+size*2,ACS_LRCORNER);
 }
 void logo(byte sy,byte sx){
-	mvaddstr(sy,sx,  ".--");
+	mvaddstr(sy,sx,  "--.");
 	mvaddstr(sy+1,sx,"|__");
 	mvaddstr(sy+2,sx,"|  IFTEEN");
 }
@@ -67,8 +65,8 @@ void draw(byte sy,byte sx,char board[size][size],char check[size][size]){
 	rectangle(sy,sx);
 	chtype prnt;
 	byte y,x;
-	for(y=0;y<size;y++){
-		for(x=0;x<size;x++){
+	for(y=0;y<size;++y){
+		for(x=0;x<size;++x){
 			prnt=board[y][x];
 			if(check[y][x]==board[y][x] && check[y][x] != ' ')
 				prnt |= green;
@@ -80,8 +78,8 @@ void draw(byte sy,byte sx,char board[size][size],char check[size][size]){
 }
 void fill(char board[size][size]){
 	byte y,x;
-	for(y=0;y<size;y++){
-		for(x=0;x<size;x++){
+	for(y=0;y<size;++y){
+		for(x=0;x<size;++x){
 			board[y][x]= int2sgn(y*size+x+1);
 		}
 	}
@@ -110,8 +108,8 @@ void slide_multi(char board[size][size],byte y,byte x){
 }
 bool issolved(char board[size][size],char check[size][size]){
 	byte y,x;
-	for(y=0;y<size;y++){
-		for(x=0;x<size;x++){
+	for(y=0;y<size;++y){
+		for(x=0;x<size;++x){
 			if(board[y][x]!=check[y][x])
 				return 0;
 		}
@@ -119,7 +117,7 @@ bool issolved(char board[size][size],char check[size][size]){
 	return 1;
 }
 void shuffle(char board[size][size]){
-	for(int m=0;m<1000;m++){
+	for(int m=0;m<1000;++m){
 		switch(rand()%4){
 			case 0:
 				slide_one(board,ey,ex+1);
@@ -188,20 +186,18 @@ void gameplay(void){
 int main(int argc, char** argv){
 #ifndef Plan9
 	size=4;
-#endif
 	if(argc==2){
 		if(!strcmp("help",argv[1])){
 			printf("Usage: %s [size]\n",argv[0]);
 			return EXIT_SUCCESS;
 		}
-#ifndef Plan9
 		size=atoi(argv[1]);
-#endif
 		if(size<3 || size>7){
 			fprintf(stderr,"3<=size<=7\n");
 			return EXIT_FAILURE;
 		}
 	}
+#endif
 	signal(SIGINT,sigint_handler);
 	srand(time(NULL)%UINT_MAX);
 	initscr();
@@ -240,13 +236,13 @@ int main(int argc, char** argv){
 		if( input==KEY_MOUSE )
 			mouseinput();
 		if( (input=='k' || input==KEY_UP) && py>0)
-			py--;
+			--py;
 		if( (input=='j' || input==KEY_DOWN) && py<size-1)
-			py++;
+			++py;
 		if( (input=='h' || input==KEY_LEFT) && px>0)
-			px--;
+			--px;
 		if( (input=='l' || input==KEY_RIGHT) && px<size-1)
-			px++;
+			++px;
 		if( input=='q')
 			sigint_handler(0);
 		if(input=='\n'){

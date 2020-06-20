@@ -1,6 +1,16 @@
+/* 
+|\/|
+|  |UNCHER
+
+Authored by abakh <abakh@tuta.io>
+No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
+
+compile with -lncurses
+*/
 #include <curses.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <limits.h>
 #include <time.h>
 #include <signal.h>
@@ -12,15 +22,7 @@
 #define MINWID 40
 #define MAXWID 80
 enum {UP=1,RIGHT,DOWN,LEFT,FOOD,SUPERFOOD,TRAP};
-/* 
-|\/|
-|  |UNCHER
-
-Authored by Hossein Bakhtiarifar <abakh@tuta.io>
-No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
-
-compile with -lncurses
-*/
+typedef signed char byte;
 
 /* The Plan9 compiler can not handle VLAs */
 #ifdef Plan9
@@ -35,20 +37,24 @@ int usleep(long usec) {
     nanosleep(&sleepy, (struct timespec *) NULL);
     return 0;
 }
+#else
+int len,wid;
 #endif
 
-typedef signed char byte;
-#ifndef Plan9
-int len,wid,py,px;
-#else
-int py,px;
-#endif
+int py,px;//pointer
+
+byte pse_msg=20;//flashing animations might hurt some people
+bool epilepsy=0;
+char alt_animation[4]={'-','\\','|','/'};
+
 int immunity;
 byte direction;
 long score;
 chtype colors[6]={0};
+
 FILE* scorefile;
 char error[150]={0};
+
 void logo(void){
 	mvaddstr(1,0,"|\\/|");
 	mvaddstr(2,0,"|  |UNCHER");
@@ -79,7 +85,7 @@ byte scorewrite(void){// only saves the top 10, returns the place in the chart
 	while( fscanf(scorefile,"%59s : %ld\n",fuckingname,&fuckingscore) == 2 && location<SAVE_TO_NUM ){
 		strcpy(namebuff[location],fuckingname);
 		scorebuff[location] = fuckingscore;
-		location++;
+		++location;
 
 		memset(fuckingname,0,60);
 		fuckingscore=0;
@@ -97,7 +103,7 @@ byte scorewrite(void){// only saves the top 10, returns the place in the chart
 	byte ret = -1;
 	bool wroteit=0;
 
-	for(location=0;location<=itreached && location<SAVE_TO_NUM-wroteit;location++){
+	for(location=0;location<=itreached && location<SAVE_TO_NUM-wroteit;++location){
 		if(!wroteit && (location>=itreached || score>=scorebuff[location]) ){
 			fprintf(scorefile,"%s : %ld\n",getenv("USER"),score);
 			ret=location;
@@ -173,17 +179,17 @@ void showscores(byte playerrank){
 		if(rank == playerrank)
 			printw(">>>");
 		printw("%d) %s : %ld\n",rank+1,pname,pscore);
-		rank++;
+		++rank;
 	}
 	addch('\n');
 	refresh();
 }
 void rectangle(void){
-	for(int y=0;y<=len;y++){
+	for(int y=0;y<=len;++y){
 		mvaddch(3+y,0,ACS_VLINE);
 		mvaddch(4+y,1+wid,ACS_VLINE);
 	}
-	for(int x=0;x<=wid;x++){
+	for(int x=0;x<=wid;++x){
 		mvaddch(3,x,ACS_HLINE);
 		mvaddch(4+len,x,ACS_HLINE);
 	}
@@ -222,7 +228,7 @@ void place_food(byte board[len][wid]){
 			goto Again;
 		board[y][x]=TRAP;
 		
-		num--;
+		--num;
 	}
 	if(score>2000 && !(rand()%5)){
 		do{
@@ -237,25 +243,40 @@ void draw(byte board[len][wid]){
 	static byte effect=0;
 	chtype prnt;
 	rectangle();
-	for(y=0;y<len;y++){
-		for(x=0;x<wid;x++){
+	for(y=0;y<len;++y){
+		for(x=0;x<wid;++x){
 			if(y==py && x==px){
 				prnt='r'|colors[2]|A_STANDOUT;
-				if(immunity)
-					prnt='r'|colors[effect]|A_BOLD;
+				if(immunity){
+					if(epilepsy)
+						prnt='r';
+					else
+						prnt='r'|colors[effect]|A_BOLD;
+				}
 			}
 			else if(board[y][x]==TRAP)
 				prnt='^'|colors[((y*x)/15)%6];
 			else if(board[y][x]==FOOD)
 				prnt='%'|colors[(y+x)%6];
-			else if(board[y][x]==SUPERFOOD)
-				prnt='%'|colors[effect];
+			else if(board[y][x]==SUPERFOOD){
+				if(epilepsy)
+					prnt=alt_animation[effect/10];
+				else
+					prnt='%'|colors[effect];
+			}
 			else 
 				prnt= ' ';
 			mvaddch(4+y,x+1,prnt);
 		}
 	}
-	effect=(effect+1)%6;
+	if(epilepsy)
+		effect=(effect+1)%40;
+	else
+		effect=(effect+1)%6;
+	if(pse_msg && !epilepsy){
+		mvprintw(len+5,0,"Suffering PSE? Press e.");
+		--pse_msg;
+	}
 }
 void help(void){
 	nocbreak();
@@ -297,6 +318,7 @@ void sigint_handler(int x){
 int main(int argc, char** argv){
 	bool autoset=0;
 	signal(SIGINT,sigint_handler);
+#ifndef Plan9
 	if(argc>3 || (argc==2 && !strcmp("help",argv[1])) ){
 		printf("Usage: %s [len wid]\n",argv[0]);
 		return EXIT_FAILURE;
@@ -306,11 +328,7 @@ int main(int argc, char** argv){
 		return EXIT_FAILURE;
 	}
 	if(argc==3){
-#ifndef Plan9
 		bool lool = sscanf(argv[1],"%d",&len) && sscanf(argv[2],"%d",&wid);
-#else
-		bool lool = sscanf(argv[1],"%d",len) && sscanf(argv[2],"%d",wid);        
-#endif
 		if(!lool){
 			puts("Invalid input.");
 			return EXIT_FAILURE;
@@ -324,9 +342,10 @@ int main(int argc, char** argv){
 	else{
 		autoset=1;
 	}
+#endif
 	initscr();
-	if(autoset){
 #ifndef Plan9
+	if(autoset){
 		len=LINES-7;
 		if(len<MINLEN)
 			len=MINLEN;
@@ -338,8 +357,8 @@ int main(int argc, char** argv){
 			wid=MINWID;
 		else if(wid>MAXWID)
 			wid=MAXWID;
-#endif
 	}
+#endif
 	srand(time(NULL)%UINT_MAX);		
 	byte board[len][wid];
 	bool halfspeed=0;
@@ -357,7 +376,7 @@ int main(int argc, char** argv){
 		init_pair(4,COLOR_CYAN,-1);
 		init_pair(5,COLOR_MAGENTA,-1);
 		init_pair(6,COLOR_RED,-1);
-		for(byte b= 0;b<6;b++){
+		for(byte b= 0;b<6;++b){
 			colors[b]=COLOR_PAIR(b+1);
 		}
 
@@ -365,7 +384,7 @@ int main(int argc, char** argv){
 	Start:
 	curs_set(0);
 	halfdelay(1);
-	score=direction=0;
+	score=direction=immunity=0;
 	py=len/2;
 	px=wid/2;
 	memset(board,0,len*wid);
@@ -382,10 +401,12 @@ int main(int argc, char** argv){
 		if( board[py][px]==FOOD ){
 			score+= constant;
 			board[py][px]=0;
-			for(byte b=0;b<6;b++){
-				mvaddch(4+py,px+1,'r'|colors[b]|A_STANDOUT);
-				refresh();
-				usleep(100000/5);
+			if(!epilepsy){
+				for(byte b=0;b<6;++b){
+					mvaddch(4+py,px+1,'r'|colors[b]|A_STANDOUT);
+					refresh();
+					usleep(100000/5);
+				}
 			}
 			place_food(board);
 		}
@@ -419,7 +440,8 @@ int main(int argc, char** argv){
 			direction=LEFT;
 		if( (input=='l' || input==KEY_RIGHT) && px<wid-1 )
 			direction=RIGHT;
-
+		if( input=='e')
+			epilepsy=1;
 		if( input=='q')
 			sigint_handler(0);
 		if( input=='p'){
@@ -440,25 +462,25 @@ int main(int argc, char** argv){
 		if(direction==UP && halfspeed){
 			if(!py)
 				break;
-			py--;
+			--py;
 		}
 		else if(direction==DOWN && halfspeed){
 			if(py==len-1)
 				break;
-			py++;
+			++py;
 		}
 		else if(direction==LEFT){
 			if(!px)
 				break;
-			px--;
+			--px;
 		}
 		else if(direction==RIGHT){
 			if(px==wid-1)
 				break;
-			px++;
+			++px;
 		}
 		if(immunity)
-			immunity--;
+			--immunity;
 	}
 	nocbreak();
 	cbreak();

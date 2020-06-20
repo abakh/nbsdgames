@@ -1,3 +1,16 @@
+/*
+Jewels
+
+Authored by abakh <abakh@tuta.io>
+No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
+
+compile with -lnucrses
+
+A pair of jewels appear on top of the window, And you can move and rotate them while they are falling down.
+If you make a vertical or horizontal row of 4 jewels they will explode and add up to your score.
+Like Tetris,You will lose the game when the center of the uppermost row is filled.
+
+TODO make it like puyo puyo instead of the remake of of what i poorly remembered*/
 #include <curses.h>
 #include <time.h>
 #include <limits.h>
@@ -8,21 +21,8 @@
 #define WID 19
 #define DELAY 2
 #define SAVE_TO_NUM 10
-
-/*
-Jewels
-
-Authored by Hossein Bakhtiarifar <abakh@tuta.io>
-No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
-
-compile with -lnucrses
-
-A pair of jewels appear on top of the window, And you can move and rotate them while they are falling down.
-If you make a vertical or horizontal row of 4 jewels they will explode and add up to your score.
-Like Tetris,You will lose the game when the center of the uppermost row is filled.
-*/
-
 typedef signed char byte;
+
 chtype board[LEN][WID];
 chtype colors[6]={0};
 chtype next1,next2;
@@ -57,7 +57,7 @@ byte scorewrite(long score){// only saves the top 10
 	while( fscanf(scorefile,"%59s : %ld\n",fuckingname,&fuckingscore) == 2 && location<SAVE_TO_NUM ){
 		strcpy(namebuff[location],fuckingname);
 		scorebuff[location] = fuckingscore;
-		location++;
+		++location;
 
 		memset(fuckingname,0,60);
 		fuckingscore=0;
@@ -75,7 +75,7 @@ byte scorewrite(long score){// only saves the top 10
 	byte ret = -1;
 	bool wroteit=0;
 
-	for(location=0;location<=itreached && location<SAVE_TO_NUM-wroteit;location++){
+	for(location=0;location<=itreached && location<SAVE_TO_NUM-wroteit;++location){
 		if(!wroteit && (location>=itreached || score>=scorebuff[location]) ){
 			fprintf(scorefile,"%s : %ld\n",getenv("USER"),score);
 			ret=location;
@@ -118,7 +118,7 @@ void showscores(byte playerrank){
 		if(rank == playerrank)
 			printf(">>>");
 		printf("%d) %s : %ld\n",rank+1,pname,pscore);
-		rank++;
+		++rank;
 	}
 	putchar('\n');
 }
@@ -126,9 +126,9 @@ void showscores(byte playerrank){
 bool fall(void){
 	bool jfall,kfall,ret;
 	jfall=kfall=ret=0;
-	for(int y=LEN-1;y>0;y--){
+	for(int y=LEN-1;y>0;--y){
 		chtype c,d;
-		for(int x=WID-1;x>=0;x--){
+		for(int x=WID-1;x>=0;--x){
 			c=board[y][x];
 			d=board[y-1][x];
 			if(!c && d){
@@ -143,7 +143,7 @@ bool fall(void){
 		}
 	}
 	if(jfall&&kfall)
-		jy++;
+		++jy;
 	else
 		jy = LEN+1;
 	return ret;
@@ -214,15 +214,15 @@ bool explode(byte combo){
 	chtype c,uc;
 	byte n;
 	byte y,x;
-	for(y=0;y<LEN;y++){
+	for(y=0;y<LEN;++y){
 		c=uc=n=0;
-		for(x=0;x<WID;x++){
+		for(x=0;x<WID;++x){
 			uc = c; 
 			c  = board[y][x];
 			if(c && c == uc){
-				n++;
+				++n;
 				if(n>=3 && x==WID-1){//the chain ends because the row ends
-					x++;
+					++x;
 					goto HrExplsn;
 				}
 			}
@@ -230,7 +230,7 @@ bool explode(byte combo){
 				HrExplsn:
 				score+=n*10*(n-2)*combo;
 				ret=1;
-				for(;n>=0;n--)
+				for(;n>=0;--n)
 					board[y][x-1-n]=0;
 				n=0;
 			}
@@ -238,15 +238,15 @@ bool explode(byte combo){
 				n=0;
 		}
 	}
-	for(x=0;x<WID;x++){
+	for(x=0;x<WID;++x){
 		c=uc=n=0;
-		for(byte y=0;y<LEN;y++){
+		for(byte y=0;y<LEN;++y){
 			uc=c;
 			c = board[y][x];
 			if(c && c == uc){
-				n++;
+				++n;
 				if(n>=3 && y==LEN-1){
-					y++;
+					++y;
 					goto VrExplsn;
 				}
 			}
@@ -254,7 +254,7 @@ bool explode(byte combo){
 				VrExplsn:
 				score+=n*10*(n-2)*combo;
 				ret=1;
-				for(;n>=0;n--)
+				for(;n>=0;--n)
 					board[y-1-n][x]=0;
 				n=0;
 			}
@@ -279,8 +279,8 @@ void draw(void){
 	mvaddstr(1,0,"Next:");
 	addch(next1);
 	addch(next2);
-	for(byte y=0;y<LEN;y++){
-		for(byte x=0;x<WID;x++){
+	for(byte y=0;y<LEN;++y){
+		for(byte x=0;x<WID;++x){
 			chtype c = board[y][x];
 			if(c)
 				mvaddch(y,middle+x,c);
@@ -310,7 +310,7 @@ int main(void){
 		init_pair(4,COLOR_BLUE,-1);//array this thing
 		init_pair(5,COLOR_YELLOW,-1);
 		init_pair(6,COLOR_CYAN,-1);
-		for(byte n=0;n<6;n++){
+		for(byte n=0;n<6;++n){
 			colors[n] = COLOR_PAIR(n+1);
 		}
 	}
@@ -374,7 +374,7 @@ int main(void){
 	 	}
 		combo=1;
 		while(explode(combo)){ // explode, fall, explode, fall until nothing is left	
-			combo++;
+			++combo;
 			while(fall());
 			draw();
 		}

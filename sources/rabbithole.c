@@ -1,3 +1,14 @@
+/* 
+ _
+|_)
+| \ABBITHOLE
+
+Authored by abakh <abakh@tuta.io>
+No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
+
+compile with -lncurses
+*/
+
 #include <curses.h>
 #include <string.h>
 #include <stdlib.h>
@@ -10,30 +21,17 @@
 #define LEFT 8
 #define VISITED 16
 #define CARROT 32
-/* 
- _
-|_)
-| \ABBITHOLE
-
-Authored by Hossein Bakhtiarifar <abakh@tuta.io>
-No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
-
-compile with -lncurses
-*/
+typedef signed char byte;
+typedef unsigned char bitbox;
 
 /* The Plan9 compiler can not handle VLAs */
 #ifdef Plan9
 #define len 10
 #define wid 20
-#endif
-
-typedef signed char byte;
-typedef unsigned char bitbox;
-#ifndef Plan9
-int len,wid,py,px;
 #else
-int py,px;
+int len,wid;
 #endif
+int py,px;
 
 chtype colors[6]={0};
 
@@ -46,26 +44,26 @@ point MID(int y,int x,bitbox direction){//move in direction
 	point pt = {y,x};
 	switch(direction){
 		case UP:
-			pt.y--;
+			--pt.y;
 			return pt;
 		case DOWN:
-			pt.y++;
+			++pt.y;
 			return pt;
 		case LEFT:
-			pt.x--;
+			--pt.x;
 			return pt;
 		case RIGHT:
-			pt.x++;
+			++pt.x;
 			return pt;
 	}
 	return pt;
 }
 void rectangle(int sy,int sx){
-	for(int y=0;y<=len*2;y++){
+	for(int y=0;y<=len*2;++y){
 		mvaddch(sy+y,sx,ACS_VLINE);
 		mvaddch(sy+y,sx+wid*2,ACS_VLINE);
 	}
-	for(int x=0;x<=wid*2;x++){
+	for(int x=0;x<=wid*2;++x){
 		mvaddch(sy,sx+x,ACS_HLINE);
 		mvaddch(sy+len*2,sx+x,ACS_HLINE);
 	}
@@ -80,8 +78,8 @@ void draw(int sy,int sx,bitbox board[len][wid]){
 	bitbox d;
 	chtype prnt;
 	point pt;
-	for(y=0;y<len;y++){
-		for(x=0;x<wid;x++){
+	for(y=0;y<len;++y){
+		for(x=0;x<wid;++x){
 			prnt=0;
 			if( board[y][x] & CARROT )
 				prnt='%'|A_BOLD|colors[3];
@@ -121,7 +119,7 @@ void make_maze(bitbox board[len][wid],point f){
 		}
 		direction= 1 << (dnumber= (dnumber+1)%4 );
 		pt= MID(f.y,f.x,direction);
-		ds_tried++;
+		++ds_tried;
 	}
 }
 void carrotify(bitbox board[len][wid],int count){
@@ -134,7 +132,7 @@ void carrotify(bitbox board[len][wid],int count){
 			x=rand()%wid;
 		}
 		board[y][x] |= CARROT;
-		c--;
+		--c;
 	}
 }
 void help(void){
@@ -180,6 +178,7 @@ void sigint_handler(int x){
 int main(int argc, char** argv){
 	bool autoset=0;
 	signal(SIGINT,sigint_handler);
+#ifndef Plan9
 	if(argc>3 || (argc==2 && !strcmp("help",argv[1])) ){
 		printf("Usage: %s [len wid]\n",argv[0]);
 		return EXIT_FAILURE;
@@ -189,11 +188,7 @@ int main(int argc, char** argv){
 		return EXIT_FAILURE;
 	}
 	if(argc==3){
-#ifndef Plan9
 		bool lool = sscanf(argv[1],"%d",&len) && sscanf(argv[2],"%d",&wid);
-#else
-		bool lool = sscanf(argv[1],"%d",len) && sscanf(argv[2],"%d",wid);        
-#endif
 		if(!lool){
 			puts("Invalid input.");
 			return EXIT_FAILURE;
@@ -207,6 +202,7 @@ int main(int argc, char** argv){
 	else{
 		autoset=1;
 	}
+#endif
 	initscr();
 #ifndef Plan9
 	if(autoset){
@@ -246,7 +242,7 @@ int main(int argc, char** argv){
 		init_pair(4,COLOR_RED,-1);
 		init_pair(5,COLOR_RED,COLOR_YELLOW);
 		init_pair(6,COLOR_RED,COLOR_MAGENTA);
-		for(byte b= 0;b<6;b++){
+		for(byte b= 0;b<6;++b){
 			colors[b]=COLOR_PAIR(b+1);
 		}
 
@@ -260,7 +256,7 @@ int main(int argc, char** argv){
 	while(1){
 		board[py][px] |= VISITED;
 		if( board[py][px] & CARROT ){
-			carrots_found++;
+			++carrots_found;
 			board[py][px] &= ~CARROT;
 		}
 		now=time(NULL);
@@ -300,17 +296,17 @@ int main(int argc, char** argv){
 		if( input == KEY_F(1) || input=='?' )
 			help();
 		if( (input=='k' || input==KEY_UP) && py>0 && (board[py][px]&UP) )
-			py--;
+			--py;
 		if( (input=='j' || input==KEY_DOWN) && py<len-1 && (board[py][px]&DOWN) )
-			py++;
+			++py;
 		if( (input=='h' || input==KEY_LEFT) && px>0 && (board[py][px]&LEFT) )
-			px--;
+			--px;
 		if( (input=='l' || input==KEY_RIGHT) && px<wid-1 && (board[py][px]&RIGHT) )
-			px++;
+			++px;
 		if( input=='q')
 			sigint_handler(0);
 		if( board[py][px] & CARROT ){
-			carrots_found++;
+			++carrots_found;
 			board[py][px] &= ~CARROT;
 		}
 	}

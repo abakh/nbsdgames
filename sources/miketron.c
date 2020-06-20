@@ -1,3 +1,12 @@
+/* 
+|\/|
+|  |IKETRON
+
+Authored by abakh <abakh@tuta.io>
+No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
+
+compile with -lncurses
+*/
 #include <curses.h>
 #include <stdio.h>
 #include <string.h>
@@ -14,17 +23,9 @@
 #define MINWID 40
 #define MAXWID 80
 enum {UP=1,RIGHT,DOWN,LEFT,FLIGHT,NOTRAIL,BOMB,SPAWN,STOP,SUPERFOOD,TRAIL};
-/* 
-|\/|
-|  |IKETRON
+typedef signed char byte;
 
-Authored by Hossein Bakhtiarifar <abakh@tuta.io>
-No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
-
-compile with -lncurses
-*/
-
-/* The Plan9 compiler can not handle VLAs */
+/* The Plan9 compiler can not handle VLAs and usleep is a POSIX function */
 #ifdef Plan9
 #define len 10
 #define wid 40
@@ -37,33 +38,35 @@ int usleep(long usec) {
     nanosleep(&sleepy, (struct timespec *) NULL);
     return 0;
 }
+#else
+int len,wid;
 #endif
 
-typedef signed char byte;
-#ifndef Plan9
-int len,wid,py,px;
-#else 
 int py,px;
-#endif
 int immunity,flight,notrail;
 byte direction;
 long score;
 chtype colors[6]={0};
-FILE *scorefile,*lol;
+
+byte pse_msg=100;
+//no need to a epilepsy variable like in muncher as zeroing the colors suffices
+
+FILE *scorefile;
 char error[150]={0};
+
 void move_tron(void){
 	switch(direction){
 		case UP:
-			py--;
+			--py;
 		break;
 		case DOWN:
-			py++;
+			++py;
 		break;
 		case LEFT:
-			px--;
+			--px;
 		break;
 		case RIGHT:
-			px++;
+			++px;
 		break;
 	}
 	if(py==-1)
@@ -105,7 +108,7 @@ byte scorewrite(void){// only saves the top 10, returns the place in the chart
 	while( fscanf(scorefile,"%59s : %ld\n",fuckingname,&fuckingscore) == 2 && location<SAVE_TO_NUM ){
 		strcpy(namebuff[location],fuckingname);
 		scorebuff[location] = fuckingscore;
-		location++;
+		++location;
 
 		memset(fuckingname,0,60);
 		fuckingscore=0;
@@ -123,7 +126,7 @@ byte scorewrite(void){// only saves the top 10, returns the place in the chart
 	byte ret = -1;
 	bool wroteit=0;
 
-	for(location=0;location<=itreached && location<SAVE_TO_NUM-wroteit;location++){
+	for(location=0;location<=itreached && location<SAVE_TO_NUM-wroteit;++location){
 		if(!wroteit && (location>=itreached || score>=scorebuff[location]) ){
 			fprintf(scorefile,"%s : %ld\n",getenv("USER"),score);
 			ret=location;
@@ -153,7 +156,7 @@ void showscores(byte playerrank){
 		move(3,0);
 		byte b=0;
 		if ( fscanf(scorefile,"%s : %ld\n",formername,&formerscore)==2){
-			halfdelay(2);
+			halfdelay(1);
 			printw("*****CONGRATULATIONS!****\n");
 			printw("	      You bet the\n");
 			printw("		 previous\n");
@@ -199,14 +202,14 @@ void showscores(byte playerrank){
 		if(rank == playerrank)
 			printw(">>>");
 		printw("%d) %s : %ld\n",rank+1,pname,pscore);
-		rank++;
+		++rank;
 	}
 	addch('\n');
 	refresh();
 }
 void put_stuff(byte board[len][wid],byte num){
 	byte y,x;
-	for(byte n=0;n<num;n++){
+	for(byte n=0;n<num;++n){
 		do{
 			y=rand()%len;
 			x=rand()%wid;
@@ -225,11 +228,11 @@ void put_stuff(byte board[len][wid],byte num){
 	}
 }
 void rectangle(void){
-	for(int y=0;y<=len;y++){
+	for(int y=0;y<=len;++y){
 		mvaddch(3+y,0,ACS_VLINE);
 		mvaddch(4+y,1+wid,ACS_VLINE);
 	}
-	for(int x=0;x<=wid;x++){
+	for(int x=0;x<=wid;++x){
 		mvaddch(3,x,ACS_HLINE);
 		mvaddch(4+len,x,ACS_HLINE);
 	}
@@ -243,8 +246,8 @@ void draw(byte board[len][wid]){
 	static byte effect=0;
 	chtype prnt;
 	rectangle();
-	for(y=0;y<len;y++){
-		for(x=0;x<wid;x++){
+	for(y=0;y<len;++y){
+		for(x=0;x<wid;++x){
 			if(board[y][x]<0){
 				prnt=' '|A_STANDOUT|colors[abs(board[y][x])%6];
 				board[y][x]++;
@@ -277,6 +280,10 @@ void draw(byte board[len][wid]){
 			mvaddch(4+y,x+1,prnt);
 		}
 	}
+	if(pse_msg>0){
+		mvprintw(len+5,0,"Suffering PSE? Press e.");
+		--pse_msg;
+	}
 	effect=(effect+1)%6;
 }
 void explode(byte board[len][wid],int by,int bx){
@@ -297,21 +304,17 @@ void explode(byte board[len][wid],int by,int bx){
 	int x=sx;
 	while(y!=ey){
 		while(x!=ex){
-			x++;
+			++x;
 			if(x==wid)
 				x=0;
 			if(board[y][x]==BOMB)
 				explode(board,y,x);
 			board[y][x]=-10;
-			fprintf(lol,"y:%d x:%d\n",y,x);
-			fflush(lol);
 		}
 		x=sx;
-		y++;
+		++y;
 		if(y==len)
 			y=0;
-		fprintf(lol,"y:%d x:%d\n",y,x);
-		fflush(lol);
 		
 	}
 }
@@ -355,6 +358,7 @@ void sigint_handler(int x){
 	exit(x);
 }
 int main(int argc, char** argv){
+#ifndef Plan9
 	bool autoset=0;
 	signal(SIGINT,sigint_handler);
 	if(argc>3 || (argc==2 && !strcmp("help",argv[1])) ){
@@ -366,11 +370,7 @@ int main(int argc, char** argv){
 		return EXIT_FAILURE;
 	}
 	if(argc==3){
-#ifndef Plan9
 		bool lool = sscanf(argv[1],"%d",&len) && sscanf(argv[2],"%d",&wid);
-#else 
-		bool lool = sscanf(argv[1],"%d",len) && sscanf(argv[2],"%d",wid);
-#endif
 		if(!lool){
 			puts("Invalid input.");
 			return EXIT_FAILURE;
@@ -385,7 +385,6 @@ int main(int argc, char** argv){
 		autoset=1;
 	}
 	initscr();
-#ifndef Plan9
 	if(autoset){
 		len=LINES-7;
 		if(len<MINLEN)
@@ -402,10 +401,9 @@ int main(int argc, char** argv){
 #endif
 	srand(time(NULL)%UINT_MAX);		
 	byte board[len][wid];
-	byte predirection;
 	int prex,prey;
 	bool halfspeed=0;
-	int constant=150*(80*24)/(len*wid);
+	const int constant=150*(80*24)/(len*wid);//that is added to score
 	initscr();
 	noecho();
 	cbreak();
@@ -420,13 +418,13 @@ int main(int argc, char** argv){
 		init_pair(4,COLOR_CYAN,-1);
 		init_pair(5,COLOR_MAGENTA,-1);
 		init_pair(6,COLOR_RED,-1);
-		for(byte b= 0;b<6;b++){
+		for(byte b= 0;b<6;++b){
 			colors[b]=COLOR_PAIR(b+1);
 		}
 
 	}
-	lol=fopen("lol","w");
 	Start:
+	immunity=flight=notrail=0;
 	curs_set(0);
 	halfdelay(1);
 	score=0;
@@ -435,27 +433,31 @@ int main(int argc, char** argv){
 	px=wid/2;
 	memset(board,0,len*wid);
 	put_stuff(board,20);
-	int prepreinput,preinput,input;
+
+	int preinput,input;
 	while(1){
 		erase();
 		logo();
 		mvprintw(1,12,"Score:%ld",score);
-		draw(board);
-		refresh();
-		prepreinput=preinput;
-		preinput=input;
-		input = getch();
 		if(immunity)
 			mvprintw(2,12,"Immunity:%ld",immunity);
 		else if(flight)
 			mvprintw(2,12,"Flight:%ld",flight);
 		else if(notrail)
 			mvprintw(2,12,"NoTrail:%ld",notrail);
+		draw(board);
+		refresh();
+
+		preinput=input;
+		input = getch();
+		if(input!=ERR)//hide message when a key is entered
+			pse_msg=0;
+
 		if(board[py][px]==SPAWN)
 			put_stuff(board,5);
 		else if(board[py][px]==BOMB){
 			explode(board,py,px);
-			for(byte b=0;b<10;b++){
+			for(byte b=0;b<10;++b){
 				draw(board);
 				refresh();
 				usleep(100000);
@@ -486,7 +488,6 @@ int main(int argc, char** argv){
 		if( input == KEY_F(1) || input=='?' )
 			help();
 		halfspeed=!halfspeed;
-		predirection=direction;
 		if( (input=='k' || input==KEY_UP) ){
 			direction=UP;
 			halfspeed=1;
@@ -501,52 +502,52 @@ int main(int argc, char** argv){
 			direction=RIGHT;
 		if( input=='q')
 			sigint_handler(0);
-
+		if(input=='e'){
+			for(int b=0;b<6;++b){
+				colors[b]=0;
+			}
+			pse_msg=0;
+		}
 		if(input!=ERR){
 			if(preinput==input){//if it wasn't there, hitting two keys in less than 0.1 sec would not work
-				//the i part is there to prevent it from working too often =) you could just move diagonally that way and get a big score
-				//just hitting UP and LEFT repeatedly. the trick works in the original, but not very well because of it's limitations.
 				usleep(100000);
 				flushinp();
 			}
-			if(prepreinput==input)
-				usleep(100000);
-		
 		}
 		
 		if( !((direction==UP||direction==DOWN)&&!halfspeed) && !immunity && !flight && !notrail)
 			board[py][px]=TRAIL;
 
 		if(direction==UP && halfspeed){
-			py--;
+			--py;
 			if(py==-1)
 				py=len-1;
 			halfspeed=1;
 		}
 		else if(direction==DOWN && halfspeed){
-			py++;
+			++py;
 			if(py==len)
 				py=0;
 		}
 		else if(direction==LEFT){
-			px--;
+			--px;
 			if(px==-1)
 				px=wid-1;
 		}
 		else if(direction==RIGHT){
-			px++;
+			++px;
 			if(px==wid)
 				px=0;
 		}
-		score++;
+		++score;
 		if(!(score%100))
 			put_stuff(board,5);
 		if(immunity)
-			immunity--;
+			--immunity;
 		else if(flight)
-			flight--;
+			--flight;
 		else if(notrail)
-			notrail--;
+			--notrail;
 	}
 	nocbreak();
 	cbreak();
