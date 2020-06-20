@@ -1,10 +1,11 @@
 # New BSD Games
  *You have a computing machine from 1980's  and you wonder how you can use it? <br/>
-  You deal with a GUI-less machine at work and are looking for ways to kill time? <br/>
-   You are the DSL developer and have cancelled the project because you lacked games? <br/>
-    You have to make a Reversi AI for your homework and you don't know where to copy it from? <br/>
-     You have been so excited about the bsdgames, but have grown tired of playing tetris, snake and robots for billions of times? <br/>
-     You feel they have betrayed you by bundling stuff like phantasia with a package you expect to contain GAMES?* <br/>
+  You are a bored sysadmin with no work, and want to kill time without being fired?  <br/>
+  You are the DSL developer and have cancelled the project because you lacked games? <br/>
+  Those creepy GTK/QT games make you cringe? <br/>
+  You have to make a Reversi AI for your homework and you don't know where to copy it from? <br/>
+  You have been so excited about the bsdgames, but have grown tired of playing tetris, snake and robots for billions of times? <br/>
+  You feel they have betrayed you by bundling stuff like phantasia with a package you expect to contain GAMES?* <br/>
 
 
 **Don't worry** anymore as you've got nbsdgames now!
@@ -24,18 +25,20 @@ These include:
 * Pipes (Same as the famous Pipe Mania, unplayable on the environments that don't support the line characters)
 * Fifteen
 * Memoblocks (or Memory blocks. A similar game was included in Windows 7)
-* Fisher
-* Muncher
-* Miketron
-* Redsquare (Conway's Game of Life made playable!)
+* Fisher^
+* Muncher^
+* Miketron^
+* Redsquare^ (Conway's Game of Life made playable!)
 
 They natively run on Linux, BSD, MacOS and are known to work on Windows as well (using PDCurses, thanks to Laura Michaels for providing advice).
 
-They have been ported to Plan9 by Jens Staal!
+They have been ported to Plan9 thanks to Jens Staal!
 
 The difficulty and/or dimensions are adjustable through simple command line options, you can play a minesweeper game that take hours to complete, or exprience hexadecimal sudoku and 8x8 fifteen-like puzzles!
 
-I have encounterd Fisher, Muncher and Miketron on MikeOS and RedSquare on KolibriOS. 
+Play on xterm for best exprience.
+
+^ I have encounterd Fisher, Muncher and Miketron on MikeOS and RedSquare on KolibriOS
 ## Prerequisites
 
 * git (optional)
@@ -54,14 +57,14 @@ I have encounterd Fisher, Muncher and Miketron on MikeOS and RedSquare on Kolibr
 Like this:
 
 ``` sh
-	 git clone https://github.com/untakenstupidnick/nbsdgames
+	 git clone https://github.com/abakh/nbsdgames
         cd ./nbsdgames/sources
-        export PREFIX= ~/bin
+        export PREFIX= ~/bin 
         make install
 ```
 
 Also, If you are on a debian-based OS on a 64-bit PC you can download the deb package and simply install it with dpkg or apt.
-the deb package: https://github.com/untakenstupidnick/nbsdgames/releases/download/v2.0/nbsdgames_amd64.deb
+the deb package: https://github.com/abakh/nbsdgames/releases/download/v2.0/nbsdgames_amd64.deb
 
 It's available on AUR thanks to Elias Riedel Gårding: https://aur.archlinux.org/packages/nbsdgames-git/
 (The commands start with  nbsd_ to avoid conflict)
@@ -69,10 +72,10 @@ It's available on AUR thanks to Elias Riedel Gårding: https://aur.archlinux.org
 It's been made available for openSUSE thanks to Zinjanthropus: https://build.opensuse.org/package/show/home:Zinjanthropus/nbsdgames
 ## How do these look like
 Linux+xterm+tmux
-![Screenshot from 4 games in tmux](https://raw.githubusercontent.com/untakenstupidnick/nbsdgames/master/screenshot.png)
+![Screenshot from 4 games in tmux](https://raw.githubusercontent.com/abakh/nbsdgames/master/screenshot.png)
 
 Plan9
-![Screenshot from the games in Plan9](https://raw.githubusercontent.com/untakenstupidnick/nbsdgames/master/screenshot_plan9.png)
+![Screenshot from the games in Plan9](https://raw.githubusercontent.com/abakh/nbsdgames/master/screenshot_plan9.png)
 
 ## How to contribute
 * Share these with your friends and others
@@ -83,4 +86,4 @@ Plan9
 * Does anyone understand debian's .orig.tar.gz and the process to make packages to the repos? Any help would be appreciated.
 
 
-Also thank to all the people who helped in the previous versions, all what i requested was done! i didn't expect such an amount of assistance on this project :heart:
+Also thank to all the people who helped in the previous versions, all what i requested was done! I didn't expect such an amount of assistance on this project :heart:

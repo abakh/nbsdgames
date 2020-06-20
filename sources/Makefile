@@ -1,17 +1,16 @@
 # -*- Makefile -*-
-
 all: jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare
 scorefiles:
-	touch /usr/games/pp_scores
-	touch /usr/games/jw_scores
-	touch /usr/games/mt_scores
-	touch /usr/games/mnch_scores
-	touch /usr/games/fsh_scores
-	chmod 666 /usr/games/pp_scores
-	chmod 666 /usr/games/jw_scores
-	chmod 666 /usr/games/mt_scores
-	chmod 666 /usr/games/mnch_scores
-	chmod 666 /usr/games/fsh_scores
+	touch $(PREFIX)/pp_scores
+	touch $(PREFIX)/jw_scores
+	touch $(PREFIX)/mt_scores
+	touch $(PREFIX)/mnch_scores
+	touch $(PREFIX)/fsh_scores
+	chmod 666 $(PREFIX)/pp_scores
+	chmod 666 $(PREFIX)/jw_scores
+	chmod 666 $(PREFIX)/mt_scores
+	chmod 666 $(PREFIX)/mnch_scores
+	chmod 666 $(PREFIX)/fsh_scores
 	
 jewels: jewels.c config.h
 	$(CC) jewels.c -lncurses -o ./jewels
