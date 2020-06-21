@@ -14,7 +14,7 @@ compile with -lncurses
 #include <limits.h>
 #include <time.h>
 #include <signal.h>
-typedef /*signed char*/ uint8_t byte;
+typedef signed char byte;
 
 /* The Plan9 compiler can not handle VLAs */
 #ifdef Plan9
@@ -22,7 +22,6 @@ typedef /*signed char*/ uint8_t byte;
 #else
 byte size;
 #endif
-FILE *lol;
 byte py,px;
 byte ey,ex; //the empty tile
 chtype green=A_BOLD; //bold when there is no color
@@ -201,7 +200,6 @@ int main(int argc, char** argv){
 		}
 	}
 #endif
-	lol=fopen("lol","w");
 	signal(SIGINT,sigint_handler);
 	srand(time(NULL)%UINT_MAX);
 	initscr();

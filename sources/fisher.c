@@ -257,11 +257,11 @@ void showscores(byte playerrank){
 			mvprintw(a+1,HWID-10,"     _____ You bet the");
 			mvprintw(a+2,HWID-10,"   .'     |   previous");
 			mvprintw(a+3,HWID-10," .'       |     record");
-			mvprintw(a+4,HWID-10," |  .|    |	 of");
+			mvprintw(a+4,HWID-10," |  .|    |         of");
 			mvprintw(a+5,HWID-10," |.' |    |%11ld",formerscore);
 			mvprintw(a+6,HWID-10,"     |    |    held by");
 			mvprintw(a+7,HWID-10,"  ___|    |___%7s!",formername);
-			mvprintw(a+8,HWID-10," |	    |");
+			mvprintw(a+8,HWID-10," |            |");
 			mvprintw(a+9,HWID-10," |____________|");
 			mvprintw(LEN-3,HWID-11,"Press a key to continue");
 			refresh();

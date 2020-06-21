@@ -10,9 +10,7 @@
 
 **Don't worry** anymore as you've got nbsdgames now!
 
-I originally made these in hope of them becoming added to NetBSD (but the few i talked to preferred to have games in the repositories rather than in /usr/games itself).
-
-These include:
+The games include:
 
 * Jewels (A game with a gameplay kinda similiar to that of Tetris, NOT my invention)
 * Sudoku
@@ -25,20 +23,21 @@ These include:
 * Pipes (Same as the famous Pipe Mania, unplayable on the environments that don't support the line characters)
 * Fifteen
 * Memoblocks (or Memory blocks. A similar game was included in Windows 7)
-* Fisher^
-* Muncher^
-* Miketron^
-* Redsquare^ (Conway's Game of Life made playable!)
-
-They natively run on Linux, BSD, MacOS and are known to work on Windows as well (using PDCurses, thanks to Laura Michaels for providing advice).
-
-They have been ported to Plan9 thanks to Jens Staal!
+* Fisher
+* Muncher
+* Miketron
+* Redsquare (Conway's Game of Life made playable!)
 
 The difficulty and/or dimensions are adjustable through simple command line options, you can play a minesweeper game that take hours to complete, or exprience hexadecimal sudoku and 8x8 fifteen-like puzzles!
 
 Play on xterm for best exprience.
 
-^ I have encounterd Fisher, Muncher and Miketron on MikeOS and RedSquare on KolibriOS
+## Platforms
+
+They natively run on Linux, BSD, MacOS and are known to work on Windows as well (using PDCurses, thanks to Laura Michaels for providing advice).
+
+They have been ported to Plan9 thanks to Jens Staal!
+
 ## Prerequisites
 
 * git (optional)
@@ -62,12 +61,12 @@ Like this:
         export PREFIX= ~/bin 
         make install
 ```
-
+## Packages
 Also, If you are on a debian-based OS on a 64-bit PC you can download the deb package and simply install it with dpkg or apt.
 the deb package(old): https://github.com/abakh/nbsdgames/releases/download/v2.0/nbsdgames_amd64.deb
 
 It's available on AUR thanks to Elias Riedel Gårding: https://aur.archlinux.org/packages/nbsdgames-git/
-(The commands start with  nbsd_ to avoid conflict)
+(The commands start with  nbsd_ or nb to avoid conflict)
 
 It's been made available for openSUSE thanks to Zinjanthropus: https://build.opensuse.org/package/show/home:Zinjanthropus/nbsdgames
 ## How do these look like
@@ -79,7 +78,7 @@ Plan9
 
 ## How to contribute
 * Share these with your friends and others
-* Your stars make the repo more findable in github
+* Your stars make the repo more findable in github :star:
 * Tell me your feature requests, bug reports, etc.
 * Tell me the games you want to be added (but in the same genre, i can't port Angry Birds to curses! :)
 * Make a package for your distro (or put it on repos if the package is not there)

@@ -125,7 +125,7 @@ void showscores(byte playerrank){
 		if ( fscanf(scorefile,"%s : %ld",formername,&formerscore)==2  && formerscore>0){
 			byte a = (len-9)/2;
 			attron(A_BOLD);
-			mvprintw(SY,SX,      "****		***");
+			mvprintw(SY,SX,      "****                ***");
 			mvprintw(SY+len+1,SX,"***********************");
 			attroff(A_BOLD);
 			attron(green);
@@ -135,11 +135,11 @@ void showscores(byte playerrank){
 			mvprintw(SY+a+1,SX,"     _____ You bet the");
 			mvprintw(SY+a+2,SX,"   .'     |   previous");
 			mvprintw(SY+a+3,SX," .'       |     record");
-			mvprintw(SY+a+4,SX," |  .|    |	 of");
+			mvprintw(SY+a+4,SX," |  .|    |         of");
 			mvprintw(SY+a+5,SX," |.' |    |%11ld",formerscore);
 			mvprintw(SY+a+6,SX,"     |    |    held by");
 			mvprintw(SY+a+7,SX,"  ___|    |___%7s!",formername);
-			mvprintw(SY+a+8,SX," |	    |");
+			mvprintw(SY+a+8,SX," |            |");
 			mvprintw(SY+a+9,SX," |____________|");
 			mvprintw(len+2,0,"Game over! Press a key to proceed:");
 			refresh();
@@ -311,7 +311,7 @@ void help(void){
 	erase();
 	logo();
 	attron(A_BOLD);
-	mvprintw(SY,SX+5,"-*	    *-");
+	mvprintw(SY,SX+5,"-*            *-");
 	mvprintw(3,0," HELP");
 	mvprintw(4,0," PAGE");
 	mvprintw(SY+7,SX,"YOU CAN ALSO USE THE MOUSE!");
@@ -335,7 +335,7 @@ void gameplay(void){
 	erase();
 	logo();
 	attron(A_BOLD);
-	mvprintw(SY,SX+5,"-*	    *-");
+	mvprintw(SY,SX+5,"-*            *-");
 	mvprintw(3,0," HELP");
 	mvprintw(4,0," PAGE");
 	attroff(A_BOLD);

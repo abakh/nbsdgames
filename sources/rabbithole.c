@@ -262,7 +262,7 @@ int main(int argc, char** argv){
 		now=time(NULL);
 		erase();
 		mvprintw(sy+0,sx+0," _ ");
-		mvprintw(sy+1,sx+0,"|_)	  Time left    :%ld",giventime-(now-tstart));
+		mvprintw(sy+1,sx+0,"|_)          Time left    :%ld",giventime-(now-tstart));
 		mvprintw(sy+2,sx+0,"| \\ABBITHOLE Carrots left :%d",carrot_count-carrots_found);
 		draw(sy+3,sx+0,board);
 		refresh();

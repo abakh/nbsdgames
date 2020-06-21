@@ -97,12 +97,12 @@ void showscores(byte playerrank){
 			printf("\n*****CONGRATULATIONS!****\n");
 			printf("     _____    You bet the\n");
 			printf("   .'     |      previous\n");
-			printf(" .'       |	record\n");
-			printf(" |  .|    |	    of\n");
+			printf(" .'       |        record\n");
+			printf(" |  .|    |            of\n");
 			printf(" |.' |    |%14ld\n",formerscore);
 			printf("     |    |       held by\n");
 			printf("  ___|    |___%11s\n",formername);
-			printf(" |	    |\n");
+			printf(" |            |\n");
 			printf(" |____________|\n");
 			printf("*************************\n");
 		}
@@ -301,89 +301,89 @@ int main(void){
 	bool falls;
 	byte stop=0 , combo;
 	char jwstr[] = {'*','^','~','"','$','V'};
-	if(has_colors()){
-		start_color();
-		use_default_colors();
-		init_pair(1,COLOR_RED,-1);
-		init_pair(2,COLOR_GREEN,-1);
-		init_pair(3,COLOR_MAGENTA,-1);
-		init_pair(4,COLOR_BLUE,-1);//array this thing
-		init_pair(5,COLOR_YELLOW,-1);
-		init_pair(6,COLOR_CYAN,-1);
-		for(byte n=0;n<6;++n){
-			colors[n] = COLOR_PAIR(n+1);
-		}
-	}
+        if(has_colors()){
+                start_color();
+                use_default_colors();
+                init_pair(1,COLOR_RED,-1);
+                init_pair(2,COLOR_GREEN,-1);
+                init_pair(3,COLOR_MAGENTA,-1);
+                init_pair(4,COLOR_BLUE,-1);//array this thing
+                init_pair(5,COLOR_YELLOW,-1);
+                init_pair(6,COLOR_CYAN,-1);
+                for(byte n=0;n<6;++n){
+                        colors[n] = COLOR_PAIR(n+1);
+                }
+        }
 
-	srand(time(NULL)%UINT_MAX);
-	byte ran1= rand()%6;
-	byte ran2= rand()%6;
-	next1= colors[ran1]|jwstr[ran1];
-	next2= colors[ran2]|jwstr[ran2];
-	while(1){
-		chtype a,b;
-		a=board[0][WID/2];
-		b=board[0][WID/2-1];
-		if(a || b ){
-			goto Lose;
-		}
-		jy=ky=0;
-		jx=WID/2;
-		kx=-1;
-		board[jy][jx]=next2;
-		board[jy+ky][jx+kx]=next1;
-		ran1= rand()%6;
-		ran2= rand()%6;
-		next1=colors[ran1]|jwstr[ran1];
-		next2=colors[ran2]|jwstr[ran2];
-		falls = 1;
-		while(falls){
-			input = getch();
+        srand(time(NULL)%UINT_MAX);
+        byte ran1= rand()%6;
+        byte ran2= rand()%6;
+        next1= colors[ran1]|jwstr[ran1];
+        next2= colors[ran2]|jwstr[ran2];
+        while(1){
+                chtype a,b;
+                a=board[0][WID/2];
+                b=board[0][WID/2-1];
+                if(a || b ){
+                        goto Lose;
+                }
+                jy=ky=0;
+                jx=WID/2;
+                kx=-1;
+                board[jy][jx]=next2;
+                board[jy+ky][jx+kx]=next1;
+                ran1= rand()%6;
+                ran2= rand()%6;
+                next1=colors[ran1]|jwstr[ran1];
+                next2=colors[ran2]|jwstr[ran2];
+                falls = 1;
+                while(falls){
+                        input = getch();
 
-			if(input != ERR)
-				stop+=1;
+                        if(input != ERR)
+                                stop+=1;
 
-			if( stop >= 10){
-				falls=fall();
-				stop=0;
-			}
-			else if(input=='l' || input==KEY_RIGHT)
-				jmove(0,+1);
-			else if(input=='j' || input==KEY_LEFT )
-				jmove(0,-1);
-			else if(input=='k' || input==KEY_UP)
-				rotate();
-			else if(input=='p'){
-				mvaddstr(LINES-2,COLS/2-15,"Paused - Press a key to continue   ");
-				refresh();
-				nocbreak();
-				cbreak();
-				getch();
-				halfdelay(DELAY);
-			}
-			else if(input=='q')
-				goto Lose;
-			else if(input==' ')
-				while( (falls=fall()) )
-					stop=0;
-			else{
-				falls=fall();
-				stop=0;
-			}
-			draw();
-	 	}
-		combo=1;
-		while(explode(combo)){ // explode, fall, explode, fall until nothing is left	
-			++combo;
-			while(fall());
-			draw();
-		}
-	}
-	Lose:
-	nocbreak();
-	endwin();
-	printf("%s _Jewels_ %s\n",jwstr,jwstr);
-	printf("You have scored %ld points.\n",score);
-	showscores(scorewrite(score));
-	return EXIT_SUCCESS;
+                        if( stop >= 10){
+                                falls=fall();
+                                stop=0;
+                        }
+                        else if(input=='l' || input==KEY_RIGHT)
+                                jmove(0,+1);
+                        else if(input=='j' || input==KEY_LEFT )
+                                jmove(0,-1);
+                        else if(input=='k' || input==KEY_UP)
+                                rotate();
+                        else if(input=='p'){
+                                mvaddstr(LINES-2,COLS/2-15,"Paused - Press a key to continue   ");
+                                refresh();
+                                nocbreak();
+                                cbreak();
+                                getch();
+                                halfdelay(DELAY);
+                        }
+                        else if(input=='q')
+                                goto Lose;
+                        else if(input==' ')
+                                while( (falls=fall()) )
+                                        stop=0;
+                        else{
+                                falls=fall();
+                                stop=0;
+                        }
+                        draw();
+                 }
+                combo=1;
+                while(explode(combo)){ // explode, fall, explode, fall until nothing is left        
+                        ++combo;
+                        while(fall());
+                        draw();
+                }
+        }
+        Lose:
+        nocbreak();
+        endwin();
+        printf("%s _Jewels_ %s\n",jwstr,jwstr);
+        printf("You have scored %ld points.\n",score);
+        showscores(scorewrite(score));
+        return EXIT_SUCCESS;
 }

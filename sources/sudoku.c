@@ -160,7 +160,7 @@ void fill(char board[s][s]){
 		if ( fill_with(board,int2sgn(num) ) ){
 			memset(board,0,s*s);
 			num=0;
-			mvaddstr(0,0,"My algorithm sucks, so you need to wait a bit		    ");//with animated dots to entertain the waiter
+			mvaddstr(0,0,"My algorithm sucks, so you need to wait a bit                    ");//with animated dots to entertain the waiter
 			if(waitcycles==3)
 				mvaddstr(2,0,"(You can set SUDOKU_FASTGEN if you just want to see if it works)");
 			move(0,45);

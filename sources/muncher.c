@@ -135,15 +135,15 @@ void showscores(byte playerrank){
 		if ( fscanf(scorefile,"%s : %ld\n",formername,&formerscore)==2){
 			halfdelay(2);
 			printw("*****CONGRATULATIONS!****\n");
-			printw("	      You bet the\n");
-			printw("		 previous\n");
-			printw("		   record\n");
-			printw("		       of\n");
-			printw("	   %14ld\n",formerscore);
-			printw("		  held by\n");
-			printw("	      %11s\n",formername);
-			printw("	       \n");
-			printw("	       \n");
+			printw("              You bet the\n");
+			printw("                 previous\n");
+			printw("                   record\n");
+			printw("                       of\n");
+			printw("           %14ld\n",formerscore);
+			printw("                  held by\n");
+			printw("              %11s\n",formername);
+			printw("               \n");
+			printw("               \n");
 			printw("*************************\n");
 			printw("Press a key to proceed:");
 			Effect:
@@ -156,7 +156,7 @@ void showscores(byte playerrank){
 			mvprintw(8,0, " |.' |    |");
 			mvprintw(9,0, "     |    |");
 			mvprintw(10,0,"  ___|    |___");
-			mvprintw(11,0," |	    |");
+			mvprintw(11,0," |            |");
 			mvprintw(12,0," |____________|");
 			attroff(colors[b]);
 			b=(b+1)%6;
