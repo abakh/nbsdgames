@@ -1,5 +1,5 @@
 /* 
---.
+.--
 |__
 |  IFTEEN
 
@@ -14,7 +14,7 @@ compile with -lncurses
 #include <limits.h>
 #include <time.h>
 #include <signal.h>
-typedef signed char byte;
+typedef /*signed char*/ uint8_t byte;
 
 /* The Plan9 compiler can not handle VLAs */
 #ifdef Plan9
@@ -22,6 +22,7 @@ typedef signed char byte;
 #else
 byte size;
 #endif
+FILE *lol;
 byte py,px;
 byte ey,ex; //the empty tile
 chtype green=A_BOLD; //bold when there is no color
@@ -40,7 +41,7 @@ void rectangle(byte sy,byte sx){
 	mvaddch(sy+size+1,sx+size*2,ACS_LRCORNER);
 }
 void logo(byte sy,byte sx){
-	mvaddstr(sy,sx,  "--.");
+	mvaddstr(sy,sx,  ".--");
 	mvaddstr(sy+1,sx,"|__");
 	mvaddstr(sy+2,sx,"|  IFTEEN");
 }
@@ -86,22 +87,24 @@ void fill(char board[size][size]){
 	board[size-1][size-1]=' ';
 }
 void slide_one(char board[size][size],byte y,byte x){
-	if( (y>=0 && y<size && x>=0 && x<size) &&(abs(y-ey)==1)^(abs(x-ex)==1) ){
+	if( (y>=0 && y<size && x>=0 && x<size) && ((abs(y-ey)==1)^(abs(x-ex)==1)) ){
 		board[ey][ex]=board[y][x];
 		board[y][x]=' ';
-		ey=y;
+		ey=y;//ey/x moves one tile
 		ex=x;
 	}
 }
 void slide_multi(char board[size][size],byte y,byte x){
 	byte dy,dx;
+	dy=dx=0;
 	if( (ey==y) ^ (ex==x) ){
-		if(ey!=y)
-			 dy=(y-ey)/abs(y-ey);
+		if(ey!=y)//d's are steps from ey/x to y/x
+			 dy=(y-ey >0)? 1:-1;
 		if(ex!=x)
-			 dx=(x-ex)/abs(x-ex);
-		while(ex!=x || ey!=y)
+			 dx=(x-ex >0)? 1:-1;
+		while(ex!=x || ey!=y){
 			slide_one(board,ey+dy,ex+dx);//ey/x comes forth itself
+		}
 		ey=y;
 		ex=x;
 	}
@@ -198,6 +201,7 @@ int main(int argc, char** argv){
 		}
 	}
 #endif
+	lol=fopen("lol","w");
 	signal(SIGINT,sigint_handler);
 	srand(time(NULL)%UINT_MAX);
 	initscr();

@@ -92,7 +92,7 @@ void draw(void){
 	
 	if(clbtime){
 		if(count[clb]!=1){
-			mvprintw(2,10,"%d ",count[clb]);
+			mvprintw(9,43,"%d ",count[clb]);
 			switch(clb){
 				case 0:
 					addstr("plastic bags!");
@@ -127,6 +127,7 @@ void draw(void){
 			}
 		}
 		else{
+			move(9,43);
 			switch(clb){
 				case 0:
 					addstr("A plastic bag!");

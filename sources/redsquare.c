@@ -465,7 +465,7 @@ int main(void){
 	byte board[RLEN][RWID];
 	memset(board,0,RLEN*RWID);
 	char result[70];
-	int input;
+	int input=0;
 	int prey,prex;
 	int cinred;
 	Start:
@@ -535,6 +535,7 @@ int main(void){
 			printw(". ");
 			break;
 		}
+		halfdelay(9);
 		input = getch();
 		live(board);
 		count(board);//apparently this should come at both sides of live+draw. resulting from trial and error.
