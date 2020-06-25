@@ -66,7 +66,7 @@ Also, If you are on a debian-based OS on a 64-bit PC you can download the deb pa
 the deb package(old): https://github.com/abakh/nbsdgames/releases/download/v2.0/nbsdgames_amd64.deb
 
 It's available on AUR thanks to Elias Riedel Gårding: https://aur.archlinux.org/packages/nbsdgames-git/
-(The commands start with  nbsd_ or nb to avoid conflict)
+(The commands start with nb to avoid name conflict)
 
 It's been made available for openSUSE thanks to Zinjanthropus: https://build.opensuse.org/package/show/home:Zinjanthropus/nbsdgames
 ## How do these look like
