@@ -133,7 +133,7 @@ void showscores(byte playerrank){
 		move(3,0);
 		byte b=0;
 		if ( fscanf(scorefile,"%s : %ld\n",formername,&formerscore)==2){
-			halfdelay(2);
+			halfdelay(1);
 			printw("*****CONGRATULATIONS!****\n");
 			printw("              You bet the\n");
 			printw("                 previous\n");
@@ -389,7 +389,7 @@ int main(int argc, char** argv){
 	px=wid/2;
 	memset(board,0,len*wid);
 	place_food(board);
-	int input;
+	int preinput,input=0;
 	while(1){
 		erase();
 		logo();
@@ -423,6 +423,7 @@ int main(int argc, char** argv){
 		if(px<0 || px>=wid)
 			break;
 		halfspeed=!halfspeed;
+		preinput=input;
 		input = getch();
 		if( input == KEY_F(1) || input=='?' )
 			help();
@@ -456,8 +457,10 @@ int main(int argc, char** argv){
 			halfdelay(1);
 		}
 		if(input!=ERR){
-			usleep(100000);
-			flushinp();
+			if(preinput==input){//if it wasn't there, hitting two keys in less than 0.1 sec would not work
+				usleep(100000);
+				flushinp();
+			}
 		}
 		if(direction==UP && halfspeed){
 			if(!py)
