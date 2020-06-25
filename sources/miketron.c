@@ -384,7 +384,9 @@ int main(int argc, char** argv){
 	else{
 		autoset=1;
 	}
+#endif
 	initscr();
+#ifndef Plan9
 	if(autoset){
 		len=LINES-7;
 		if(len<MINLEN)
@@ -447,7 +449,7 @@ int main(int argc, char** argv){
 			mvprintw(2,12,"NoTrail:%ld",notrail);
 		draw(board);
 		refresh();
-
+	
 		preinput=input;
 		input = getch();
 		if(input!=ERR)//hide message when a key is entered
@@ -464,21 +466,25 @@ int main(int argc, char** argv){
 			}
 		}
 		else if(board[py][px]==STOP){
+			mvaddch(4+py,px+1,ACS_PLUS|A_STANDOUT);
+			refresh();
 			nocbreak();
 			cbreak();
-			ungetch(getch());
+			preinput=input;
+			input=getch();
 			halfdelay(1);
 		}	
 		else if(board[py][px]==SUPERFOOD)
 			immunity+=len+wid;
 		else if(board[py][px]==FLIGHT)
-			flight+=5;
+			flight+=8;
 		else if(board[py][px]==NOTRAIL)
 			notrail+=15;	
 		else
-			goto ElseJump;
+			goto NoFeatures;
 		board[py][px]=0;//if one of conditions is true, it executes! keep nagging about goto being redundant!
-		ElseJump:
+
+		NoFeatures:
 		if(board[py][px]==TRAIL){
 			if(immunity)
 				board[py][px]=0;
