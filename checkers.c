@@ -636,7 +636,7 @@ int main(int argc,char** argv){
 			result=2;
 			goto End;
 		}
-		if(input=='\n'){
+		if(input=='\n' || input==KEY_ENTER){
 			if(game[py][px]*turn>0){
 				cy=py;
 				cx=px;

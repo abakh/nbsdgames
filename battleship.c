@@ -262,7 +262,7 @@ void set_the_board(bool side){
 				--px;
 			if( (input=='l' || input==KEY_RIGHT) && px<9)
 				++px;
-			if( input=='\n' )
+			if( input=='\n'||input==KEY_ENTER )
 				break;
 			if( input=='q' )
 				sigint_handler(EXIT_SUCCESS);
@@ -609,7 +609,7 @@ int main(void){
 				++px;
 			if( input=='q')
 				sigint_handler(EXIT_SUCCESS);
-			if( input=='\n'){
+			if( input=='\n' || input==KEY_ENTER){
 				byte r=shoot(turn,py,px-10);
 				if(r != NOTHING){
 					goto Turn;

@@ -338,7 +338,7 @@ int main(int argc, char** argv){
 			strcpy(result,"It is now pitch dark. If you proceed you will likely fall into a pit.");
 			break;
 		}
-		if(input=='\n' && board[py][px] < 9){
+		if((input=='\n'||input==KEY_ENTER) && board[py][px] < 9){
 			if(mines[py][px]){
 				switch( rand()%3){
 					case 0:

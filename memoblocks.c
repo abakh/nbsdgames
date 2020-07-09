@@ -250,7 +250,7 @@ int main(int argc, char** argv){
 			++px;
 		if( input=='q')
 			sigint_handler(0);
-		if(input=='\n'){
+		if(input=='\n' || input==KEY_ENTER){
 			if(fy!=-1 && board[py][px]==board[fy][fx] && !(fy==py && fx==px) )
 				show[py][px]=show[fy][fx]=1;
 			else{

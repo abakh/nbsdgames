@@ -376,7 +376,7 @@ int main(int argc , char** argv){
 				resign=1;
 				goto End;
 			}
-			if(input=='\n'){
+			if(input=='\n' || input==KEY_ENTER){
 				if(can_reverse(py,px,game,piece[turn])){
 					reverse(py,px,game,piece[turn]);
 					goto Turn;

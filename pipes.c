@@ -476,7 +476,7 @@ int main(int argc, char** argv){
 			--px;
 		if( (input=='l' || input==KEY_RIGHT) && px<wid-1 )
 			++px;
-		if( input == '\n' && !(board[py][px] & FILLED) ){
+		if( (input == '\n'||input==KEY_ENTER) && !(board[py][px] & FILLED) ){
 			if(board[py][px])
 				score-=3;
 			board[py][px]=tocome[0];
