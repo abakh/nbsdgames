@@ -339,6 +339,7 @@ int main(void){
 	Start:
 	halfdelay(1);
 	curs_set(0);
+	clbtime=0;
 	hook=0;
 	hooknum=HOOKS;
 	score=0;
