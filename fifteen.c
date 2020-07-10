@@ -247,7 +247,7 @@ int main(int argc, char** argv){
 			++px;
 		if( input=='q')
 			sigint_handler(0);
-		if(input=='\n'){
+		if(input=='\n'||input==KEY_ENTER){
 			slide_multi(board,py,px);
 		}
 	}
