@@ -57,7 +57,7 @@ Like this:
 
 ``` sh
 	 git clone https://github.com/abakh/nbsdgames
-        cd ./nbsdgames/sources
+        cd ./nbsdgames
         export PREFIX= ~/bin 
         make install
 ```
