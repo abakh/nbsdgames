@@ -348,8 +348,8 @@ void gameplay(void){
 	printw("survive explosions but cannot cross the trail it has\n");
 	printw("left behind. Keep it running as much as you can.");
 	refresh();
-	erase();
 	getch();
+	erase();
 	halfdelay(1);
 }
 void sigint_handler(int x){
@@ -493,6 +493,8 @@ int main(int argc, char** argv){
 		}
 		if( input == KEY_F(1) || input=='?' )
 			help();
+		if( input == KEY_F(2) )
+			gameplay();
 		halfspeed=!halfspeed;
 		if( (input=='k' || input==KEY_UP) ){
 			direction=UP;
