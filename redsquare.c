@@ -14,6 +14,7 @@ compile with -lncurses
 #include <limits.h>
 #include <time.h>
 #include <signal.h>
+#include "config.h"
 #define LEN 35 
 #define WID 50
 #define RLEN LEN //real
@@ -444,7 +445,6 @@ int main(void){
 	signal(SIGINT,sigint_handler);
 	srand(time(NULL)%UINT_MAX);
 	initscr();
-	mousemask(ALL_MOUSE_EVENTS,NULL);
 	noecho();
 	cbreak();
 	keypad(stdscr,1);

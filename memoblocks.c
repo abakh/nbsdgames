@@ -14,11 +14,12 @@ compile with -lncurses
 #include <string.h>
 #include <time.h>
 #include <signal.h>
+#include "config.h"
 typedef signed char byte;
 typedef unsigned char ubyte;
 
 /* The Plan9 compiler can not handle VLAs */
-#ifdef Plan9
+#ifdef NO_VLA
 #define size 8
 #define size2 16
 #else
@@ -122,6 +123,7 @@ void sigint_handler(int x){
 	exit(x);
 }
 void mouseinput(void){
+#ifndef NO_MOUSE
 	MEVENT minput;
 	#ifdef PDCURSES
 	nc_getmouse(&minput);
@@ -136,6 +138,7 @@ void mouseinput(void){
 		return;
 	if(minput.bstate & BUTTON1_CLICKED)
 		ungetch('\n');
+#endif
 }
 void help(void){
 	erase();
@@ -169,11 +172,11 @@ void gameplay(void){
 	erase();
 }
 int main(int argc, char** argv){
-#ifndef Plan9
+#ifndef NO_VLA
     size=8;
 #endif
 	if(argc>=2){
-#ifndef Plan9
+#ifndef NO_VLA
 		size=atoi(argv[1]);
 #endif
 		if(size<3 || size>19){
@@ -188,7 +191,9 @@ int main(int argc, char** argv){
 	signal(SIGINT,sigint_handler);
 	srand(time(NULL)%UINT_MAX);
 	initscr();
+#ifndef NO_MOUSE
 	mousemask(ALL_MOUSE_EVENTS,NULL);
+#endif
 	noecho();
 	cbreak();
 	keypad(stdscr,1);
@@ -209,7 +214,7 @@ int main(int argc, char** argv){
 			}
 		}
 	}
-#ifndef Plan9
+#ifndef NO_VLA
 	else if(size>8)//big sizes depend on color display
         size=8;
 	size2=size*2;

@@ -15,6 +15,7 @@ compile with -lncurses
 #include <stdlib.h>
 #include <signal.h>
 #include <stdbool.h>
+#include "config.h"
 #define MISS -2
 #define SEA -1 
 #define HIT 0
@@ -47,6 +48,7 @@ void sigint_handler(int x){
 	exit(x);
 }
 void mouseinput(bool ingame){
+#ifndef NO_MOUSE
 	MEVENT minput;
 	#ifdef PDCURSES
 	nc_getmouse(&minput);
@@ -67,6 +69,7 @@ void mouseinput(bool ingame){
 		ungetch('\n');
 	if(minput.bstate & (BUTTON2_CLICKED|BUTTON2_RELEASED|BUTTON3_CLICKED|BUTTON3_RELEASED) )
 		ungetch('r');
+#endif
 }
 void rectangle(byte sy,byte sx){
 	for(byte y=0;y<=10+1;++y){
@@ -522,7 +525,9 @@ void gameplay(bool side){//side is only there to feed header()
 }
 int main(void){
 	initscr();
+#ifndef NO_MOUSE
 	mousemask(ALL_MOUSE_EVENTS,NULL);
+#endif
 	curs_set(0);
 	noecho();
 	cbreak();

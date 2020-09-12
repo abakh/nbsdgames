@@ -17,6 +17,7 @@ NOTE: This program is only made for entertainment porpuses. The puzzles are gene
 #include <limits.h>
 #include <signal.h>
 #include <math.h>
+#include "config.h"
 typedef signed char byte;
 
 byte _wait=0, waitcycles=0;//apparently 'wait' conflicts with a variable in a library macOS includes by default
@@ -249,6 +250,7 @@ void sigint_handler(int x){
 	exit(x);
 }
 void mouseinput(int sy, int sx){
+#ifndef NO_MOUSE
 	MEVENT m;
 	#ifdef PDCURSES
 	nc_getmouse(&m);
@@ -265,6 +267,7 @@ void mouseinput(int sy, int sx){
 		ungetch('\n');
 	if(m.bstate & (BUTTON2_CLICKED|BUTTON3_CLICKED) )
 		ungetch(' ');
+#endif //NO_MOUSE
 }
 void help(void){
 	erase();
@@ -362,7 +365,9 @@ int main(int argc,char** argv){
 #endif
 	bool fastgen= !(!getenv("SUDOKU_FASTGEN"));
 	initscr();
+#ifndef NO_MOUSE
 	mousemask(ALL_MOUSE_EVENTS,NULL);
+#endif //NO_MOUSE
 	noecho();
 	cbreak();
 	keypad(stdscr,1);

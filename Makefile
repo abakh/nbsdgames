@@ -1,4 +1,7 @@
 # -*- Makefile -*-
+
+CFLAGS= -O3 --std=c99 -lncurses
+#-O3 --std=c99 -lcurses -DNO_MOUSE for BSD curses
 all: jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare
 scorefiles:
 	touch /usr/games/pp_scores
@@ -13,35 +16,35 @@ scorefiles:
 	chmod 666 /usr/games/fsh_scores
 	
 jewels: jewels.c config.h
-	$(CC) jewels.c -lncurses -o ./jewels
+	$(CC) jewels.c $(CFLAGS) -o ./jewels
 sudoku: sudoku.c
-	$(CC) sudoku.c -lncurses -lm -o ./sudoku
+	$(CC) sudoku.c $(CFLAGS) -lm -o ./sudoku
 mines: mines.c
-	$(CC) mines.c -lncurses  -o ./mines
+	$(CC) mines.c $(CFLAGS) -o ./mines
 reversi: reversi.c
-	$(CC) reversi.c -lncurses  -o ./reversi
+	$(CC) reversi.c $(CFLAGS)  -o ./reversi
 checkers: checkers.c
-	$(CC) checkers.c -lncurses -o ./checkers
+	$(CC) checkers.c $(CFLAGS) -o ./checkers
 battleship: battleship.c
-	$(CC) battleship.c -lncurses -o ./battleship
+	$(CC) battleship.c $(CFLAGS) -o ./battleship
 rabbithole: rabbithole.c
-	$(CC) rabbithole.c -lncurses -o ./rabbithole
+	$(CC) rabbithole.c $(CFLAGS) -o ./rabbithole
 sos: sos.c
-	$(CC) sos.c -lncurses -o ./sos
+	$(CC) sos.c $(CFLAGS) -o ./sos
 pipes: pipes.c config.h
-	$(CC) pipes.c -lncurses -o ./pipes
+	$(CC) pipes.c $(CFLAGS) -o ./pipes
 fifteen: fifteen.c
-	$(CC) fifteen.c -lncurses -o ./fifteen
+	$(CC) fifteen.c $(CFLAGS) -o ./fifteen
 memoblocks: memoblocks.c
-	$(CC) memoblocks.c -lncurses -o ./memoblocks
+	$(CC) memoblocks.c $(CFLAGS) -o ./memoblocks
 fisher: fisher.c config.h
-	$(CC) fisher.c -lncurses -o ./fisher
+	$(CC) fisher.c $(CFLAGS) -o ./fisher
 muncher: muncher.c config.h
-	$(CC) muncher.c -lncurses -o ./muncher
+	$(CC) muncher.c $(CFLAGS) -o ./muncher
 miketron: miketron.c config.h
-	$(CC) miketron.c -lncurses -o ./miketron
+	$(CC) miketron.c $(CFLAGS) -o ./miketron
 redsquare: redsquare.c
-	$(CC) redsquare.c -lncurses -o ./redsquare
+	$(CC) redsquare.c $(CFLAGS) -o ./redsquare
 clean:
 	rm ./jewels ./sudoku ./checkers ./mines ./reversi ./battleship ./rabbithole ./sos ./pipes ./fifteen ./memoblocks ./fisher ./muncher ./miketron ./redsquare
 uninstall:

@@ -18,6 +18,7 @@ Compile with -lncurses
 #include <signal.h>
 #include <math.h>
 #include <stdbool.h>
+#include "config.h"
 #define LIGHT -1
 #define DARK 1
 #define KING 2
@@ -442,6 +443,7 @@ void sigint_handler(int x){
 }
 
 void mouseinput(void){
+#ifndef NO_MOUSE
 	MEVENT minput;
 	#ifdef PDCURSES
 	nc_getmouse(&minput);
@@ -456,6 +458,7 @@ void mouseinput(void){
 		return;
 	if(minput.bstate & (BUTTON1_CLICKED|BUTTON1_PRESSED|BUTTON1_RELEASED) )
 		ungetch('\n');
+#endif
 }
 void help(void){
 	erase();
@@ -512,7 +515,9 @@ int main(int argc,char** argv){
 		}
 	}
 	initscr();
+#ifndef NO_MOUSE
 	mousemask(ALL_MOUSE_EVENTS,NULL);
+#endif
 	noecho();
 	cbreak();
 	keypad(stdscr,1);

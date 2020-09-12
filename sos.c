@@ -14,10 +14,11 @@ compile with -lncurses
 #include <limits.h>
 #include <time.h>
 #include <signal.h>
+#include "config.h"
 #define NOTHING 123
 typedef signed char byte;
 
-#ifdef Plan9
+#ifdef NO_VLA
 #define len 5
 #define wid 6
 #else
@@ -186,6 +187,7 @@ void sigint_handler(int x){
 	exit(x);
 }
 void mouseinput(int sy,int sx){
+#ifndef NO_MOUSE
 	MEVENT minput;
 	#ifdef PDCURSES
 	nc_getmouse(&minput);
@@ -202,6 +204,7 @@ void mouseinput(int sy,int sx){
 		ungetch('S');
 	if(minput.bstate & (BUTTON2_CLICKED|BUTTON3_CLICKED) )
 		ungetch('O');
+#endif
 }
 void help(void){
 	erase();
@@ -243,7 +246,7 @@ void gameplay(void){
 int main(int argc, char** argv){
 	int dpt=1;
 	signal(SIGINT,sigint_handler);
-#ifndef Plan9
+#ifndef NO_VLA
 	if(argc>4 || (argc==2 && !strcmp("help",argv[1])) ){
 		printf("Usage: %s [len wid [AIpower]]\n",argv[0]);
 		return EXIT_FAILURE;
@@ -299,7 +302,9 @@ int main(int argc, char** argv){
 	srand(time(NULL)%UINT_MAX);
 	int input;		
 	initscr();
+#ifndef NO_MOUSE
 	mousemask(ALL_MOUSE_EVENTS,NULL);
+#endif
 	curs_set(0);
 	noecho();
 	cbreak();

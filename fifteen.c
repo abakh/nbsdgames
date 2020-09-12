@@ -14,10 +14,11 @@ compile with -lncurses
 #include <limits.h>
 #include <time.h>
 #include <signal.h>
+#include "config.h"
 typedef signed char byte;
 
 /* The Plan9 compiler can not handle VLAs */
-#ifdef Plan9
+#ifdef NO_VLA
 #define size 4
 #else
 byte size;
@@ -119,21 +120,28 @@ bool issolved(char board[size][size],char check[size][size]){
 	return 1;
 }
 void shuffle(char board[size][size]){
-	for(int m=0;m<1000;++m){
+	for(int m=0;m<10000;++m){
 		switch(rand()%4){
 			case 0:
+				addch('0');
 				slide_one(board,ey,ex+1);
 				break;
 			case 1:
+				addch('1');
 				slide_one(board,ey,ex-1);
 				break;
 			case 2:
+				addch('2');
 				slide_one(board,ey+1,ex);
 				break;
 			case 3:
+				addch('3');
 				slide_one(board,ey-1,ex);
+				break;
 		}
 	}
+	refresh();
+	getch();
 }
 //peacefully close when ^C is pressed
 void sigint_handler(int x){
@@ -142,6 +150,7 @@ void sigint_handler(int x){
 	exit(x);
 }
 void mouseinput(void){
+#ifndef NO_MOUSE
 	MEVENT minput;
 	#ifdef PDCURSES
 	nc_getmouse(&minput);
@@ -156,6 +165,7 @@ void mouseinput(void){
 		return;
 	if(minput.bstate & BUTTON1_CLICKED)
 		ungetch('\n');
+#endif
 }
 void help(void){
 	erase();
@@ -186,7 +196,7 @@ void gameplay(void){
 	erase();
 }
 int main(int argc, char** argv){
-#ifndef Plan9
+#ifndef NO_VLA
 	size=4;
 	if(argc==2){
 		if(!strcmp("help",argv[1])){
@@ -203,7 +213,9 @@ int main(int argc, char** argv){
 	signal(SIGINT,sigint_handler);
 	srand(time(NULL)%UINT_MAX);
 	initscr();
+#ifndef NO_MOUSE
 	mousemask(ALL_MOUSE_EVENTS,NULL);
+#endif
 	noecho();
 	cbreak();
 	keypad(stdscr,1);

@@ -10,7 +10,7 @@ A pair of jewels appear on top of the window, And you can move and rotate them w
 If you make a vertical or horizontal row of 4 jewels they will explode and add up to your score.
 Like Tetris,You will lose the game when the center of the uppermost row is filled.
 
-TODO make it like puyo puyo instead of the remake of of what i poorly remembered*/
+TODO make it like puyo puyo instead of the remake of what i poorly remembered*/
 #include <curses.h>
 #include <time.h>
 #include <limits.h>

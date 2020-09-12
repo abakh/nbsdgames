@@ -14,11 +14,12 @@ compile with -lncurses
 #include <time.h>
 #include <signal.h>
 #include <stdbool.h>
+#include "config.h"
 #define FLAG 9
 #define UNCLEAR 10
 typedef signed char byte;
 
-#ifdef Plan9 //The Plan9 compiler can not handle VLAs
+#ifdef NO_VLA //The Plan9 compiler can not handle VLAs
 #define len 8
 #define wid 8
 #else
@@ -157,6 +158,7 @@ void sigint_handler(int x){
 	exit(x);
 }
 void mouseinput(int sy, int sx){
+#ifndef NO_MOUSE
 	MEVENT minput;
 	#ifdef PDCURSES
 	nc_getmouse(&minput);
@@ -173,6 +175,7 @@ void mouseinput(int sy, int sx){
 		ungetch('\n');
 	if(minput.bstate & (BUTTON2_CLICKED|BUTTON3_CLICKED) )
 		ungetch(' ');
+#endif
 }
 void help(void){
 	erase();
@@ -214,7 +217,7 @@ void gameplay(void){
 }
 int main(int argc, char** argv){
 	signal(SIGINT,sigint_handler);
-#ifndef Plan9
+#ifndef	NO_VLA 
 	if(argc>4 || (argc==2 && !strcmp("help",argv[1])) ){
 		printf("Usage: %s [len wid [minescount]]\n",argv[0]);
 		return EXIT_FAILURE;
@@ -254,7 +257,9 @@ int main(int argc, char** argv){
 #endif
 	srand(time(NULL)%UINT_MAX);
 	initscr();
+#ifndef NO_MOUSE
 	mousemask(ALL_MOUSE_EVENTS,NULL);
+#endif
 	noecho();
 	cbreak();
 	keypad(stdscr,1);

@@ -31,7 +31,7 @@ typedef signed char byte;
 typedef unsigned char bitbox;
 
 /* The Plan9 compiler can not handle VLAs */
-#ifdef Plan9
+#ifdef NO_VLA
 #define wid 20
 #define len 14
 #else
@@ -286,6 +286,7 @@ void draw(bitbox board[len][wid]){
 }
 
 void mouseinput(void){
+#ifndef NO_MOUSE
 	MEVENT minput;
 	#ifdef PDCURSES
 	nc_getmouse(&minput);
@@ -300,6 +301,7 @@ void mouseinput(void){
 		return;
 	if(minput.bstate & BUTTON1_CLICKED)
 		ungetch('\n');
+#endif //NO_MOUSE
 }
 //peacefully close when ^C is pressed
 void sigint_handler(int x){
@@ -350,7 +352,7 @@ void gameplay(void){
 }
 int main(int argc, char** argv){
 	signal(SIGINT,sigint_handler);
-#ifndef Plan9
+#ifndef NO_VLA
 	if(argc>3 || (argc==2 && !strcmp("help",argv[1])) ){
 		printf("Usage: %s [len wid]\n",argv[0]);
 		return EXIT_FAILURE;
@@ -377,7 +379,9 @@ int main(int argc, char** argv){
 	}
 #endif
 	initscr();
+#ifndef NO_MOUSE
 	mousemask(ALL_MOUSE_EVENTS,NULL);
+#endif
 	time_t tstart , now, lasttime, giventime=len*wid/4;
 	srand(time(NULL)%UINT_MAX);		
 	bitbox direction,board[len][wid];

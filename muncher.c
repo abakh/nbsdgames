@@ -25,9 +25,11 @@ enum {UP=1,RIGHT,DOWN,LEFT,FOOD,SUPERFOOD,TRAP};
 typedef signed char byte;
 
 /* The Plan9 compiler can not handle VLAs */
-#ifdef Plan9
+#ifdef NO_VLA
 #define len 10
 #define wid 40
+
+#ifdef Plan9
 int usleep(long usec) {
     int second = usec/1000000;
     long nano = usec*1000 - second*1000000;
@@ -37,9 +39,12 @@ int usleep(long usec) {
     nanosleep(&sleepy, (struct timespec *) NULL);
     return 0;
 }
+#endif
+
+
 #else
 int len,wid;
-#endif
+#endif//NO_VLA
 
 int py,px;//pointer
 
@@ -318,7 +323,7 @@ void sigint_handler(int x){
 int main(int argc, char** argv){
 	bool autoset=0;
 	signal(SIGINT,sigint_handler);
-#ifndef Plan9
+#ifndef NO_VLA
 	if(argc>3 || (argc==2 && !strcmp("help",argv[1])) ){
 		printf("Usage: %s [len wid]\n",argv[0]);
 		return EXIT_FAILURE;
@@ -344,7 +349,7 @@ int main(int argc, char** argv){
 	}
 #endif
 	initscr();
-#ifndef Plan9
+#ifndef NO_VLA
 	if(autoset){
 		len=LINES-7;
 		if(len<MINLEN)

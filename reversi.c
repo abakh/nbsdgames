@@ -216,6 +216,7 @@ void sigint_handler(int x){
 	exit(x);
 }
 void mouseinput(void){
+#ifndef NO_MOUSE
 	MEVENT minput;
 	#ifdef PDCURSES
 	nc_getmouse(&minput);
@@ -230,6 +231,7 @@ void mouseinput(void){
 		return;
 	if(minput.bstate & BUTTON1_CLICKED)
 		ungetch('\n');
+#endif
 }
 void help(void){
 	erase();
@@ -280,7 +282,9 @@ int main(int argc , char** argv){
 	} 
 	signal(SIGINT,sigint_handler);
 	initscr();
+#ifndef NO_MOUSE
 	mousemask(ALL_MOUSE_EVENTS,NULL);
+#endif
 	noecho();
 	cbreak();
 	keypad(stdscr,1);
