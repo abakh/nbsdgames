@@ -1,7 +1,9 @@
 # -*- Makefile -*-
 
-CFLAGS= -O3 --std=c99 -lncurses
+CFLAGS= -O3 -lncurses -Wno-unused-result
 #-O3 --std=c99 -lcurses -DNO_MOUSE for BSD curses
+#adding --std=c99 makes warnings in GNU, and the blame is upon glibc feature test macros. my code is
+
 all: jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare
 scorefiles:
 	touch /usr/games/pp_scores

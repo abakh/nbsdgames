@@ -76,6 +76,9 @@ Linux+xterm+tmux
 Plan9
 ![Screenshot from the games in Plan9](https://raw.githubusercontent.com/abakh/nbsdgames/master/screenshot_plan9.png)
 
+Windows
+![Screenshot from the games in Windows 7](https://raw.githubusercontent.com/abakh/nbsdgames/master/screenshot_plan9.png)
+
 ## How to contribute
 * Share these with your friends and others
 * Your stars make the repo more findable in github :star:
