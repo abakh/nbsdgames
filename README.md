@@ -77,7 +77,7 @@ Plan9
 ![Screenshot from the games in Plan9](https://raw.githubusercontent.com/abakh/nbsdgames/master/screenshot_plan9.png)
 
 Windows
-![Screenshot from the games in Windows 7](https://raw.githubusercontent.com/abakh/nbsdgames/master/screenshot_plan9.png)
+![Screenshot from the games in Windows 7](https://raw.githubusercontent.com/abakh/nbsdgames/master/screenshot_windows.jpg)
 
 ## How to contribute
 * Share these with your friends and others
