@@ -1,0 +1,1276 @@
+from random import *
+from math import *
+
+import boarddef
+from boarddef import LNasty, LMonky, LGhosty, LFlappy
+from boarddef import LSpringy, LOrcy, LGramy, LBlitzy
+from boarddef import RNasty, RMonky, RGhosty, RFlappy
+from boarddef import RSpringy, ROrcy, RGramy, RBlitzy
+
+def flat(mean,var):
+    return randrange(mean-var,mean+var+1)
+
+def dice(n,sides,orig=1):
+    result = 0
+    for i in range(n):
+        result += orig+randrange(sides)
+    return result
+
+def fish(mu):
+    def fact(n):
+        r = 1.
+        for i in range(1,n+1):
+            r *= i
+        return r
+    scale = fact(0)/exp(-mu)
+    dens = []
+    while 1:
+        x = len(dens)
+        dens.append(int(scale*exp(-mu)*pow(mu,x)/fact(x)+0.5))
+        if x > mu and dens[-1] == 0:
+            break
+    table = []
+    x = 0
+    for d in dens:
+        for i in range(d):
+            table.append(x)
+        x += 1
+    return choice(table)
+
+
+class RandomLevel(boarddef.Level):
+    WIDTH  = 32
+    HEIGHT = 28
+    MAXTRY = 1000
+    # parameters of the 'mess generator'
+    # mess_prob : the probability that a cell turn into a wall
+
+    def __init__(self,num):
+        if hasattr(self.__class__, 'walls'):
+            #print 'Reusing previously generated level'
+            #print self.__class__.walls
+            self.walls = self.__class__.walls
+            boarddef.Level.__init__(self,num)
+            return
+
+        #print 'Generating a new level'
+        self.reset(fill=False)
+
+        self.windmap = [ [' ' for x in range(self.WIDTH)] for y in range(self.HEIGHT) ]
+
+        if hasattr(self, 'auto'):
+            self.generate()
+            self.do_bonuses()
+
+        for gw in self.genwalls:
+            gw[0](self,*gw[1:])
+
+        if hasattr(self, 'mlist'):
+            self.do_monsters()
+
+        self.dig_vertical_walls()
+        self.do_walls()
+        self.walls = self.__class__.walls
+        #print self.walls
+
+        self.do_winds()
+        self.winds = self.__class__.winds
+
+        boarddef.Level.__init__(self,num)
+
+    def reset(self, fill=False):
+        if fill:
+            w = '#'
+            f = 0
+        else:
+            w = ' '
+            f = 1
+        # map for the walls
+        self.wmap = [ [w for x in range(self.WIDTH)] for y in range(self.HEIGHT) ]
+        # map of the free cells
+        self.fmap = [ [f for x in range(self.WIDTH)] for y in range(self.HEIGHT) ]
+
+    def setw(self,x,y,c='#'):
+        if x > self.WIDTH-1 or x < 0 or y > self.HEIGHT-1 or y < 0:
+            return
+        if self.fmap[y][x]:
+            self.wmap[y][x] = c
+            self.fmap[y][x] = 0
+
+    def getw(self,x,y):
+        if x > self.WIDTH-1 or x < 0 or y > self.HEIGHT-1 or y < 0:
+            return '#'
+	return self.wmap[y][x]
+
+    def clrw(self,x,y):
+        if x > self.WIDTH-1 or x < 0 or y > self.HEIGHT-1 or y < 0:
+            return
+        self.wmap[y][x] = ' '
+        self.fmap[y][x] = 1
+
+    def lockw(self,x,y,c=0):
+        if x > self.WIDTH-1 or x < 0 or y > self.HEIGHT-1 or y < 0:
+            return
+        self.fmap[y][x] = c
+
+    def setwind(self,x,y,c=' '):
+        if x > self.WIDTH-1 or x < 0 or y > self.HEIGHT-1 or y < 0:
+            return
+        self.windmap[y][x] = c
+
+    def getwind(self,x,y):
+        if x > self.WIDTH-1 or x < 0 or y > self.HEIGHT-1 or y < 0:
+            return ' '
+        return self.windmap[y][x]
+
+    def wind_rect(self,x,y,w,h,ccw=0):
+	"Set a wind in a rectangle which will move the bubbles cw or ccw"
+	if w < 1 or h < 1:
+	    return
+	if ccw == 1:
+	    for dx in range(w):
+		self.setwind(x+dx+1, y, '<')
+		self.setwind(x+dx, y+h, '>')
+	    for dy in range(h):
+		self.setwind(x, y+dy, 'v')
+		self.setwind(x+w, y+dy+1, '^')
+	else:
+	    for dx in range(w):
+		self.setwind(x+dx, y, '>')
+		self.setwind(x+dx+1, y+h, '<')
+	    for dy in range(h):
+		self.setwind(x, y+dy+1, '^')
+		self.setwind(x+w, y+dy, 'v')
+
+    def mirror(self):
+	"Mirror the level vertically."
+	for y in range(self.HEIGHT):
+	    for x in range(self.WIDTH/2):
+		self.wmap[y][x] = self.wmap[y][self.WIDTH-x-1]
+
+    def dig_well_until_space(self, x=1, yadj=1):
+        "Digs a well either up or down and stops when it encounters first empty wall space."
+        if yadj == 1:
+            y = 0
+        else:
+            yadj = -1
+            y = self.HEIGHT-1
+        while (y < self.HEIGHT) and (y >= 0):
+            self.clrw(x,y)
+            self.clrw(x+1,y)
+            y += yadj
+            if ((self.getw(x,y) == ' ') and (self.getw(x+1,y) == ' ')):
+                break
+
+    def enlarge_tiny_holes(self):
+        "Makes one-block size holes wider."
+        for x in range(self.WIDTH):
+            for y in range(self.HEIGHT):
+                if self.wmap[y][x] == ' ':
+                    single = 0
+                    for dx in range(x-1,x+2):
+                        for dy in range(y-1,y+2):
+                            if self.getw(dy,dx) == '#':
+                                single = single + 1
+                    if single == 8:
+                        if x > (self.WIDTH / 2):
+                            self.clrw(x-1,y)
+                        else:
+                            self.clrw(x+1,y)
+
+    def make_space(self, gens=-1):
+        "Removes walls from a level, to make it more playable."
+        if gens == -1:
+            gens = randint(0,62)+1
+        if gens & 1: # top
+            for x in range(self.WIDTH):
+                self.clrw(x,1)
+                if random() < 0.5:
+                    self.clrw(x,2)
+        if gens & 2: # bottom
+            for x in range(self.WIDTH):
+                self.clrw(x,self.HEIGHT-1)
+                if random() < 0.5:
+                    self.clrw(x,self.HEIGHT-2)
+        if gens & 4: # middle
+            y = randint(0,self.HEIGHT/10) + (self.HEIGHT/2)
+            for x in range(self.WIDTH):
+                self.clrw(x,y)
+                if random() < 0.5:
+                    self.clrw(x,y-1)
+                if random() < 0.5:
+                    self.clrw(x,y+1)
+        if gens & 8: # left
+            x = randint(0,self.WIDTH/4)
+            self.dig_well_until_space(x,  1)
+            self.dig_well_until_space(x, -1)
+        if gens & 16: # right
+            x = randint(0,self.WIDTH/4)
+            self.dig_well_until_space(self.WIDTH-x-2,  1)
+            self.dig_well_until_space(self.WIDTH-x-2, -1)
+        if gens & 32: # center
+            self.dig_well_until_space(self.WIDTH/2,  1)
+            self.dig_well_until_space(self.WIDTH/2, -1)
+
+    def generate_wind1(self, rndchoice=1, choices=[' ',' ',' ','x','>','<','^','^','v'], xsize=-1,ysize=-1):
+        """Makes a random wind pattern. Parameters:
+        0: if 1=randomly select from choices, else select in order
+        1: a list of the choices that are allowed.
+        2: horizontal size of wind blocks
+        3: vertical size of wind blocks
+        """
+        choicenum = 0
+        if xsize == -1:
+            xsize = randint(1, self.WIDTH)
+        if ysize == -1:
+            ysize = randint(1, self.HEIGHT)
+        if xsize < 1:
+            xsize = 1
+        elif xsize > self.WIDTH:
+            xsize = self.WIDTH
+        if ysize < 1:
+            ysize = 1
+        elif ysize > self.HEIGHT:
+            ysize = self.HEIGHT
+        for x in range((self.WIDTH/xsize)+1):
+            for y in range((self.HEIGHT/ysize)+1):
+                if rndchoice == 1:
+                    wdir = choice(choices)
+                else:
+                    wdir = choices[choicenum]
+                    choicenum = (choicenum + 1) % len(choices)
+                for dx in range(xsize+1):
+                    for dy in range(ysize+1):
+                        self.setwind(x*xsize+dx,y*ysize+dy,wdir)
+        # make sure that the special bubbles can come into screen
+        for x in range(self.WIDTH):
+            self.setwind(x, 0, ' ')
+            self.setwind(x, self.HEIGHT-1, ' ')
+
+    def wind_sidewalls(self):
+        """Make sure the left and side walls have updraft next to them
+        """
+        for y in range(self.HEIGHT):
+            self.setwind(0,y,'^')
+            self.setwind(self.WIDTH-1,y,'^')
+
+    def wind_wallblocking(self, winddirs):
+	"""Sets up wind depending on the number of walls around each place.
+	winddirs is an array of 16 wind chars.
+	directions with walls count as: 1=N, 2=E, 4=S, 8=W
+	16th place is used if there is wall at the position.
+	"""
+	for x in range(self.WIDTH):
+	    for y in range(self.HEIGHT):
+		walld = 0
+		if self.getw(x,y) == '#':
+		    walld = 16
+		else:
+		    if self.getw(x,y-1) == '#':
+			walld = walld + 1
+		    if self.getw(x+1,y) == '#':
+			walld = walld + 2
+		    if self.getw(x,y+1) == '#':
+			walld = walld + 4
+		    if self.getw(x-1,y) == '#':
+			walld = walld + 8
+		wnd = winddirs[walld]
+		self.setwind(x,y,wnd)
+
+    def wind_wallblocking256(self, winddirs):
+	"""Sets up wind depending on the number of walls around each position.
+	winddirs is an array of 257 wind chars (one of ' x<>^v-'), where '-' means
+	to use '>' or '<', pointing towards center of level.
+	directions with walls count as: 1=N, 2=NE, 4=E, 8=SE, 16=S, 32=SW, 64=W, 128=NW
+	257th place is use if there is wall at the position.
+	"""
+	mdirs = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
+	for x in range(self.WIDTH):
+	    for y in range(self.HEIGHT):
+		windd = 0
+		if self.getw(x,y) == '#':
+		    windd = 256
+		else:
+		    for d in range(8):
+			dx = x + mdirs[d][0]
+			dy = y + mdirs[d][1]
+			if self.getw(dx, dy) == '#':
+			    windd = (1 << d)
+		wd = choice(winddirs[windd])
+		if wd == '-':
+		    if x < self.WIDTH / 2:
+			wd = '>'
+		    else:
+			wd = '<'
+		self.setwind(x,y, wd)
+
+    def generate_wind(self, gens = -1):
+        """Chooses one of the wind pattern generators and uses that to generate the winds.
+        0: choose what generator to use.
+        """
+        if gens == -1:
+            gens = choice([1,1,2,3,4,4,4,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19])
+        if gens == 1: # totally random pattern
+            self.generate_wind1()
+        elif gens == 2: # wind "layers"
+            self.generate_wind1(0, ['x','^','^','^'],self.WIDTH,1)
+            self.wind_sidewalls()
+        elif gens == 3: # "wiggly" winds
+            self.generate_wind1(1, ['^','<','^','>'],1,1)
+            self.wind_sidewalls()
+        elif gens == 4: # "normal" wind pattern
+            self.wind_sidewalls()
+            dx = (self.WIDTH/2)
+            if random() < 0.7:
+                dy = 1 # usual height where bubbles collect
+            else:
+                dy = randint(1, self.HEIGHT-1)
+            for x in range(dx-3, dx+3):
+                self.setwind(x,dy,'x')
+            for x in range(dx-2):
+                self.setwind(x,dy,'>')
+                self.setwind(self.WIDTH-x-1,dy,'<')
+        elif gens == 5: # bubbles are stopped by horizontal walls
+            self.wind_sidewalls()
+            for x in range(self.WIDTH):
+                for y in range(self.HEIGHT-2):
+                    if self.getw(x,y) == '#':
+                        if self.getw(x,y+1) == ' ':
+                            self.setwind(x,y+1,'x')
+        elif gens == 6: # bubbles move next the walls, rotating cw or ccw
+	    if random() < 0.5: #clockwise
+		winddirs = [' ','>','v','v','<',' ','<','<','^','>',' ','v','^','>','^','x','x']
+	    else:
+		winddirs = [' ','<','^','<','>',' ','^','<','v','v',' ','v','>','>','^','x','x']
+	    self.wind_wallblocking(winddirs)
+        elif gens == 7: # bubbles move up in column(s) that zig-zag left and right
+	    wid = choice([self.WIDTH, randint(2, self.WIDTH), randint(2, self.WIDTH)])
+	    xofs = (self.WIDTH % wid) / 2
+	    ofs = choice([0,1])
+	    for dx in range(0, self.WIDTH-wid+1, wid):
+		for x in range(wid):
+		    for y in range(self.HEIGHT):
+			if (y+ofs) & 1:
+			    self.setwind(x+dx+xofs,y,'<')
+			    if x == 0:
+				self.setwind(x+dx+xofs,y,'^')
+			else:
+			    self.setwind(x+dx+xofs,y,'>')
+			    if x == wid-1:
+				self.setwind(x+dx+xofs,y,'^')
+	elif gens == 8: # bubbles move towards the map centerline at random height
+	    for x in range(self.WIDTH):
+                y = randint(1, self.HEIGHT-1)
+		if x < (self.WIDTH/2):
+		    self.setwind(x,y,'>')
+		else:
+		    self.setwind(x,y,'<')
+		self.setwind(x,0,'v')
+		self.setwind(x,self.HEIGHT-1,'^')
+	    for y in range(self.HEIGHT):
+		self.setwind(self.WIDTH/2,y,'x')
+	elif gens == 9: # bubbles move towards the side walls at random height
+	    for x in range(self.WIDTH):
+                y = randint(1, self.HEIGHT-1)
+		if y & 1:
+		    self.setwind(x,y,'>')
+		else:
+		    self.setwind(x,y,'<')
+		self.setwind(x,0,'v')
+		self.setwind(x,self.HEIGHT-1,'^')
+	    for y in range(self.HEIGHT):
+		self.setwind(0,y,'x')
+		self.setwind(self.WIDTH-1,y,'x')
+	elif gens == 10: # bubbles move up-down
+	    ofs = choice([0,1])
+	    dir_l = choice(['>', '>', '<'])
+	    dir_r = choice(['<', '<', '>'])
+	    for x in range(self.WIDTH):
+		if x < (self.WIDTH / 2):
+		    self.setwind(x, 0, dir_r)
+		    self.setwind(x,self.HEIGHT-1,dir_l)
+		else:
+		    self.setwind(x, 0, dir_l)
+		    self.setwind(x,self.HEIGHT-1,dir_r)
+	    for x in range(self.WIDTH):
+		for y in range(self.HEIGHT):
+		    if (x+ofs) & 1:
+			self.setwind(x,y+1,'^')
+		    else:
+			self.setwind(x,y-1,'v')
+	elif gens == 11: # bubbles rotate
+            self.wind_sidewalls()
+	    for z in range(20):
+		wid = randint(2,self.WIDTH/2)
+		hei = randint(2,self.HEIGHT/2)
+		y = randint(1, self.HEIGHT - hei - 1)
+		x = randint(1, self.WIDTH - wid - 1)
+		ok = 1
+		for dx in range(wid):
+		    if self.getwind(x+dx+1, y) != ' ':
+			ok = 0
+		    if self.getwind(x+dx, y+hei) != ' ':
+			ok = 0
+		for dy in range(hei):
+		    if self.getwind(x, y+dy) != ' ':
+			ok = 0
+		    if self.getwind(x+wid, y+dy+1) != ' ':
+			ok = 0
+		if ok == 1:
+		    self.wind_rect(x,y,wid,hei, random() < 0.5)
+	elif gens == 12: # bubbles gravitate towards a certain spot
+	    dx = randint(1,self.WIDTH-1)
+	    dy = randint(1,self.HEIGHT-1)
+	    for x in range(self.WIDTH):
+		for y in range(self.HEIGHT):
+		    ax = abs(dx - x)
+		    ay = abs(dy - y)
+		    sx = cmp(dx - x, 0)
+		    sy = cmp(dy - y, 0)
+		    winds = [' ',' ',' ']
+		    if ax < 2 and ay < 2:
+			winds = ['x']
+		    else:
+			if sx < 0:
+			    winds += ['<']
+			elif sx > 0:
+			    winds += ['>']
+			else:
+			    if sy > 0:
+				winds = ['v']
+			    elif sy < 0:
+				winds = ['^']
+			    else:
+				winds = ['x']
+			if sy < 0:
+			    winds += ['^']
+			elif sy > 0:
+			    winds += ['v']
+			else:
+			    if sx > 0:
+				winds = ['>']
+			    elif sx < 0:
+				winds = ['<']
+			    else:
+				winds = ['x']
+		    self.setwind(x,y,choice(winds))
+	elif gens == 13: # bubbles stop at some random positions
+            self.generate_wind1(1, [' ',' ',' ',' ',' ',' ',' ','x'],1,1)
+            self.wind_sidewalls()
+	elif gens == 14: # bubbles move cw and ccw in alternating rectangles
+	    m = max(self.WIDTH / 2, self.HEIGHT / 2)
+	    cwofs = choice([0,1])
+	    thk = choice([1,1,2,2,3,4,randint(1,m/2)])
+	    for dx in range(m):
+		cw = ((dx / thk) + cwofs) % 2
+		self.wind_rect(dx,dx, self.WIDTH-(dx*2), self.HEIGHT-(dx*2), cw)
+	elif gens == 15: # bubbles move cw or ccw in rectangles
+	    m = max(self.WIDTH / 2, self.HEIGHT / 2)
+	    cw = choice([0,1])
+	    for dx in range(m):
+		self.wind_rect(dx,dx, self.WIDTH-(dx*2), self.HEIGHT-(dx*2), cw)
+	elif gens == 16:
+ 	    xs = randint(2, (self.WIDTH/2)-1)
+ 	    ys = randint(2, (self.HEIGHT/2)-1)
+ 	    rx = (self.WIDTH  / xs) + 1
+ 	    ry = (self.HEIGHT / ys) + 1
+	    cwchanges = choice([0,0,0,0,0,0,0,0,1,1,1,1,2,2,3])
+	    if cwchanges == 0:
+		cw = random() < 0.5
+ 	    for x in range(rx):
+		if cwchanges == 1:
+		    cw = random() < 0.5
+ 		for y in range(ry):
+		    if cwchanges == 2:
+			cw = random() < 0.5
+		    maxd = max((xs / 2), (ys / 2))
+ 		    for d in range(maxd):
+			if cwchanges == 3:
+			    cw = random() < 0.5
+			self.wind_rect(xs*x+d, ys*y+d, xs-2*d-1, ys-2*d-1, cw)
+        elif gens == 17: # bubbles bounce between walls
+	    if random() < 0.5: # horizontal
+		winddirs = [' ',' ','<','<',' ',' ','<','<','>','>',' ',' ','>','>',' ',' ','x']
+	    else: # vertical
+		winddirs = [' ','v',' ','v','^',' ','^',' ',' ','v',' ','v','^',' ','^',' ','x']
+	    self.wind_wallblocking(winddirs)
+	elif gens == 18: # generate winds based on a random 3x3 matrix ruleset
+	    winddirs = []
+	    for z in range(257):
+		winddirs.append(choice([' ',' ',' ','x','^','v','-']))
+	    winddirs[0] = ' '
+	    winddirs[256] = choice(['x',' '])
+	    self.wind_wallblocking256(winddirs)
+	elif gens == 19: # bubbles will move downwards in a zig-zag pattern
+	    y = 0
+	    x1 = randint(0, self.WIDTH-1)
+	    while y < self.HEIGHT:
+		x2 = randint(0, self.WIDTH-1)
+		if x1 < x2:
+		    self.setwind(x1,y, '>')
+		else:
+		    self.setwind(x1,y, '<')
+		dy = choice([1,1,1,2])
+		self.setwind(x2,y, 'v')
+		y += dy
+		x1 = x2
+
+    def smooth(self, threshold, rev):
+        """Remove wall blocks that are surrounded by 4 empty places.
+        0: probability which a wall cell is turned into space
+        1: smooth away walls or smooth away empty spaces?
+        """
+        # make a copy of self.wmap and adds '#' at the end of line, for
+        # the overflowing indexing below: [x-1] and [x+1]
+        tmpwmap = [ line + ['#'] for line in self.wmap ]
+        if rev == 0:
+            chr = ' '
+        else:
+            chr = '#'
+        for x in range(self.WIDTH):
+            for y in range(1,self.HEIGHT-1):
+                count = 0
+                if tmpwmap[y+1][x] == chr:
+                    count = count + 1
+                if tmpwmap[y-1][x] == chr:
+                    count = count + 1
+                if tmpwmap[y][x+1] == chr:
+                    count = count + 1
+                if tmpwmap[y][x-1] == chr:
+                    count = count + 1
+                if (count >= 4) and (random() < threshold):
+                    if rev == 0:
+                        self.clrw(x,y)
+                    else:
+                        self.setw(x,y)
+
+    def mess(self, threshold):
+        """Random fill of the board with walls.
+        Only one argument, the probability that
+        a cell turns out to be a wall.
+        """
+        for x in range(self.WIDTH):
+            for y in range(self.HEIGHT):
+                if random() < threshold:
+                    self.setw(x,y)
+
+    def zigzag_lr(self):
+        """Generate the level with random left-right zig-zags.
+        """
+        first = 1
+        self.reset(fill=False)
+        y = choice([0,0,2,3,3,4])
+        while y < (self.HEIGHT-2):
+            if first == 1:
+                first = 0
+                x1 = x2 = randint(2, self.WIDTH-3)
+            else:
+                x2 = randint(2, self.WIDTH-3)
+            while (x2 > (x1-3)) and (x2 < (x1+3)):
+                x2 = randint(2, self.WIDTH-3)
+            for dx in range(min(x1,x2+1), max(x1,x2+1)):
+                self.setw(dx,y)
+            dy = choice([2,2,3,3,3,4])
+            for dy in range(dy+1):
+                self.setw(x2,y+dy)
+            y = y + dy
+            x1 = x2
+
+    def zigzag_ud(self):
+        """Generate the level with random up-down zig-zags.
+        """
+        first = 1
+        self.reset(fill=False)
+        x = -1
+        while x < self.WIDTH:
+            if first == 1:
+                first = 0
+                y1 = y2 = randint(2, self.HEIGHT-1)
+            else:
+                y2 = randint(2, self.HEIGHT-1)
+            while (y2 > (y1-2)) and (y2 < (y1+2)):
+                y2 = randint(2, self.HEIGHT-1)
+            for dy in range(min(y1,y2+1), max(y1,y2+1)):
+                self.setw(x,dy)
+            dx = choice([3,4,4,4,5,6])
+            for dx in range(dx+1):
+                self.setw(x+dx,y2)
+            x = x + dx
+            y1 = y2
+
+    def zigzag(self):
+        """Generate a level with a random zig-zag form.
+        """
+        if random() < 0.5:
+            self.zigzag_lr()
+        else:
+            self.zigzag_ud()
+
+    def platforms(self, (nplat, space), (rng_holes, rng_width), full=1):
+        """Place random platforms.
+        args is a tuple with the following fields:
+        0: a tuple containing the number of platforms and
+           the minum space between two platforms,
+        1: a tuple indicating in order:
+           - the rng for the number of holes per platform
+           - the rng for the width of the holes,
+        2: a flag indicating whether the platform should cross
+           the whole level or not.
+        """
+        plat = []
+        for i in range(nplat):
+            ntry = 100
+            while ntry:
+                y = randint(0,self.HEIGHT-1)
+                found = 0
+                for old in plat:
+                    if abs(old-y) <= space:
+                        found = 1
+                        break
+                if not found:
+                    plat.append(y)
+                    break
+                ntry -= 1
+            if not ntry:
+                continue  # ignore platform
+            if full:
+                x = 0
+                w = self.WIDTH
+            else:
+                x = randint(0,self.WIDTH-1)
+                w = randint(0,self.WIDTH-1)
+                s = choice([-1,1])
+                if s == -1:
+                    w = min(w,x)
+                    x -= w
+                else:
+                    w = min(w,self.WIDTH-x)
+            for x1 in range(x,x+w):
+                self.setw(x1,y)
+            for i in range(rng_holes()):
+                hx = randint(x,x+w)
+                hw = rng_width()
+                for h in range(hx-hw/2,hx+hw/2):
+                    self.clrw(h,y)
+
+    def remove_joined_blocks(self):
+        """Removes randomly placed, random sized blocks of walls.
+           The blocks are usually joined, or if not, they're offset so that
+           it's possible to move from one block to another by jumping.
+        """
+        self.reset(fill=True)
+        nrooms = randint(1, 4)
+        while nrooms:
+            nrooms -= 1;
+            x = 0
+            while x < self.WIDTH:
+                wid = randint(2,8)
+                hei = randint(2,6)
+                y = randint(2, self.HEIGHT - hei - 1)
+                for dx in range(wid):
+                    for dy in range(hei):
+                        self.clrw(x+dx, y+dy)
+                x += wid + choice([-2,-2,-1,-1,0]);
+
+    def discrete_blocks(self, blocks = -1):
+	"""Put certain size blocks randomly, but so that they don't touch each other.
+	"""
+        self.reset(fill=False)
+	if blocks == -1:
+	    if random() < 0.75:
+		blocks = [(4,2),(2,4)] # CompactLevels, level 16
+		if random() < 0.30:
+		    blocks.append((2,2))
+		if random() < 0.20:
+		    blocks.append((6,2))
+		if random() < 0.10:
+		    blocks.append((8,2))
+	    else:
+		blocks = []
+		while len(blocks) == 0:
+		    for bz in range(10):
+			if random() < 0.3:
+			    blocks.append((bz+1,1))
+	ntry = 300
+	while ntry:
+	    ntry -= 1
+	    doput = 1
+	    block = choice(blocks)
+	    wid = block[0]
+	    hei = block[1]
+	    x = randint(0,self.WIDTH-wid-2)
+	    y = randint(1,self.HEIGHT-hei-3)
+	    for dx in range(x,x+wid+2):
+		for dy in range(y,y+hei+2):
+		    if self.getw(dx,dy) == '#':
+			doput = 0
+	    if doput:
+		for dx in range(x+1,x+wid+1):
+		    for dy in range(y+1,y+hei+1):
+			self.setw(dx,dy)
+
+    def lines(self, rng_len, nlines, rng_angle=None):
+        """Generate a set of lines in any direction. It takes three
+        arguments, a rng for the length the lines, the number of lines,
+        and a rng for the angle.
+        """
+        if rng_angle is None:
+            rng_angle = lambda : choice([0]+[pi/i for i in range(3,21)]+[-pi/i for i in range(3,21)])
+        for i in range(nlines):
+            len = rng_len()
+            angle = rng_angle()
+            ntry = self.MAXTRY
+            while ntry:
+                sx = randint(0,self.WIDTH-1)
+                sy = randint(0,self.HEIGHT-1)
+                dx = int(sx + len*cos(angle) + 0.5)
+                dy = int(sy + len*sin(angle) + 0.5)
+                if dx < self.WIDTH and dy < self.HEIGHT and dx >= 0 and dy >= 0:
+                    break
+                ntry -= 1
+            if ntry == 0:
+                break
+            if abs(dx-sx) > abs(dy-sy):
+                for x in range(dx-sx+1):
+                    y = (2*(dy-sy)*x/(dx-sx)+1)/2
+                    self.setw(sx+x,sy+y)
+            else:
+                for y in range(dy-sy+1):
+                    x = (2*(dx-sx)*y/(dy-sy)+1)/2
+                    self.setw(sx+x,sy+y)
+
+    def rooms(self, rng_radius, rng_e, n_rooms):
+        """Generate rooms. It takes the following arguments:
+        0: the rng for the radius of the room
+        1: the rng for the excentricity of the room
+        2: the number of rooms
+        """
+        for i in range(n_rooms):
+            cx = randint(0,self.WIDTH-1)
+            cy = randint(0,self.HEIGHT-1)
+            r = rng_radius()
+            e = rng_e()*1.0
+            left   = cx-int(r*e+0.5)
+            right  = cx+int(r*e+0.5)
+            top    = cy-int(r/e+0.5)
+            bottom = cy+int(r/e+0.5)
+            for x in range(left,right+1):
+                self.setw(x,top)
+                self.setw(x,bottom)
+            for y in range(top,bottom+1):
+                self.setw(left,y)
+                self.setw(right,y)
+            for x in range(left+1,right):
+                for y in range(top+1,bottom):
+                    self.lockw(x,y)
+
+    def holes(self, rng_radius, rng_e, n_holes, rng_rect):
+        """Generate a set of holes in the level. It takes four args:
+        0: the rng for the radius of the holes
+        1: the rng for the excentricity of the holes
+        2: the number of holes
+        3: the rng for the shape of the hole 0 for circular, 1 for rectangular
+        """
+        for i in range(n_holes):
+            cx = randint(0,self.WIDTH-1)
+            cy = randint(0,self.HEIGHT-1)
+            r = rng_radius()
+            e = rng_e()*1.0
+            rect = rng_rect()
+            for x in range(cx-int(r*e+0.5),cx+int(r*e+0.5)+1):
+                for y in range(cy-int(r/e+0.5),cy+int(r/e+0.5)+1):
+                    if not rect and (((x-cx)/e)**2+((y-cy)*e)**2) > r**2:
+                        continue
+                    self.clrw(x,y)
+
+    def grids(self, horizchance, vertchance):
+        """Generate a level with a grid of horizontal and vertical lines
+        0: gaussian chance of each horizontal line part
+        1: gaussian chance of each vertical line part
+        """
+        self.reset(fill=False)
+        xsize = choice([3,3,3,4,4,4,4,5,6])
+        ysize = choice([2,3,3,4,4,4,4,5])
+        xofs = choice([-1,0,1])
+        yofs = choice([-1,0,1])
+        for x in range((self.WIDTH/xsize)+1):
+            for y in range((self.HEIGHT/ysize)+1):
+                dx = x*xsize + xofs
+                dy = y*ysize + yofs
+                if gauss(0,1) > horizchance:
+                    for i in range(0,xsize+1):
+                        self.setw(dx+i,dy)
+                if gauss(0,1) > vertchance:
+                    for i in range(0,ysize+1):
+                        self.setw(dx,dy+i)
+
+    def pegs(self, pegchance, posadj, thick):
+        """Generate a level by putting pegs
+        0: gaussian level of a peg appearance
+        1: gaussian level of peg position adjustment
+        """
+        self.reset(fill=False)
+        xdist = choice([3,3,3,4,4,5]) # distance between pegs
+        ydist = choice([2,3,3,3,4,5]) # distance between pegs
+        if not thick:
+            xdist = xdist - randint(0,1)
+            ydist = ydist - randint(0,1)
+        xadj = randint(0,4) - 2
+        yadj = randint(0,4) - 2
+        for x in range(self.WIDTH / xdist):
+            for y in range(self.HEIGHT / ydist):
+                if gauss(0,1) > pegchance:
+                    dx = x * xdist + xadj
+                    dy = y * ydist + yadj
+                    if gauss(0,1) > posadj:
+                        dx = dx + randint(0,2) - 1
+                        dy = dy + randint(0,2) - 1
+                    self.setw(dx,dy)
+                    if thick:
+                        self.setw(dx+1,dy)
+                        self.setw(dx,dy+1)
+                        self.setw(dx+1,dy+1)
+
+    def mondrian(self, x1=2,y1=2,x2=-1,y2=-1, horiz=-1, mindepth=3):
+        """Generate a level that looks a bit like a Piet Mondrian painting, or
+        different sized rectangles stacked on top of each other.
+        0-3: the size of the area to be split
+        4: whether the first split is horizontal or vertical
+        5: minimum number of splits to do
+        """
+        if horiz == -1:
+            horiz = choice([0,1])
+        if x2 == -1:
+            x2 = self.WIDTH-2
+        if y2 == -1:
+            y2 = self.HEIGHT-2
+        if (abs(x2-x1) < 6) or (abs(y2-y1) < 5):
+            return
+        mindepth = mindepth - 1
+        if horiz == 1:
+            horiz = 0
+            dy = randint(y1+2,y2-2)
+            for dx in range(min(x1,x2),max(x1,x2)):
+                self.setw(dx,dy)
+            if (random() < 0.75) or (mindepth > 0):
+                self.mondrian(x1,y1,x2,dy, horiz, mindepth)
+            if (random() < 0.75) or (mindepth > 0):
+                self.mondrian(x1,dy,x2,y2, horiz, mindepth)
+        else:
+            horiz = 1
+            dx = randint(x1+3,x2-3)
+            for dy in range(min(y1,y2),max(y1,y2)):
+                self.setw(dx,dy)
+            if (random() < 0.75) or (mindepth > 0):
+                self.mondrian(x1,y1,dx,y2, horiz, mindepth)
+            if (random() < 0.75) or (mindepth > 0):
+                self.mondrian(dx,y1,x2,y2, horiz, mindepth)
+
+    def bouncers(self, length, diradj, rev):
+        """Generate a level using a down and left or right moving walker
+        0: how many steps does the walker take
+        1: gaussian level, how often to change moving from left to right
+        2: fill empty level with wall or reverse?
+        """
+        if rev == 0:
+            self.reset(fill=True)
+        else:
+            self.reset(fill=False)
+        x = randint(0,self.WIDTH-2)
+        y = randint(0,self.HEIGHT-2)
+        lorr = choice([1, -1])  # move left or right
+        for i in range(length):
+            if rev == 0:
+                self.clrw(x,y)
+                self.clrw(x+1,y)
+                self.clrw(x,y+1)
+                self.clrw(x+1,y+1)
+            else:
+                self.setw(x,y)
+                self.setw(x+1,y)
+            x = x + lorr
+            y = y + 1
+            if y > self.HEIGHT:
+                y = 0
+            if x > self.WIDTH - 2:
+                x = self.WIDTH - 2
+                lorr = -lorr
+            elif x < 0:
+                x = 0
+                lorr = -lorr
+            if gauss(0,1) > diradj:
+                lorr = -lorr
+
+
+    def walkers(self, length, minturn, maxturn, isbig):
+        """Generate a level with a walker
+        0: length of the walker: how many steps it walks
+        1: minimum length it walks straight, before turning
+        2: maximum length it walks straight, before turning
+        3: is the trail is 1 or 2 blocks high
+        """
+        # We start from a full wall
+        self.reset(fill=True)
+        x = randint(0,self.WIDTH-2)
+        y = randint(0,self.HEIGHT-2)
+        dir = randint(0,4)
+        dlen = 0
+        for i in range(length):
+            self.clrw(x,y)
+            self.clrw(x+1,y)
+            if isbig == 1:
+                self.clrw(x,y+1)
+                self.clrw(x+1,y+1)
+            dlen = dlen + 1
+            if dir == 0:
+                x = x - 2
+                if x < 0:
+                    x = self.WIDTH-2
+            elif dir == 1:
+                y = y - 1
+                if y < 0:
+                    y = self.HEIGHT
+            elif dir == 2:
+                x = x + 2
+                if x > (self.WIDTH - 2):
+                    x = 0
+            else:
+                y = y + 1
+                if y > self.HEIGHT:
+                    y = 0
+            if dlen > randint(minturn, maxturn):
+                # turn 90 degrees
+                dir = (dir + choice([1,3])) % 4
+                dlen = 0
+
+    def rivers(self, n_flow, side_threshold, side_shift):
+        """Generate flow paths by digging a big wall. The arguments are:
+        0: the number of parallel flow to dig in the wall
+        1: side_threshold is a gausian level for doing a step aside
+        2: side_shift is the maximal size of the side step.
+        """
+        # We start from a full wall
+        self.reset(fill=True)
+        for x in [0, self.WIDTH-2]+[randint(3,self.WIDTH-5) for f in range(max(0, n_flow-2))]:
+            for y in range(self.HEIGHT):
+                self.clrw(x,y)
+                self.clrw(x+1,y)
+                g = gauss(0,1)
+                if abs(g) > side_threshold:
+                    # We want to move aside, let's find which side is the best:
+                    if self.WIDTH/4 < x < 3*self.WIDTH/4:
+                        side = random() > 0.5
+                    t = random()
+                    if t > x*4/self.WIDTH:
+                        side = 1
+                    elif t > (self.WIDTH-x)*4/self.WIDTH:
+                        side = -1
+                    side_step = randint(1,side_shift)
+                    if side > 0:
+                        for i in range(x+2, min(x+2+side_step,self.WIDTH-1)):
+                            self.clrw(i,y)
+                        x = max(0,min(x+side_step, self.WIDTH-2))
+                    else:
+                        for i in range(max(x-side_step,0),x):
+                            self.clrw(i,y)
+                        x = max(x-side_step, 0)
+
+    def platforms_reg(self):
+        """Generate random platforms at regular y-intervals.
+        """
+        self.reset(fill=False)
+        yadjs = [-2,-1,0,0,0,0,0,0,0,0,1,2]
+        y = randint(2,4)
+        yinc = randint(2,6)
+        yincadj = choice(yadjs)
+        ymax = self.HEIGHT-choice([1,1,1,1,1,2,2,2,3,3,4])-1
+        while y < ymax:
+            holes = randint(choice([0,1,1,1,1]),7)
+            for x in range(0, self.WIDTH):
+                self.setw(x,y)
+            for i in range(holes):
+                x = randint(0, self.WIDTH-2)
+                self.clrw(x,y)
+                self.clrw(x+1,y)
+            y = y + yinc
+            yinc = yinc + yincadj
+            if yinc < 2:
+                yinc = 2
+                yincadj = choice(yadjs)
+            if yinc > 6:
+                yinc = 6
+                yincadj = choice(yadjs)
+
+    def startplatform(self):
+        "Make sure there's free space with wall underneath for dragon start positions"
+        hei = choice([1,1,1,2,2,3])
+        lft = choice([0,1])
+        wid = choice([3,3,3,4,5])
+        for x in range(lft, wid):
+            self.setw(x,self.HEIGHT-1)
+            self.setw(self.WIDTH-x-1,self.HEIGHT-1)
+            for y in range(hei+1):
+                self.clrw(x,self.HEIGHT-2-y)
+                self.clrw(self.WIDTH-x-1,self.HEIGHT-2-y)
+
+    def openstartway(self):
+	"Make sure there is a way from the starting position to the center of the level. Reduces player frustrations."
+	gen = choice([0,0,0,1])
+	if gen == 0: # horizontal open space to middle of level
+	    ypos = choice([1,1,1,1,1,2,2,3,4,randint(1,self.HEIGHT/2)])
+	    hei = choice([1,1,1,2])
+	    for x in range(self.WIDTH/2):
+		for y in range(hei):
+		    self.clrw(x, self.HEIGHT-1-ypos-y)
+	    ypos = choice([1,1,1,1,1,2,2,3,4,randint(1,self.HEIGHT/2)])
+	    hei = choice([1,1,1,2])
+	    for x in range(self.WIDTH/2):
+		for y in range(hei):
+		    self.clrw(self.WIDTH-x-1, self.HEIGHT-1-ypos-y)
+	elif gen == 1: # open way diagonally to NW or NS, third of a way to the level width
+	    ypos = choice([1,1,1,1,1,2,2,3,4])
+	    wid = choice([2,2,2,2,2,3,3,4])
+	    for x in range(self.WIDTH/3):
+		for z in range(wid):
+		    self.clrw(x+z, self.HEIGHT-1-x-ypos)
+	    ypos = choice([1,1,1,1,1,2,2,3,4])
+	    wid = choice([2,2,2,2,2,3,3,4])
+	    for x in range(self.WIDTH/2):
+		for z in range(wid):
+		    self.clrw(self.WIDTH-x-1-z, self.HEIGHT-1-x-ypos)
+
+    def close(self):
+        "Just close the level with floor and roof"
+        for x in range(self.WIDTH):
+            self.setw(x,0) 
+            self.setw(x,self.HEIGHT)
+
+    def largest_vertical_hole(self, x):
+        "Returns the (start, stop) of the largest range of holes in column x."
+        if not (0 <= x < self.WIDTH):
+            return (0, 0)
+        ranges = []
+        best = 0
+        length = 0
+        for y in range(self.HEIGHT+1):
+            if y < self.HEIGHT and self.getw(x,y) == ' ':
+                length += 1
+            elif length > 0:
+                if length > best:
+                    del ranges[:]
+                    best = length
+                if length == best:
+                    ranges.append((y-length, y))
+                length = 0
+        return choice(ranges or [(0, 0)])
+
+    def dig_vertical_walls(self):
+        "Check that no vertical wall spans the whole height of the level"
+        vwall = []
+        for x in range(self.WIDTH):
+            spaces = 0
+            for y in range(self.HEIGHT-1):   # ignore bottom line spaces
+                spaces += self.getw(x,y) == ' '
+            if spaces == 0 or (random() < 0.4**spaces):
+                vwall.append(x)
+        shuffle(vwall)
+        for x in vwall:
+            # look for the longest continuous space in each of the two
+            # adjacent columns, and extend these to the current column
+            def dig(y1, y2):
+                for y in range(y1, y2):
+                    self.clrw(x, y)
+                return y1 < y2 and y1 < self.HEIGHT-1
+            progress = False
+            for col in [x-1, x+1]:
+                y1, y2 = self.largest_vertical_hole(col)
+                progress |= dig(y1, y2)
+            while not progress:
+                progress |= dig(randint(0, self.HEIGHT-1),
+                                randint(0, self.HEIGHT-1))
+
+    def prevent_straight_fall(self):
+        """Make platforms that prevent falling straight from top to bottom, but
+        still leave space for moving.
+        """
+        falls = []
+        for x in range(self.WIDTH):
+            for y in range(self.HEIGHT):
+                if self.getw(x,y) == '#':
+                    break
+            else:
+                falls = falls + [x]
+        y = oldy = -10
+        for x in falls:
+            while (y < oldy+2) and (y > oldy-2):
+                y = randint(2, self.HEIGHT-2)
+            for dy in range(y-1,y+2):
+                for dx in range(x-3, x+4):
+                    self.clrw(dx,dy)
+            self.setw(x-1,y)
+            self.setw(x+1,y)
+            self.setw(x,y)
+            oldy = y
+
+    def do_monsters(self):
+        """Create monsters based on the requested settings.
+        mlist is a list of monster setting. Each item is a tuple with:
+        0: the list of monster to uses (each item might be a tuple)
+        1: the rng for the number of monsters to pick in the list.
+        """
+        current = 'a'
+        for ms in self.mlist:
+            n_monsters = ms[1]()
+            for idx in range(n_monsters):
+                self.__class__.__dict__[current] = choice(ms[0])
+                ntry = self.MAXTRY
+                while ntry:
+                    x = randint(0,self.WIDTH-2)
+                    y = randint(0,self.HEIGHT-1)
+
+                    if self.getw(x,y) == self.getw(x+1,y) == ' ':
+                        self.wmap[y][x] = current
+                        break
+                    ntry -= 1
+                current = chr(ord(current)+1)
+
+    def do_walls(self):
+        "Build the actual walls map for the game."
+        self.__class__.walls = ''
+        for y in range(self.HEIGHT-1):
+            self.__class__.walls += '##'
+            for x in range(self.WIDTH):
+                self.__class__.walls += self.wmap[y][x]
+            self.__class__.walls += '##\n'
+        self.__class__.walls += '##'
+        for x in range(self.WIDTH):
+            if self.getw(x,0) == '#' or self.getw(x,self.HEIGHT-1) == '#':
+                self.__class__.walls += '#'
+            else:
+                self.__class__.walls += ' '
+        self.__class__.walls += '##\n'
+
+    def do_winds(self):
+        "Build the actual wind map for the game."
+        self.__class__.winds = ''
+        for y in range(self.HEIGHT):
+            self.__class__.winds += '>>'
+            for x in range(self.WIDTH):
+                self.__class__.winds += self.windmap[y][x]
+            self.__class__.winds += '<<' + '\n'
+
+    def do_bonuses(self):
+        self.__class__.letter    = choice([0,1])
+        self.__class__.fire      = choice([0,1])
+        self.__class__.lightning = choice([0,1])
+        self.__class__.water     = choice([0,1])
+        self.__class__.top       = choice([0,1])
+
+    def generate(self):
+        "Generate random level settings."
+        assert 0, "--- THIS IS NO LONGER REALLY USED ---"
+        self.mlist = [([
+            LNasty, LMonky, LGhosty, LFlappy, LSpringy, LOrcy, LGramy, LBlitzy,
+            RNasty, RMonky, RGhosty, RFlappy, RSpringy, ROrcy, RGramy, RBlitzy,
+            ],lambda : flat(12,4))]
+        gens = choice([512,512,256,256,128,128,64,64,32,32,16,16,16,16,16,16,20,20,8,8,8,8,4,4,4,4,2,2,2,2,1,1,3,5,6,7])
+        self.genwalls = []
+        if gens & 512:
+            print 'Using grids generator'
+            self.genwalls.append((RandomLevel.grids,
+                                  uniform(0.0, 0.1),
+                                  uniform(0.0, 0.1)))
+        if gens & 256:
+            # generate using pegs
+            print 'Using the pegs generator'
+            self.genwalls.append((RandomLevel.pegs,
+                                  uniform(0.1,0.2),
+                                  uniform(0.45,0.7),
+                                  choice([0,1,1,1])))
+        if gens & 128:
+            # generate using a bouncer
+            nr = choice([0,0,1])
+            print 'Using the bouncer generator'
+            self.genwalls.append((RandomLevel.bouncers,
+                                 dice(1, 100) + 250 - nr*200, # length
+                                 uniform(0.7, 1.7),
+                                 nr))
+        if gens & 64:
+            # generate using a walker
+            print 'Using the walker generator'
+            nr = dice(1, 3) + 2
+            self.genwalls.append((RandomLevel.walkers,
+                                 dice(2, 100) + 100, # length
+                                 nr, nr + dice(2, 3), # straight walk min, max len
+                                 choice([0,1])))
+        if gens & 32:
+            # generate rivers
+            print 'Using the rivers generator'
+            self.genwalls.append((RandomLevel.rivers,
+                                  randrange(2,(self.WIDTH-4)/5),    # the number of rivers
+                                  uniform(0.7, 1.7), # the side stepping threshold
+                                  6))                # the max side stepping size
+        if gens & 16:
+            # generate rooms
+            print 'Using the romms generator'
+            nr = choice([1,2,2,2,3,3,4,5])
+            self.genwalls.append((RandomLevel.rooms,
+                                  lambda : flat(9-nr,2),    # the half size of the room
+                                  lambda : uniform(0.8,1.2), # the excentricity of the room
+                                  nr))                       # the number of rooms
+        if gens & 8:
+            # generate a holes generator
+            # as this is interesting only if the level is filled somehow
+            print 'Using the holes generator'
+            self.genwalls.append((RandomLevel.mess,1-uniform(0.2,0.5)))
+            nh = choice([1,1,2,2,2,3,3,3,4,5])
+            self.genwalls.append((RandomLevel.holes,
+                                  lambda : flat(9-nh,2),       # radius of the holes
+                                  lambda : uniform(0.9,1.1),   # excentricity
+                                  nh,                          # number of holes
+                                  lambda : choice([0,0,0,1]))) # circle or rectangle
+        if gens & 4:
+            # generate a lines generator
+            print 'Using the lines generator'
+            self.genwalls.append((RandomLevel.lines,
+                                  lambda : dice(7,3), # line length
+                                  dice(2,3)))         # number of lines
+        if gens & 2:
+            # generate a platforms generator
+            print 'Using the platforms generator'
+            nplat  = dice(2,4,0)
+            if nplat: space  = flat((self.HEIGHT-1)/nplat/2,(self.HEIGHT-1)/nplat/2-1)
+            else:     space = 1
+            nholes = lambda : dice(1,3,0)          
+            wholes = lambda : dice(2,3)
+            full = randrange(2)
+            self.genwalls.append((RandomLevel.platforms,
+                                  (nplat,space),   # number of platform and spacing
+                                  (nholes,wholes), # number of holes and width
+                                  full))           # full width platform
+        if gens & 1:
+            # generate a mess generator
+            print 'Using the mess generator'
+            if gens & ~2:
+                offset = 0
+                scale = 0.05
+            else:
+                offset = 0.05
+                scale = 0.10
+            self.genwalls.append((RandomLevel.mess,offset+random()*scale))
+        if random() < 0.2:
+            self.genwalls.append((RandomLevel.close,))
+        if random() < 0.90:
+            self.genwalls.append((RandomLevel.startplatform,))
+        self.genwalls.append((RandomLevel.generate_wind, ))
+
+
+Levels = []
+for i in range(25):
+    class level(RandomLevel):
+        auto = 1
+    Levels.append(level)
+
+class levelfinal(RandomLevel):
+    genwalls = [(RandomLevel.platforms,(4,3),(lambda:flat(1,1),lambda:flat(4,2)),1)]
+Levels.append(levelfinal)

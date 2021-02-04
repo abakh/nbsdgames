@@ -1,0 +1,22 @@
+/.cvsignore/1.1/Fri Jan 31 13:06:51 2003//
+/Client.py/1.15/Tue Jun 19 11:52:55 2007//
+/Makefile/1.1/Fri Jan 31 13:06:51 2003//
+/__init__.py/1.2/Thu Aug 28 12:33:33 2003//
+/caching.py/1.4/Tue Jan 24 18:52:45 2006//
+/dpy_gtk.py/1.3/Tue Jan 24 18:52:45 2006//
+/dpy_pygame.py/1.5/Mon May 10 09:54:54 2004//
+/dpy_windows.py/1.1/Thu Aug 28 12:33:33 2003//
+/dpy_x.py/1.2/Mon Feb 16 18:20:41 2004//
+/modes.py/1.10/Mon May 22 21:51:33 2006//
+/music1.py/1.2/Tue Nov 11 12:51:26 2003//
+/pclient.py/1.32/Tue Jan  2 17:30:05 2007//
+/playback.py/1.2/Wed Apr 14 08:58:12 2004//
+/puremixer.py/1.3/Sun Oct 26 11:35:47 2003//
+/pythonxlibintf.py/1.2/Tue Jan 24 18:52:45 2006//
+/setup.py/1.3/Sat Jan  7 09:44:20 2006//
+/snd_linux.py/1.3/Mon Nov 10 17:26:43 2003//
+/snd_off.py/1.1/Thu Aug 21 17:02:31 2003//
+/snd_pygame.py/1.3/Thu Aug 28 12:33:33 2003//
+/snd_windows.py/1.2/Mon Nov 10 17:26:43 2003//
+/xshm.c/1.11/Tue Jun 19 11:51:26 2007//
+D

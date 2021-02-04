@@ -1,0 +1,129 @@
+.\" $Id: bb.py.1,v 1.3 2005/04/17 17:19:32 opqdonut Exp $
+.\"
+.\" Process this file with
+.\" groff -man -Tascii bb.py.1
+.\"
+
+.TH bb.py 1 "APRIL 2005" Linux "User Manuals"
+
+.SH NAME
+bb.py \- the bub-n-bros server.
+
+.SH SYNOPSIS
+.B bb.py [
+.I level-file.bin
+.BI "] [" options ]
+.br
+.B python bb.py [
+.I level-file.bin
+.BI "] [" options ]
+.PP
+Note that this script is in the
+.B bubbob/ 
+subdirectory of the original directory layout.
+
+.SH DESCRIPTION
+.B bb.py
+starts an http server that acts as a control panel for the server. The
+server listens on port 
+.B 8000 
+by default. The url for the control panel
+is 
+.BI http:// server : port / 0xN 
+where
+.I 0xN
+is a random hex number (acts as minimal protection). This url is
+printed when the server starts.  You can start and view games and kill
+the server from this panel. The control panel also allows you to type
+in the address of a server to connect to, the script will then open a
+client to that server. The http server also servers java applet
+clients for those players who wish to use one.
+
+When a game is started the script opens a port for the game
+server. This port can then be connected to by a client.  Clients
+autodetect servers running on the local network with UDP ping on port
+.BR 8056 .
+
+.SS Connection forming
+
+The client forms a tcp connection to the server. Or, when using the
+metaserver, the server forms a connection to the client. If this
+fails, the client and server try a simultaneous SYN connect. This
+sometimes works if the server and client are behind firewalls. The
+server then tries to transmit the data over udp. If it gets no
+response from the client it will fall back to the existing tcp
+connection.
+
+.SH OPTIONS
+
+.TP
+.BI "-b " N ", --begin " N ", --start " N
+Start at board (level) number
+.IR N .
+The default is 1. See also the
+.B -s
+option.
+
+.TP
+.B -h, --help
+Display help.
+
+.TP
+.B -i, --infinite
+Restart the server at the end of the game. Normally the server quits
+after a certain period of inactivity. This is useful when used with the
+.B -m
+option to make a public server that is available for a long time.
+
+.TP
+.BI "-l " N ", --lives " N
+Limit number of lives to 
+.IR N .
+If this option is not specified the number of lives will be infinite.
+
+.TP
+.B -m, --metaserver
+Register server with the
+.I Metaserver
+(currently) at 
+.BR codespeak.net:8050 .
+This makes your server visible to everybody, and also facilitates
+joining through a fascistic firewall.
+
+.TP
+.B --port
+.IR TYPE = N
+Sets default listening ports. If type is
+.B LISTEN
+, sets the game server port to
+.IR N .
+The game server port is chosen randomly by default. If the type is
+.B HTTP
+, sets the http server port to
+.IR N .
+The http server port defaults to 
+.BR 8000 . 
+Another port will be chosen if
+none was specified and
+.B 8000 
+is already in use. The server also listens to
+.B UDP
+ping on port 
+.BR 8056 .
+
+.TP
+.BI "-s " N ", --step " N
+Increase board number with
+.I N
+when a board is completed. Defaults to 1. see also the
+.B -b
+option.
+
+.SH OUTPUT
+The server outputs helpful debug information concerning the http and
+game servers.
+
+.SH SEE ALSO
+.BR BubBob.py (1)
+.BR Client.py (1)
+.BR python (1)

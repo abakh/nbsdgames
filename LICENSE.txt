@@ -1,0 +1,33 @@
+License
+=======
+
+The source code is copyrighted by Armin Rigo <arigo@tunes.org>, and
+distributed under the MIT License, a copy of which is included below.
+
+In the current version most graphics have been made by David
+Gowers, based on graphics from McSebi.
+
+Almost all sounds, background musics and levels are directly
+taken from the MacOS version of Bub & Bob 1 by McSebi.  Thanks
+to him for great artwork and his permission to redistribute
+it!  He released them under the following terms:
+
+   """
+      I release the graphics and sound data of my
+      program Bub & Bob 1 under the revised Artistic License.
+      Please read artistic.txt for details.
+      Sebastian Wegner <sebi@mcsebi.com>
+      Copyright (C) 2005 Sebastian Wegner
+   """
+
+
+MIT License
+===========
+
+Source Code Copyright (c) 2003-2005 Armin Rigo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

@@ -1,0 +1,271 @@
+<html>
+<head>
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>New Bub's Brothers Server</title>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#000099" alink="#FF0000">
+&nbsp;
+
+<form name="n" action="run.html" method="get">
+<input type=hidden name="time" value="%(time.time())s">
+
+%(
+def nameval(name, value, default=0, options=options):
+    s = getattr(options, name)
+    if s == value or (default and not s):
+        s = 'checked '
+    else:
+        s = ''
+    return s + 'name="%s" value="%s"' % (name, value)
+)s
+
+<center>
+<table CELLSPACING=0 CELLPADDING=0 BORDER=0 WIDTH="95%%">
+
+<tr>
+<td width="6%%" bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+<td width="6%%" bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#FFFFFF">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#F0E0E0">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#E0C0C0" align="center"><font size=+3><strong>New Server</strong></font></td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#F0E0E0">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#FFFFFF">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#FFFFFF" align="right">
+  <a href="index.html?time=%(time.time())s">Back to the main page</a>
+</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#FFFFFF" background="wave1.png"><font size=+3>&nbsp;</font></td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td>
+  <table width="100%%" cellpadding=7>
+  <tr>
+    <td width="20%%" bgcolor="#000080" align="center"><font size=+1 color="#FFFF00"><strong>Level file</strong></font></td>
+    <td bgcolor="#C0C0FF">
+      <table border=0>
+      <tr>
+        <td width=48><img src="bob.png"></td>
+        <td><select name="file">%(
+for displayname, filename in Game.FnListBoards():
+    print '<option',
+    if filename == str(options.file):
+        print 'selected',
+    print 'value="%s">' % htmlquote(filename), htmlquote(displayname)
+)s</select>
+        </td>
+      </tr>
+      </table>
+    </td>
+  </tr>
+  </table>
+</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td>
+  <table width="100%%" cellpadding=7>
+  <tr>
+    <td width="20%%" bgcolor="#000080" align="center"><font size=+1 color="#FFFF00"><strong>Levels to play</strong></font></td>
+    <td bgcolor="#C0C0FF">
+      Start at level <input type=text name="beginboard" size=3 value="%(options.beginboard or 1)s">
+and go on ...
+    </td>
+    <td bgcolor="#C0C0FF">
+
+      <input type=radio %(nameval("lvlend", "y", 1))s>&nbsp;to the end of the level file</input><br>
+      <input type=radio %(nameval("lvlend", "n"))s>&nbsp;to</input> level <input type=text name="finalboard" size=3 value="%(options.finalboard or 100)s"><br>
+      skipping levels:
+ <select name="stepboard"> %(
+steps = [
+    (1, 'none'),
+    (2, 'by steps of 2 (skip every other level)')]
+for i in range(3, 10) + range(10, 30, 5):
+    steps.append((i, 'by steps of %d levels' % i))
+for i, text in steps:
+    print '<option',
+    if str(i) == str(options.stepboard):
+        print 'selected',
+    print 'value="%d">' % i, text
+)s</select>
+    </td>
+  </tr>
+  </table>
+</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td>
+  <table width="100%%" cellpadding=7>
+  <tr>
+    <td width="20%%" bgcolor="#000080" align="center"><font size=+1 color="#FFFF00"><strong>Limited lives</strong></font></td>
+    <td bgcolor="#C0C0FF">
+      <input type=radio %(nameval("limit", "n", 1))s>&nbsp;no limited lives --- just run for points!</input><br>
+      <input type=radio %(nameval("limit", "y"))s>&nbsp;limit</input> to <input type=text name="lives" size=3 value="%(options.lives or 3)s"> lives (with an extra life for each <input type=text name="extralife" size=7 value="%(options.extralife or 50000)s"> points)<br>
+      <input type=checkbox %(nameval("limitlifegain", "y"))s>&nbsp;limit lifegain to max. <input type=text name="lifegainlimit" size=3 value="%(options.lifegainlimit or 1)s"> life per level
+    </td>
+  </tr>
+  </table>
+</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td>
+  <table width="100%%" cellpadding=7>
+  <tr>
+    <td width="20%%" bgcolor="#000080" align="center"><font size=+1 color="#FFFF00"><strong>Permanent server</strong></font></td>
+    <td bgcolor="#C0C0FF">
+      <input type=checkbox %(nameval("autoreset", "y"))s>&nbsp;Automatically restart the server after the end is reached, forever</input><br>
+      <font size=-1>Non-permanent servers time out after 2 hours of inactivity</font>
+    </td>
+  </tr>
+  </table>
+</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td>
+  <table width="100%%" cellpadding=7>
+  <tr>
+    <td width="20%%" bgcolor="#008000" align="center"><font size=+1 color="#FFFF00"><strong>Internet game</strong></font></td>
+    <td bgcolor="#C0FFC0">
+      <table border=0>
+      <tr>
+        <td width=48><img src="sfbub.png"></td>
+        <td><p><input type=checkbox %(nameval("metapublish", "y", 1))s>&nbsp;register the server on the Bub-'n-Bros meta-server, allowing it to appear on everybody's Internet Games list</input></p></td>
+      </tr>
+      </table>
+    </td>
+  </tr>
+  </table>
+</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#FFFFFF">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#FFFFFF" align="center">
+<input type=submit value="          Start Server          ">
+</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+%(
+if running: print '''
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#FFFFFF" align="center">
+<strong><font color="#FF0000">Note:</font> this will replace the server already running on this machine.</strong>
+</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+''')s
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#FFFFFF">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#F0E0E0">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#E0C0C0">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#F0E0E0">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#FFFFFF">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#000000" align="center"><img src="header.png"></td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+
+</table></center>
+</form>
+
+</body>
+</html>

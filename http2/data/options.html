@@ -1,0 +1,285 @@
+<html>
+<head>
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Settings - The Bub's Brothers</title></head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#000099" alink="#FF0000">
+&nbsp;
+
+%(
+def nameval(type, name, value=None, default=None, mangling=1, options=options):
+    if mangling:
+        name = mode.unique_id() + '_' + name
+    s = getattr(options, name) or default
+    checked = s == value
+    if type == 'option':
+        return 'option %svalue="%s"' % (checked and 'selected ' or '', value)
+    elif type == 'select':
+        return 'select name="%s"' % name
+    elif type == 'text':
+        return 'input type=text name="%s" value="%s"' % (
+            name, htmlquote(s))
+    else:
+        return 'input type=%s %sname="%s" value="%s"' % (
+            type, checked and 'checked ' or '', name, value)
+
+def begingroup(text, fgcolor, bgcolor, lightbgcolor, img, nbitems):
+    global groupinfo
+    print '<tr>'
+    print '<td width="20%"',
+    print 'rowspan="%d" bgcolor="%s" align="center">' % (nbitems or 1, bgcolor)
+    print '<font size=+1 color="%s"><strong>%s</strong></font>' % (fgcolor, text)
+    print '</td>'
+    groupinfo = [lightbgcolor, bgcolor, fgcolor, 0, 0, img]
+    if not nbitems:
+        begingroupitem()
+        endgroupitem()
+def begingroupitem(highlight=0):
+    if groupinfo[4]:
+        print '<tr>'
+    groupinfo[4] += 1
+    groupinfo[3] = highlight
+    print '<td width="80%%" bgcolor="%s">' % groupinfo[highlight]
+    print '<table width="100%" border=0><tr>'
+def endgroupitem():
+    print '<td width=40 align="right" valign="top">'
+    if groupinfo[3]:
+        print '<img src="%s">' % groupinfo[-1]
+    print '</td></tr></table>'
+    print '</td></tr>'
+def endgroup():
+    pass
+
+def beginmode():
+    highlight = mode in currentmodes
+    begingroupitem(highlight)
+
+    print '<td width=36 align="right" valign="center">'
+    err = mode.imperror()
+    if highlight:
+        url = None
+        err = err or "selected"
+        print '<img alt="selected" src="checked.png">'
+    elif err:
+        url = None
+        print '<img alt="%s" src="disabled.png">' % err
+    else:
+        url = "options.html?%s=%s&savetime=%s" % (mode.prefix, mode.name,
+                                                  time.time())
+        err = "select"
+        print '<a href="%s"><img alt="select" src="unchecked.png"></a>' % url
+    print '</td>'
+
+    print '<td width="20%" valign="center">'
+    if url: print '<a href="%s">' % url,
+    print htmlquote(err),
+    if url: print '</a>',
+    print '</td>'
+
+    print '<td width="80%"><font size=+1><strong>',
+    print htmlquote(mode.name),
+    print '</strong></font>'
+    if mode.url:
+        print '&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;<a href="%s"><i>web site</i></a>' % mode.url
+    print '<br>'
+    print htmlquote(mode.descr)
+    return highlight
+
+def beginmodeoptions():
+    print '<br>'
+    print '<table border=0><tr><td>'
+
+def endmodeoptions():
+    print '</td><td align="center" valign="bottom">'
+    print '<input type=submit value=" Save ">'
+    print '</td></tr></table>'
+
+def endmode():
+    print '</td>'
+    endgroupitem()
+
+def modeitems(modelist):
+    global mode
+    for mode in modelist:
+        if beginmode():
+            txt = mode.htmloptionstext(nameval)
+            if txt:
+                beginmodeoptions()
+                print txt
+                endmodeoptions()
+        endmode()
+)s
+
+
+<center><table CELLSPACING=0 CELLPADDING=0 BORDER=0 WIDTH="95%%">
+
+<tr>
+<td width="6%%" bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+<td width="6%%" bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#E0E0D0">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#D0D0D0">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#C0C0C0" align="center"><font size=+3><strong>Settings</strong></font></td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#D0D0D0">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#E0E0D0">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#E0E0D0" align="right">
+  <a href="http://bub-n-bros.sourceforge.net/help.html">Technical documentation</a> -
+  <a href="index.html?time=%(time.time())s">Back to the main page</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#E0E0D0">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#E0E0D0">
+
+<form name="options" action="options.html" method="get">
+<input type=hidden name="savetime" value="%(time.time())s">
+<table border=0 cellspacing=4>
+
+
+
+%(
+graphicmodes = self.graphicmodeslist()
+currentmodes = self.localmodes()
+begingroup('Display driver', '#800000', '#FFC000', '#C0C0C0',
+           'lbeb.png', len(graphicmodes))
+modeitems(graphicmodes)
+endgroup()
+)s
+
+<tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+
+
+
+%(
+soundmodes = self.soundmodeslist()
+java = graphicmodes[0] in currentmodes
+begingroup('Sound driver', '#800000', '#FFFF00', '#C0C0C0',
+           'lbiob.png', java and 1 or len(soundmodes))
+if java:
+    begingroupitem(1)
+    print '<td><font size=-1>Java Applet always does sounds, but',
+    print 'background music is not implemented</font></td>'
+    endgroupitem()
+else:
+    modeitems(soundmodes)
+endgroup()
+)s
+
+<tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+
+%(
+begingroup('Network options', '#004000', '#80FF00', None, 'lbib.png', 1)
+begingroupitem(1)
+)s
+<td>
+  <table border=0><tr>
+    <td>
+   <p>Network ports are automatically assigned, but you can optionally choose fixed
+      ones and let them in through your firewall. <font size=-1>Clients using the
+      "Internet games" meta-server can usually connect even through firewalls.
+      Moreover servers can re-route UDP traffic to clients behind firewalls over TCP.
+%(
+if java:
+    print "These settings don't apply to the Java applet."
+)s    </font></p>
+
+   <p>TCP game server port: <%(nameval("text", "port_LISTEN", default="", mangling=0))s><br>
+      HTTP server port: <%(nameval("text", "port_HTTP", default="", mangling=0))s></p>
+
+   <p>Client incoming UDP port (or <code>host:port</code> if redirected): <%(nameval("text", "port_CLIENT", default="", mangling=0))s><br>
+      <%(nameval("radio", "datachannel", "ucp", mangling=0))s>always UDP</input>
+      <%(nameval("radio", "datachannel", "tcp", mangling=0))s>no UDP, only TCP</input>
+      <%(nameval("radio", "datachannel", "auto", default="auto", mangling=0))s>Auto-detect</input><br>
+      Client incoming TCP port (metaserver-directed back-connections): <%(nameval("text", "port_BACK", default="", mangling=0))s></p>
+    </td>
+    <td width=12></td>
+    <td align="center" valign="bottom">
+      <a href="http://bub-n-bros.sourceforge.net/help.html#port">Help!</a><br><br>
+      <input type=submit value=" Save ">
+    </td>
+  </tr></table>
+</td>
+%(
+endgroupitem()
+endgroup()
+)s
+
+</table>
+</form>
+
+</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#E0E0D0">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#E0E0D0" align="right">
+<form name="reset" action="options.html" method="get">
+  <input type=hidden name="time" value="%(time.time())s">
+  <input type=submit name="reset" value="  Restore all defaults  ">
+</form>
+</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+
+</table></center>
+
+</body>
+</html>

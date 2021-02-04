@@ -1,0 +1,63 @@
+ ======================================================= 
+====               The Bub's Brothers                ====
+ ======================================================= 
+
+
+Home page:
+    http://bub-n-bros.sourceforge.net/
+
+Installation instructions:
+    http://bub-n-bros.sourceforge.net/download.html
+
+Basic instructions on how to play:
+    http://bub-n-bros.sourceforge.net/howto.html
+
+If you unpacked this from an official release, you will find a copy of
+some pages in the doc/ subdirectory.
+
+Installation on *NIX
+--------------------
+
+NOTE!! THIS IS STILL EXPERIMENTAL. The game does not have to be
+       installed to play. The currently directory layout was not
+       designed with Unix-style installation in mind. For a
+       QUICK START see in doc/Introduction.html.
+
+The game (and the man pages) can be installed on *NIX systems into a
+standard location like this:
+
+1) Check locations and permissions in the top-level Makefile. The game
+   is installed into /usr/local by default.
+
+2) Optionally run "make" to build extensions that enable cool powerups
+   and xshm operation. Recommended
+
+3) Run "make install" as root or other user with sufficient rights.
+
+NOTE!! The game logic is still quite directory-layout dependant ATM so
+       installing is implemented by copying the whole directory into
+       /usr/local/lib/ (the location can be changed in the Makefile)
+       and making symlinks to appropriate directories. This procedure
+       will probably be cleaned up in future releases.
+
+Copyright
+---------
+
+Almost all sprite images, sounds, background musics and levels are
+directly taken from the MacOS version of Bub & Bob 1 by McSebi, and
+redistributed with his gracious permission.  Most graphics have been
+improved or remade by David Gowers.
+
+  http://www.mcsebi.de
+
+See LICENSE.txt for more information.
+
+
+Authors
+-------
+
+Programming:     Armin Rigo
+Art:             David Gowers, based on graphics from McSebi
+Levels:          Gio & Armin
+Special thanks:  Odie & Brachamutanda
+Beta-testers:    IMA Connection

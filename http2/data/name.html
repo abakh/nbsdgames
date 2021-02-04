@@ -1,0 +1,189 @@
+<html>
+<head>
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Name Bub's Brothers</title>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#000099" alink="#FF0000">
+&nbsp;
+
+<form name="n" action="name.html" method="get">
+<center>
+
+<table CELLSPACING=0 CELLPADDING=0 BORDER=0 WIDTH="95%%">
+
+<tr>
+<td width="6%%" bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#000000" colspan="3">&nbsp;</td>
+<td width="6%%" bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#000000" colspan="3">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#FFFFFF" colspan="3">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#F0E0E0" colspan="3">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#E0C0C0" align="center" colspan="3"><font size=+3><strong>Player Names</strong></font></td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#F0E0E0" colspan="3">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#FFFFFF" colspan="3">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#FFFFFF" colspan="3" align="right">
+  <a href="index.html?time=%(time.time())s">Back to the main page</a>
+</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#FFFFFF" colspan="3" background="wave1.png"><font size=+3>&nbsp;</font></td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+
+%(
+buttons = {
+0: """
+""",
+1: """
+"""}
+for id, img, bgcolor in [
+        (0, 'bub.png', '#c0ffc0'),
+        (1, 'bob.png', '#c0c0ff'),
+        (2,'boob.png', '#ffc0c0'),
+        (3, 'beb.png', '#ffc000'),
+        (4,'biob.png', '#ffff00'),
+        (5, 'bab.png', '#c04040'),
+        (6, 'bib.png', '#c0c0c0'),
+        (7,'baub.png', '#fc60ff'),
+        (8,'beab.png', '#4fa4ff'),
+        (9,'biab.png', '#0ab237'),
+          ]:
+    keyid = "player%d" % id
+    playername = options.get(keyid) or ''
+    playername = playername.strip()
+    for team in [1,2]:
+        if playername.endswith('(%d)' % team):
+            playername = playername[:-3].strip()
+            break
+    else:
+        team = 'off'
+    def nameval(value, team=team, teamid="team%d" % id):
+        s = 'value="%s"' % (value,)
+        if team == value:
+            s += ' selected'
+        return s
+    print """
+<tr>
+        <td bgcolor="#000000">&nbsp;</td>
+        <td bgcolor="%s" align="right" width="35%%"><img src="%s"></td>
+        <td bgcolor="%s" align="center" width="10%%"><input type=text size=16 name="%s" value="%s"></td>
+        <td bgcolor="%s" align="left">&nbsp;&nbsp;
+          <select name="team%d">
+          <option %s>no team<option %s>Team 1<option %s>Team 2</select>
+        </td>
+        <td bgcolor="#000000">&nbsp;</td>
+</tr>
+""" % (bgcolor, img, bgcolor, keyid, playername,
+       bgcolor, id, nameval('off'), nameval(1), nameval(2))
+)s
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#FFFFFF" colspan="3">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td colspan=3 align="center" valign="top" bgcolor="#FFFFFF">
+<input type=submit name="s" value="  Save  ">&nbsp;&nbsp;&nbsp;
+<input type=submit name="f" value=" Fill in missing names ">&nbsp;&nbsp;&nbsp;
+<input type=submit name="c" value="  Clear  ">
+</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#FFFFFF" colspan="3">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#F0E0E0" colspan="3">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#E0C0C0" colspan="3">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#F0E0E0" colspan="3">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#FFFFFF" colspan="3">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#000000" colspan="3" align="center"><img src="header.png"></td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+<tr>
+<td bgcolor="#000000">&nbsp;</td>
+<td bgcolor="#000000" colspan="3">&nbsp;</td>
+<td bgcolor="#000000">&nbsp;</td>
+</tr>
+
+
+</table>
+
+
+</center>
+</form>
+
+</body>
+</html>

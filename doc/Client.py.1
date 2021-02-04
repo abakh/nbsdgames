@@ -1,0 +1,200 @@
+.\" $Id: Client.py.1,v 1.3 2005/05/06 21:32:38 arigo Exp $
+.\"
+.\" Process this file with
+.\" groff -man -Tascii Client.py.1
+.\"
+
+.TH Client.py 1 "APRIL 2005" Linux "User Manuals"
+
+.SH NAME
+Client.py \- the bub-n-bros client
+
+.SH SYNOPSIS
+.B python Client.py [
+.I options
+.BI "] [" host [: port ]]
+.PP
+Note that this script is in the
+.B display/ 
+subdirectory of the original directory layout.
+
+.SH DESCRIPTION
+This is the bub-n-bros client that connects to bub-n-bros servers
+started with
+.BR bb.py "(1) or " BubBob.py (1) .
+It supports many different audio and video drivers and is very
+multi-platform.
+
+.SH OPTIONS
+
+.TP 
+.I host
+Search for a game on the given machine, and connect to one if found. 
+If this is not defined, search for servers on the local network.
+
+.TP
+.IB host : port
+Connect to server running on given port on given host. If this is not
+defined, search for servers on the local network.
+
+.TP
+.BI --bits= N
+This option concerns only the
+.B windows
+audio driver. Set bits per sample. Valid values are 8 and 16 (default).
+
+.TP
+.BI "-d " DRIVER ", --display=" DRIVER
+Use video driver
+.IR DRIVER .
+Valid drivers are:
+
+.RS
+.TP
+.B X
+X Window driver for Linux and Unix systems with an X server
+running. See the 
+.B --shm
+option.
+.TP
+.B windows
+MS Windows driver.
+.TP
+.B pygame
+PyGame gaming library for python (if installed) has video output. Use
+it if this is specified. See
+.BR http://www.pygame.org " and the " --transparency " option."
+.TP
+.B gtk
+Use the PyGTK library (if installed). See
+.BR http://www.pygtk.org/ " and the " --zoom " option."
+.RE
+
+.TP
+.B -h, --help
+Display help.
+
+.TP
+.BI --fmt= format
+This option concerns only the
+.B linux
+audio driver. Set the sound data format. Defaults to
+.BR S16_NE .
+You can get a list of supported formats with
+.BR --fmt=list .
+
+.TP
+.BI --freq= N
+This option concerns only the 
+.BR linux " and " windows
+audio drivers. Set mixing frequency to
+.I N
+(in Hz). Defaults to 44100.
+
+.TP
+.B -m, --metaserver
+Connect with the help of the Metaserver (see 
+.BR bb.py (1)
+for more info).  Run
+.I Client.py -m
+to print a table of currently running servers, pick the
+the exact IP address and port of the server of your choice
+from the table, and run again
+.I Client.py -m
+.BR host:port .
+
+.TP
+.BI "--port TCP=" port
+In conjunction with the
+.I -m
+option, force a specific
+.I port
+on which to listen for an incoming TCP connexion from the
+remote server.  This is only used if a direct connexion to
+the server fails.  A random port number is picked by default.
+This option is useful if you are behind a firewall but can
+let TCP connexions on specific ports reach you.
+
+.TP
+.BI "--port UDP=" port
+Force a specific
+.I port
+on which to listen for incoming UDP traffic (animation
+data).  Useful if you are behind a firewall but can let UDP
+traffic on a given
+.I port
+pass through.  This is optional: animation data is routed
+over the TCP link if it does not appear to reach the client.
+A random port number is picked by default.
+
+.TP
+.BI "-s " DRIVER ", --sound=" DRIVER
+Use driver
+.I DRIVER
+for audio. Valid drivers are:
+
+.RS
+.TP
+.B pygame
+Use the audio capabilities of the PyGame library
+.RB ( http://www.pygame.org ).
+
+.TP
+.B linux
+Use the linux audio mixer. See the
+.BR --freq " and " --fmt " options."
+
+.TP
+.B windows
+Use the Windows audio mixer. See the
+.BR --freq " and " --bits "options."
+
+.TP
+.B off
+No sounds.
+.RE
+
+
+.TP
+.B --shm=yes, --shm=no
+This option concerns only the
+.B X
+display driver.  Disable or enable the
+.B shm
+(Shared Memory) extension. It is enabled by default and should only be
+disabled for remote X connections and old X servers.
+
+.TP
+.B -t
+Use the
+.B TCP
+protocol. The default is to autodetect the protocol. See the
+.B -u
+option.
+
+.TP
+.B --transparency=yes, --transparency=no
+This option concerns only the 
+.B pygame
+display driver. Disable or enable transparent bubbles. Enabled by
+default. Disabling makes game a bit faster.
+
+.TP
+.B -u
+Use the
+.B UDP
+protocol. The default is to autodetect the protocol. See the
+.B -t
+option.
+
+.TP
+.BI --zoom= N %
+This option concerns only the 
+.B gtk
+display driver. Scale output by
+.IR N %.
+
+.SH SEE ALSO
+.BR bb.py (1)
+.BR Client.py (1)
+.BR python (1)

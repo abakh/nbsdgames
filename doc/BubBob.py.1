@@ -1,0 +1,32 @@
+.\" $Id: BubBob.py.1,v 1.2 2005/04/13 18:24:17 opqdonut Exp $
+.\"
+.\" Process this file with
+.\" groff -man -Tascii BubBob.py.1
+.\"
+
+.TH BubBob.py 1 "APRIL 2005" Linux "User Manuals"
+
+.SH NAME
+BubBob.py \- Generic startup script for bub-n-bros
+
+.SH SYNOPSIS
+.B BubBob.py
+.br
+.B python BubBob.py
+
+.SH DESCRIPTION
+.B BubBob.py
+runs
+.BR bb.py (1)
+(the bub-n-bros server) and then tries to open the url of its control
+panel in your webbrowser.
+
+.SH ENVIRONMENT
+The environment variable BROWSER affects the choosing of the browser
+on Unix systems.
+
+.SH SEE ALSO
+.BR bb.py (1)
+.BR Client.py (1)
+.BR python (1)
+
