@@ -1,6 +1,6 @@
 # New BSD Games
  *You have a computing machine from 1980's  and you wonder how you can use it? <br/>
-  You are a bored sysadmin with no work, and want to kill time without being fired?  <br/>
+  You are a bored sysadmin with no work, and need to kill time looking busy with terminal?  <br/>
   You are the DSL developer and have cancelled the project because you lacked games? <br/>
   Those creepy GTK/QT games make you cringe? <br/>
   You have to make a Reversi AI for your homework and you don't know where to copy it from? <br/>
@@ -27,10 +27,11 @@ The games include:
 * Muncher
 * Miketron
 * Redsquare (Conway's Game of Life made playable!)
+* Darrt (with original gameplay!)
 
 The difficulty and/or dimensions are adjustable through simple command line options, you can play a minesweeper game that take hours to complete, or exprience hexadecimal sudoku and 8x8 fifteen-like puzzles!
 
-Play on xterm for best exprience.
+Play on xterm for best experience.
 
 ## Platforms
 
@@ -83,9 +84,8 @@ Windows
 * Share these with your friends and others
 * Your stars make the repo more findable in github :star:
 * Tell me your feature requests, bug reports, etc.
-* Tell me the games you want to be added (but in the same genre, i can't port Angry Birds to curses! :)
+* Tell me the games you want to be added (but in the same genre, I can't port Angry Birds to curses! :)
 * Make a package for your distro (or put it on repos if the package is not there)
 * Does anyone understand debian's .orig.tar.gz and the process to make packages to the repos? Any help would be appreciated.
-
 
 Also thank to all the people who helped in the previous versions, all what i requested was done! I didn't expect such an amount of assistance on this project :heart:
