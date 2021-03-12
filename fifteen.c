@@ -123,19 +123,15 @@ void shuffle(char board[size][size]){
 	for(int m=0;m<10000;++m){
 		switch(rand()%4){
 			case 0:
-				addch('0');
 				slide_one(board,ey,ex+1);
 				break;
 			case 1:
-				addch('1');
 				slide_one(board,ey,ex-1);
 				break;
 			case 2:
-				addch('2');
 				slide_one(board,ey+1,ex);
 				break;
 			case 3:
-				addch('3');
 				slide_one(board,ey-1,ex);
 				break;
 		}
