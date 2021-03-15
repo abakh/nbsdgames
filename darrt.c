@@ -60,6 +60,9 @@ aim aims[26];
 aim landed_aims[SHOTS_WHEN_STARTING];//so an aim couldn't pass below one that has already landed, doesn't make sense visually.
 
 byte shots,aims_to_stop;
+
+char msg[150]={0};
+byte msg_show=0;
 byte digit_count(int num){
 	byte ret=0;
 	do{
@@ -89,7 +92,7 @@ void red_border(void){
 
 void fill_aims(){
 	for(byte i=0;i<26;++i){
-		aims[i].y= randint(0,HLEN);
+		aims[i].y= randint(8,HLEN);
 		aims[i].x= randint(0,HWID);
 		aims[i].angle=randint(0,628)/100;
 		aims[i].v=1;
@@ -122,6 +125,19 @@ void aim_lands(aim *a){
 	--aims_to_stop;
 	score+=calculate_points(a);
 	a->visible=0;
+
+	float distance= center_distance((byte)a->y,(byte)a->x);
+	if((byte)a->y==HLEN && (byte)a->x==HWID){
+		strcpy(msg,"Bravo!");
+	}
+	else if(distance<2){
+		strcpy(msg,"Very close...");
+	}
+	else{
+		goto NoMessage;
+	}
+	msg_show=30;
+	NoMessage: return;
 }
 void move_aim(aim *a){
 	if(a->brake==1){
@@ -244,44 +260,27 @@ void draw(){
 	for(byte i=0;i<26;++i){
 		draw_aim(aims[i]);
 	}
+	if(msg_show){
+		--msg_show;
+		mvaddstr(LEN-1,0,msg);
+	}
 }
 
-void end_animation(){
+void end_scene(){
 	for(byte y=0;y<LEN;++y){
 		for(byte x=0;x<WID;++x){
 			mvaddch(y,x,background[y][x]);
 		}
 	}
-	for(byte i=0;i<26;++i){
-		if(aims[i].brake){
-			draw_aim(aims[i]);
-		}
-	}
-	refresh();
-	long points;
-	float distance;
-	byte bold=0;
-	sleep(2);
-	for(byte i=0;i<26;++i){
-		if(aims[i].brake){
-			distance=(int)center_distance((byte)aims[i].y,(byte)aims[i].x);
-			if(distance>HLEN){
-				points=-2*pow(2,distance-HLEN);
-			}
-			else{
-				points=pow(2,HLEN-distance);
-			}
-			score+=points;
-			bold=(int)(aims[i].x/4+ i*distance)%2;//so numbers displayed don't mix 
 
-			mvprintw(5,0,"Score: %d",score);
-			attron(colors[2]|(A_BOLD*bold));
-			mvprintw(aims[i].y,aims[i].x,"%d",points);
-			attroff(colors[2]|(A_BOLD*bold));
-			refresh();
-			usleep(500000);
-		}
+	logo();
+	mvprintw(5,0,"Score: %d",score);
+	for(byte i=0;i<SHOTS_WHEN_STARTING-aims_to_stop;++i){
+		draw_aim(landed_aims[i]);
 	}
+	mvaddstr(LEN-1,0,"Press any key to continue:");
+	getch();
+	refresh();
 }
 
 byte scorewrite(void){// only saves the top 10, returns the place in the chart
@@ -441,6 +440,7 @@ int main(void){
 	halfdelay(1);
 	curs_set(0);
 	score=0;
+	msg_show=0;
 	aims_to_stop=shots=SHOTS_WHEN_STARTING;
 	fill_aims();
 	while(1){
@@ -459,6 +459,10 @@ int main(void){
 				--shots;
 			}
 		}
+		if(input=='Q'){
+			strcpy(msg,"Ctrl-C to quit.");
+			msg_show=50;
+		}
 		if(input!=ERR){
 			usleep(100000);
 			flushinp();
@@ -471,11 +475,11 @@ int main(void){
 		}
 	}
 	End:
-	//end_animation();
 	flushinp();
 	nocbreak();
 	cbreak();
 	curs_set(1);
+	end_scene();
 	showscores(scorewrite());
 	attron(colors[0]|A_STANDOUT);
 	mvprintw(LEN-1,HWID-11,"Wanna play again? (y/n)");
