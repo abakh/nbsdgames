@@ -28,7 +28,7 @@ The games include:
 * Miketron
 * Redsquare (Conway's Game of Life made playable!)
 * Darrt (with original gameplay!)
-
+* Snakeduel
 The difficulty and/or dimensions are adjustable through simple command line options, you can play a minesweeper game that take hours to complete, or exprience hexadecimal sudoku and 8x8 fifteen-like puzzles!
 
 Play on xterm for best experience.
@@ -57,10 +57,10 @@ They have been ported to Plan9 thanks to Jens Staal!
 Like this:
 
 ``` sh
-	 git clone https://github.com/abakh/nbsdgames
+        git clone https://github.com/abakh/nbsdgames
         cd ./nbsdgames
-        export PREFIX= ~/bin 
-        make install
+        make
+        sudo make install # or use the binaries already compiled
 ```
 ## Packages
 Also, If you are on a debian-based OS on a 64-bit PC you can download the deb package and simply install it with dpkg or apt.
