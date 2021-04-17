@@ -51,8 +51,7 @@ They have been ported to Plan9 thanks to Jens Staal!
 
 1) Download the files
 2) Go to the sources directory
-3) Set the environment variable PREFIX to the address you want them to be in
-4) Install
+3) Install
 
 Like this:
 
