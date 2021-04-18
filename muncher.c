@@ -26,8 +26,8 @@ typedef signed char byte;
 
 /* The Plan9 compiler can not handle VLAs */
 #ifdef NO_VLA
-#define len 10
-#define wid 40
+#define len 36
+#define wid 80
 
 #ifdef Plan9
 int usleep(long usec) {
