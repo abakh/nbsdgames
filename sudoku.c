@@ -283,7 +283,7 @@ void help(void){
 	mvprintw(8,0,"n : New board");
 	mvprintw(9,0,"r : Restart");
 	if(size>4)
-		printw(" (some of these alphabet controls maybe overrided in certain sizes)");
+		printw(" (some of these alphabet controls maybe overridden in certain sizes)");
 	mvprintw(10,0,"? : Hint (not like in other games)");
 	mvprintw(11,0,"F1 & F2: Help on controls & gameplay");
 	mvprintw(12,0,"PgDn,PgUp,<,> : Scroll");
