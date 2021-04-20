@@ -234,7 +234,7 @@ void gameplay(void){
 	mvprintw(3,0,"  **** THE GAMEPLAY ****");
 	attroff(A_BOLD);
 	move(4,0);
-	printw("The game is similiar to Tic Tac Toe:\n");
+	printw("The game is similar to Tic Tac Toe:\n");
 	printw("The players write S and O in the squares\n");
 	printw("and making the straight connected sequence\n");
 	printw("S-O-S makes you a score; obviously, the\n");
