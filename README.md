@@ -64,13 +64,15 @@ Like this:
         sudo make install # or use the binaries already compiled
 ```
 ## Packages
-Also, If you are on a debian-based OS on a 64-bit PC you can download the deb package and simply install it with dpkg or apt.
-the deb package(old): https://github.com/abakh/nbsdgames/releases/download/v2.0/nbsdgames_amd64.deb
+Also, If you are on a debian-based OS (Ubuntu, Mint) on a 64-bit PC you can download the deb package and simply install it with dpkg or apt.
+the deb package: https://sid.ethz.ch/debian/nbsdgames/nbsdgames_4.0-1_amd64.deb
+Thanks to Gürkan Myczko for packaging.
 
-It's available on AUR thanks to Elias Riedel Gårding: https://aur.archlinux.org/packages/nbsdgames-git/
+It's available on Arch (AUR)  thanks to Elias Riedel Gårding: https://aur.archlinux.org/packages/nbsdgames-git/
 (The commands start with nb to avoid name conflict)
 
-It's been made available for openSUSE thanks to Zinjanthropus: https://build.opensuse.org/package/show/home:Zinjanthropus/nbsdgames
+It's been made available for rpm distros thanks to Zinjanthropus: https://build.opensuse.org/package/show/home:Zinjanthropus/nbsdgames
+
 ## How do these look like
 Linux+xterm+tmux
 ![Screenshot from 4 games in tmux](https://raw.githubusercontent.com/abakh/nbsdgames/master/screenshot.png)
