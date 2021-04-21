@@ -5,6 +5,7 @@ APE=/sys/src/ape
 TARG=\
     battleship \
     checkers \
+    darrt \
     fifteen \
     fisher \
     jewels \
@@ -17,6 +18,7 @@ TARG=\
     redsquare \
     reversi \
     sos \
+    snakeduel \
     sudoku
 
 BIN=/$objtype/bin/games
