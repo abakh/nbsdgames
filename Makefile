@@ -1,10 +1,10 @@
 # -*- Makefile -*-
-CFLAGS= -O3 -lncurses -Wno-unused-result
+CFLAGS?= -O3 -lncurses -Wno-unused-result
 #-O3 --std=c99 -lcurses -DNO_MOUSE for NetBSD curses
 #adding --std=c99 makes warnings in GNU, and the blame is upon glibc feature test macros. my code is correct.
 
-GAMES_DIR=/usr/games
-SCORES_DIR=/usr/games
+GAMES_DIR?=/usr/games
+SCORES_DIR?=/usr/games
 
 all: jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare darrt snakeduel
 scorefiles:
