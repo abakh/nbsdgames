@@ -73,6 +73,7 @@ It's available on Arch (AUR)  thanks to Elias Riedel Gårding: https://aur.archl
 
 It's been made available for rpm distros thanks to Zinjanthropus: https://build.opensuse.org/package/show/home:Zinjanthropus/nbsdgames
 
+It's available on pkgsrc (default on NetBSD, Minix, supports everything else) thanks to nia: https://pkgsrc.se/games/nbsdgames
 ## How do these look like
 Linux+xterm+tmux
 ![Screenshot from 4 games in tmux](https://raw.githubusercontent.com/abakh/nbsdgames/master/screenshot.png)
