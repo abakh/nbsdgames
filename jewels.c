@@ -1,10 +1,12 @@
 /*
 Jewels
 
-Authored by abakh <abakh@tuta.io>
-No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
 
-compile with -lnucrses
+Authored by abakh <abakh@tuta.io>
+To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
+
+You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
 
 A pair of jewels appear on top of the window, And you can move and rotate them while they are falling down.
 If you make a vertical or horizontal row of 4 jewels they will explode and add up to your score.

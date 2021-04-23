@@ -4,9 +4,11 @@
 | IPES
 
 Authored by abakh <abakh@tuta.io>
-No rights are reserved and this software comes with no warranties of any kind to the extent permitted by law.
+To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
 
-compile with -lncurses
+You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+
 */
 
 #include <curses.h>
