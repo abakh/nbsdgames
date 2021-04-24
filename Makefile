@@ -62,6 +62,6 @@ clean:
 	rm ./jewels ./sudoku ./checkers ./mines ./reversi ./battleship ./rabbithole ./sos ./pipes ./fifteen ./memoblocks ./fisher ./muncher ./miketron ./redsquare ./darrt ./snakeduel
 uninstall:
 	rm $(GAMES_DIR)/jewels $(GAMES_DIR)/sudoku $(GAMES_DIR)/checkers $(GAMES_DIR)/mines $(GAMES_DIR)/reversi $(GAMES_DIR)/battleship $(GAMES_DIR)/rabbithole $(GAMES_DIR)/sos $(GAMES_DIR)/pipes $(GAMES_DIR)/fifteen $(GAMES_DIR)/memoblocks $(GAMES_DIR)/fisher $(GAMES_DIR)/muncher $(GAMES_DIR)/miketron $(GAMES_DIR)/redsquare $(GAMES_DIR)/darrt $(GAMES_DIR)/snakeduel
-install: scorefiles jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare darrt snakeduel
+install: jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare darrt snakeduel
 	cp jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare darrt snakeduel $(GAMES_DIR)
 
