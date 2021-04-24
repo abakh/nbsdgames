@@ -19,6 +19,7 @@ TODO make it like puyo puyo instead of the remake of what i poorly remembered*/
 #include <string.h>
 #include <stdlib.h>
 #include "config.h"
+#include "common.h"
 #define LEN 17
 #define WID 19
 #define DELAY 2
@@ -32,70 +33,22 @@ byte jx,jy; //first jewel's position
 byte kx,ky;//second jewel's position in relation to that of j
 long score=0;
 char* controls = "j,l-Move k-Rotate p-Pause q-Quit";
-FILE* scorefile;
-byte scorewrite(long score){// only saves the top 10
-	bool deforno;
-	if( !getenv("JW_SCORES") && (scorefile= fopen(JW_SCORES,"r")) ){
-		deforno=1;
-	}
-	else{
-		deforno=0;
-		if( !(scorefile = fopen(getenv("JW_SCORES"),"r")) ){
-			fprintf(stderr,"\nNo accessible score files found. You can make an empty text file in %s or set JW_SCORES to such a file to solve this. \n",JW_SCORES);
-			exit(EXIT_SUCCESS);
-		}
-	}
 
-	char namebuff[SAVE_TO_NUM][60];
-	long scorebuff[SAVE_TO_NUM];
+byte save_score(void){
+	return fallback_to_home("jewels_scores",score,SAVE_TO_NUM);
 
-	memset(namebuff,0,SAVE_TO_NUM*60*sizeof(char) );
-	memset(scorebuff,0,SAVE_TO_NUM*sizeof(long) );
-
-	long fuckingscore =0;
-	char fuckingname[60]={0};
-	byte location=0;
-
-	while( fscanf(scorefile,"%59s : %ld\n",fuckingname,&fuckingscore) == 2 && location<SAVE_TO_NUM ){
-		strcpy(namebuff[location],fuckingname);
-		scorebuff[location] = fuckingscore;
-		++location;
-
-		memset(fuckingname,0,60);
-		fuckingscore=0;
-	}
-	if(deforno)
-		scorefile = fopen(JW_SCORES,"w+");//get rid of the text
-	else
-		scorefile = fopen(getenv("JW_SCORES"), "w+") ;
-	if(!scorefile){
-		printf("\nThe file cannot be opened in w+.\n");
-		exit(EXIT_SUCCESS);
-	}
-
-	byte itreached=location;
-	byte ret = -1;
-	bool wroteit=0;
-
-	for(location=0;location<=itreached && location<SAVE_TO_NUM-wroteit;++location){
-		if(!wroteit && (location>=itreached || score>=scorebuff[location]) ){
-			fprintf(scorefile,"%s : %ld\n",getenv("USER"),score);
-			ret=location;
-			wroteit=1;
-		}
-		if(location<SAVE_TO_NUM-wroteit && location<itreached)
-			fprintf(scorefile,"%s : %ld\n",namebuff[location],scorebuff[location]);
-	}
-	fflush(scorefile);
-	return ret;
 }
-void showscores(byte playerrank){
+void show_scores(byte playerrank){
+	if(playerrank==FOPEN_FAIL){
+		printf("Could not open scorefile.");
+		abort();
+	}
 	if(playerrank == 0){
 		char formername[60]={0};
 		long formerscore=0;
-		rewind(scorefile);
-		fscanf(scorefile,"%*s : %*d\n");
-		if ( fscanf(scorefile,"%s : %ld\n",formername,&formerscore)==2){
+		rewind(score_file);
+		fscanf(score_file,"%*s : %*d\n");
+		if ( fscanf(score_file,"%s : %ld\n",formername,&formerscore)==2){
 			printf("\n*****CONGRATULATIONS!****\n");
 			printf("     _____    You bet the\n");
 			printf("   .'     |      previous\n");
@@ -114,15 +67,16 @@ void showscores(byte playerrank){
 	char pname[60] = {0};
 	long pscore=0;
 	byte rank=0;
-	rewind(scorefile);
+	rewind(score_file);
 	printf("\n>*>*>Top %d<*<*<\n",SAVE_TO_NUM);
-	while( rank<SAVE_TO_NUM && fscanf(scorefile,"%s : %ld\n",pname,&pscore) == 2){
+	while( rank<SAVE_TO_NUM && fscanf(score_file,"%s : %ld\n",pname,&pscore) == 2){
 		if(rank == playerrank)
 			printf(">>>");
 		printf("%d) %s : %ld\n",rank+1,pname,pscore);
 		++rank;
 	}
 	putchar('\n');
+	fclose(score_file);
 }
 //apply gravity
 bool fall(void){
@@ -386,6 +340,6 @@ int main(void){
         endwin();
         printf("%s _Jewels_ %s\n",jwstr,jwstr);
         printf("You have scored %ld points.\n",score);
-        showscores(scorewrite(score));
+        show_scores(save_score());
         return EXIT_SUCCESS;
 }

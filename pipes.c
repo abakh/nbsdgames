@@ -18,6 +18,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include <time.h>
 #include <signal.h>
 #include "config.h"
+#include "common.h"
 #define UP 1
 #define RIGHT 2
 #define DOWN 4
@@ -44,8 +45,6 @@ int py,px,fy,fx;//p: pointer f: fluid
 bitbox tocome[5]={0};//the row of pipes in the left side
 chtype green=A_BOLD;//will use bold font instead of green if colors are not available
 long score;
-FILE* scorefile;
-char error [150]={0};
 
 void logo(void){
 	mvprintw(0,0," _ ");
@@ -53,68 +52,16 @@ void logo(void){
 	mvprintw(2,0,"| IPES");
 }
 
-byte scorewrite(void){// only saves the top 10, returns the place in the chart
-	bool deforno;
-	if( !getenv("PP_SCORES") && (scorefile= fopen(PP_SCORES,"r")) ){
-		deforno=1;
-	}
-	else{
-		deforno=0;
-		if( !(scorefile = fopen(getenv("PP_SCORES"),"r")) ){
-			sprintf(error,"No accessible score files found. You can make an empty text file in %s or set PP_SCORES to such a file to solve this.",PP_SCORES);
-			return -1;
-		}
-	}
+byte save_score(void){
+	return fallback_to_home("pipes_scores",score,SAVE_TO_NUM);
 
-	char namebuff[SAVE_TO_NUM][60];
-	long scorebuff[SAVE_TO_NUM];
-
-	memset(namebuff,0,SAVE_TO_NUM*60*sizeof(char) );
-	memset(scorebuff,0,SAVE_TO_NUM*sizeof(long) );
-
-	long fuckingscore =0;
-	char fuckingname[60]={0};
-	byte location=0;
-
-	while( fscanf(scorefile,"%59s : %ld\n",fuckingname,&fuckingscore) == 2 && location<SAVE_TO_NUM ){
-		strcpy(namebuff[location],fuckingname);
-		scorebuff[location] = fuckingscore;
-		++location;
-
-		memset(fuckingname,0,60);
-		fuckingscore=0;
-	}
-	if(deforno)
-		scorefile = fopen(PP_SCORES,"w+");//get rid of the previous text first
-	else
-		scorefile = fopen(getenv("PP_SCORES"), "w+") ;
-	if(!scorefile){
-		strcpy(error, "The file cannot be opened in w+. ");
-		return -1;
- 	}
-
-	byte itreached=location;
-	byte ret = -1;
-	bool wroteit=0;
-
-	for(location=0;location<=itreached && location<SAVE_TO_NUM-wroteit;++location){
-		if(!wroteit && (location>=itreached || score>=scorebuff[location]) ){
-			fprintf(scorefile,"%s : %ld\n",getenv("USER"),score);
-			ret=location;
-			wroteit=1;
-		}
-		if(location<SAVE_TO_NUM-wroteit && location<itreached)
-			fprintf(scorefile,"%s : %ld\n",namebuff[location],scorebuff[location]);
-	}
-	fflush(scorefile);
-	return ret;
 }
 
-void showscores(byte playerrank){
+void show_scores(byte playerrank){
 	erase();
 	logo();
-	if(*error){
-		mvaddstr(SY,SX,error);
+	if(playerrank==FOPEN_FAIL){
+		mvaddstr(SY,SX,"Couldn't open scorefile");
 		mvprintw(SY+1,SX,"However, your score is %ld.",score);
 		refresh();
 		return;
@@ -122,9 +69,9 @@ void showscores(byte playerrank){
 	if(playerrank == 0){
 		char formername[60]={0};
 		long formerscore=0;
-		rewind(scorefile);
-		fscanf(scorefile,"%*s : %*d");
-		if ( fscanf(scorefile,"%s : %ld",formername,&formerscore)==2  && formerscore>0){
+		rewind(score_file);
+		fscanf(score_file,"%*s : %*d");
+		if ( fscanf(score_file,"%s : %ld",formername,&formerscore)==2  && formerscore>0){
 			byte a = (len-9)/2;
 			attron(A_BOLD);
 			mvprintw(SY,SX,      "****                ***");
@@ -159,8 +106,8 @@ void showscores(byte playerrank){
 	char pname[60] = {0};
 	long pscore=0;
 	byte rank=0;
-	rewind(scorefile);
-	while( rank<SAVE_TO_NUM && fscanf(scorefile,"%s : %ld\n",pname,&pscore) == 2){
+	rewind(score_file);
+	while( rank<SAVE_TO_NUM && fscanf(score_file,"%s : %ld\n",pname,&pscore) == 2){
 		move(SY+1+rank,SX+1);
 		attron(green);
 		if(rank == playerrank)
@@ -394,7 +341,6 @@ int main(int argc, char** argv){
 	flow=0;
 	fast=0;
 	score=0;
-	memset(error,0,150);
 	memset(board,0,len*wid);
 	fy=1+(rand()%(len-2) );
 	fx=1+(rand()%(wid-2) );
@@ -525,7 +471,7 @@ int main(int argc, char** argv){
 			if(input == 'N' || input=='n' || input =='q')
 				sigint_handler(EXIT_SUCCESS);
 			
-			showscores(scorewrite());
+			show_scores(save_score());
 			mvprintw(len+2,0,"Press a key to exit:");
 			refresh();
 			getch();
@@ -543,7 +489,7 @@ int main(int argc, char** argv){
 	draw(board);
 	mvprintw(len+2,0,"Game over! Press a key to see the high scores:");
 	getch();
-	showscores(scorewrite());
+	show_scores(save_score());
 	mvprintw(len+2,0,"Game over!");
 	printw(" Wanna play again?(y/n)");
 	input=getch();

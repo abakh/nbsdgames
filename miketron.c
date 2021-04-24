@@ -18,6 +18,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include <unistd.h>
 #include <stdbool.h>
 #include "config.h"
+#include "common.h"
 #define SAVE_TO_NUM 10
 #define MINLEN 10
 #define MAXLEN 24
@@ -57,7 +58,6 @@ byte pse_msg=100;
 //no need to a epilepsy variable like in muncher as zeroing the colors suffices
 
 FILE *scorefile;
-char error[150]={0};
 
 void move_tron(void){
 	switch(direction){
@@ -87,68 +87,16 @@ void logo(void){
 	mvaddstr(1,0,"|\\/|");
 	mvaddstr(2,0,"|  |IKETRON");
 }
-byte scorewrite(void){// only saves the top 10, returns the place in the chart
-	bool deforno;
-	if( !getenv("MT_SCORES") && (scorefile= fopen(MT_SCORES,"r")) ){
-		deforno=1;
-	}
-	else{
-		deforno=0;
-		if( !(scorefile = fopen(getenv("MT_SCORES"),"r")) ){
-			sprintf(error,"No accessible score files found. You can make an empty text file in %s or set MT_SCORES to such a file to solve this.",MT_SCORES);
-			return -1;
-		}
-	}
+byte save_score(void){
+	return fallback_to_home("miketron_scores",score,SAVE_TO_NUM);
 
-	char namebuff[SAVE_TO_NUM][60];
-	long scorebuff[SAVE_TO_NUM];
-
-	memset(namebuff,0,SAVE_TO_NUM*60*sizeof(char) );
-	memset(scorebuff,0,SAVE_TO_NUM*sizeof(long) );
-
-	long fuckingscore=0;
-	char fuckingname[60]={0};
-	byte location=0;
-
-	while( fscanf(scorefile,"%59s : %ld\n",fuckingname,&fuckingscore) == 2 && location<SAVE_TO_NUM ){
-		strcpy(namebuff[location],fuckingname);
-		scorebuff[location] = fuckingscore;
-		++location;
-
-		memset(fuckingname,0,60);
-		fuckingscore=0;
-	}
-	if(deforno)
-		scorefile = fopen(MT_SCORES,"w+");//get rid of the previous text first
-	else
-		scorefile = fopen(getenv("MT_SCORES"), "w+") ;
-	if(!scorefile){
-		strcpy(error, "The file cannot be opened in w+. ");
-		return -1;
-	}
-
-	byte itreached=location;
-	byte ret = -1;
-	bool wroteit=0;
-
-	for(location=0;location<=itreached && location<SAVE_TO_NUM-wroteit;++location){
-		if(!wroteit && (location>=itreached || score>=scorebuff[location]) ){
-			fprintf(scorefile,"%s : %ld\n",getenv("USER"),score);
-			ret=location;
-			wroteit=1;
-		}
-		if(location<SAVE_TO_NUM-wroteit && location<itreached)
-			fprintf(scorefile,"%s : %ld\n",namebuff[location],scorebuff[location]);
-	}
-	fflush(scorefile);
-	return ret;
 }
 
-void showscores(byte playerrank){
+void show_scores(byte playerrank){
 	erase();
 	logo();
-	if(*error){
-		mvaddstr(3,0,error);
+	if(playerrank==FOPEN_FAIL){
+		mvaddstr(3,0,"Couldn't open scorefile.");
 		printw("\nHowever, your score is %ld.",score);
 		refresh();
 		return;
@@ -156,11 +104,11 @@ void showscores(byte playerrank){
 	if(playerrank == 0){
 		char formername[60]={0};
 		long formerscore=0;
-		rewind(scorefile);
-		fscanf(scorefile,"%*s : %*d\n");
+		rewind(score_file);
+		fscanf(score_file,"%*s : %*d\n");
 		move(3,0);
 		byte b=0;
-		if ( fscanf(scorefile,"%s : %ld\n",formername,&formerscore)==2){
+		if ( fscanf(score_file,"%s : %ld\n",formername,&formerscore)==2){
 			halfdelay(1);
 			printw("*****CONGRATULATIONS!****\n");
 			printw("              You bet the\n");
@@ -201,9 +149,9 @@ void showscores(byte playerrank){
 	char pname[60] = {0};
 	long pscore=0;
 	byte rank=0;
-	rewind(scorefile);
+	rewind(score_file);
 	printw(">*>*>Top %d<*<*<\n",SAVE_TO_NUM);
-	while( rank<SAVE_TO_NUM && fscanf(scorefile,"%s : %ld\n",pname,&pscore) == 2){
+	while( rank<SAVE_TO_NUM && fscanf(score_file,"%s : %ld\n",pname,&pscore) == 2){
 		if(rank == playerrank)
 			printw(">>>");
 		printw("%d) %s : %ld\n",rank+1,pname,pscore);
@@ -568,7 +516,7 @@ int main(int argc, char** argv){
 	refresh();
 	mvprintw(len+5,0,"Game over! Press a key to see the high scores:");
 	getch();
-	showscores(scorewrite());
+	show_scores(save_score());
 	printw("Game over! Wanna play again?(y/n)");
 	curs_set(1);
 	input=getch();

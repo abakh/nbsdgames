@@ -21,6 +21,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include <curses.h>
 #include <unistd.h>
 #include "config.h"
+#include "common.h"
 #define SAVE_TO_NUM 11
 #define LEN 24
 #define HLEN LEN/2
@@ -46,7 +47,6 @@ int usleep(long usec) {
 
 chtype colors[3]={0};
 long score=0;
-char error [150]={0};
 FILE* scorefile;
 
 chtype background[LEN][WID];
@@ -288,68 +288,18 @@ void end_scene(){
 	refresh();
 }
 
-byte scorewrite(void){// only saves the top 10, returns the place in the chart
-	bool deforno;
-	if( !getenv("DRT_SCORES") && (scorefile= fopen(DRT_SCORES,"r")) ){
-		deforno=1;
-	}
-	else{
-		deforno=0;
-		if( !(scorefile = fopen(getenv("DRT_SCORES"),"r")) ){
-			sprintf(error,"No accessible score files found. You can make an empty text file in %s or set DRT_SCORES to such a file to solve this.",DRT_SCORES);
-			return -1;
-		}
-	}
+byte save_score(void){
+	return fallback_to_home("darrt_scores",score,SAVE_TO_NUM);
 
-	char namebuff[SAVE_TO_NUM][60];
-	long scorebuff[SAVE_TO_NUM];
-
-	memset(namebuff,0,SAVE_TO_NUM*60*sizeof(char) );
-	memset(scorebuff,0,SAVE_TO_NUM*sizeof(long) );
-
-	long fuckingscore =0;
-	char fuckingname[60]={0};
-	byte location=0;
-
-	while( fscanf(scorefile,"%59s : %ld\n",fuckingname,&fuckingscore) == 2 && location<SAVE_TO_NUM ){
-		strcpy(namebuff[location],fuckingname);
-		scorebuff[location] = fuckingscore;
-		++location;
-
-		memset(fuckingname,0,60);
-		fuckingscore=0;
-	}
-	if(deforno)
-		scorefile = fopen(DRT_SCORES,"w+");//get rid of the previous text first
-	else
-		scorefile = fopen(getenv("DRT_SCORES"), "w+") ;
-	if(!scorefile){
-		strcpy(error, "The file cannot be opened in w+. ");
-		return -1;
-	}
-
-	byte itreached=location;
-	byte ret = -1;
-	bool wroteit=0;
-	for(location=0;location<=itreached && location<SAVE_TO_NUM-wroteit;++location){
-		if(!wroteit &&  score>=scorebuff[location] ){
-			fprintf(scorefile,"%s : %ld\n",getenv("USER"),score);
-			ret=location;
-			wroteit=1;
-		}
-		if(location<SAVE_TO_NUM-wroteit && location<itreached)
-			fprintf(scorefile,"%s : %ld\n",namebuff[location],scorebuff[location]);
-	}
-	fflush(scorefile);
-	return ret;
 }
-void showscores(byte playerrank){
+
+void show_scores(byte playerrank){
 	byte y,x;
 	attron(colors[3]);
 	filled_rect(0,0,LEN,WID);
 	red_border();
-	if(*error){
-		mvaddstr(1,0,error);
+	if(playerrank==FOPEN_FAIL){
+		mvaddstr(1,0,"Could not open score file.");
 		mvprintw(2,0,"However, your score is %ld.",score);
 		refresh();
 		return;
@@ -357,9 +307,9 @@ void showscores(byte playerrank){
 	if(playerrank == 0){
 		char formername[60]={0};
 		long formerscore=0;
-		rewind(scorefile);
-		fscanf(scorefile,"%*s : %*d");
-		if ( fscanf(scorefile,"%s : %ld",formername,&formerscore)==2  && formerscore>0){
+		rewind(score_file);
+		fscanf(score_file,"%*s : %*d");
+		if ( fscanf(score_file,"%s : %ld",formername,&formerscore)==2  && formerscore>0){
 			byte a = (LEN-9)/2;
 			star_line(1);
 			star_line(LEN-2);
@@ -387,10 +337,10 @@ void showscores(byte playerrank){
 	char pname[60] = {0};
 	long pscore=0;
 	byte rank=0;
-	rewind(scorefile);	
+	rewind(score_file);	
 	mvaddstr(1,WID/2-4,"HIGH SCORES");
 	attron(colors[3]);
-	while( rank<SAVE_TO_NUM && fscanf(scorefile,"%s : %ld\n",pname,&pscore) == 2){
+	while( rank<SAVE_TO_NUM && fscanf(score_file,"%s : %ld\n",pname,&pscore) == 2){
 		star_line(2+2*rank);
 		move(2+2*rank,1);
 		if(rank == playerrank)
@@ -485,7 +435,7 @@ int main(void){
 	cbreak();
 	curs_set(1);
 	end_scene();
-	showscores(scorewrite());
+	show_scores(save_score());
 	attron(colors[0]|A_STANDOUT);
 	mvprintw(LEN-1,HWID-11,"Wanna play again? (y/n)");
 	attroff(colors[0]|A_STANDOUT);
