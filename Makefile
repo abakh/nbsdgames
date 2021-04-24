@@ -1,6 +1,7 @@
 # -*- Makefile -*-
 
-CFLAGS+= -O3 -lncurses -Wno-unused-result
+CFLAGS+= -O3 -Wno-unused-result
+LDFLAGS+= -lncurses -lm
 #-O3 --std=c99 -lcurses -DNO_MOUSE for NetBSD curses
 #adding --std=c99 makes warnings in GNU, and the blame is upon glibc feature test macros. my code is correct.
 
@@ -23,40 +24,40 @@ scorefiles:
 	chmod 666 $(SCORES_DIR)/darrt_scores
 	
 jewels: jewels.c config.h common.h
-	$(CC) jewels.c $(CFLAGS) -o ./jewels
+	$(CC) jewels.c $(LDFLAGS) $(CFLAGS) -o ./jewels
 sudoku: sudoku.c config.h 
-	$(CC) sudoku.c $(CFLAGS) -lm -o ./sudoku
+	$(CC) sudoku.c $(LDFLAGS) $(CFLAGS) -lm -o ./sudoku
 mines: mines.c config.h
-	$(CC) mines.c $(CFLAGS) -o ./mines
+	$(CC) mines.c $(LDFLAGS) $(CFLAGS) -o ./mines
 reversi: reversi.c config.h
-	$(CC) reversi.c $(CFLAGS)  -o ./reversi
+	$(CC) reversi.c $(LDFLAGS) $(CFLAGS)  -o ./reversi
 checkers: checkers.c config.h
-	$(CC) checkers.c $(CFLAGS) -o ./checkers
+	$(CC) checkers.c $(LDFLAGS) $(CFLAGS) -o ./checkers
 battleship: battleship.c config.h
-	$(CC) battleship.c $(CFLAGS) -o ./battleship
+	$(CC) battleship.c $(LDFLAGS) $(CFLAGS) -o ./battleship
 rabbithole: rabbithole.c config.h
-	$(CC) rabbithole.c $(CFLAGS) -o ./rabbithole
+	$(CC) rabbithole.c $(LDFLAGS) $(CFLAGS) -o ./rabbithole
 sos: sos.c config.h
-	$(CC) sos.c $(CFLAGS) -o ./sos
+	$(CC) sos.c $(LDFLAGS) $(CFLAGS) -o ./sos
 pipes: pipes.c config.h
-	$(CC) pipes.c $(CFLAGS) -o ./pipes
+	$(CC) pipes.c $(LDFLAGS) $(CFLAGS) -o ./pipes
 fifteen: fifteen.c config.h
-	$(CC) fifteen.c $(CFLAGS) -o ./fifteen
+	$(CC) fifteen.c $(LDFLAGS) $(CFLAGS) -o ./fifteen
 memoblocks: memoblocks.c
-	$(CC) memoblocks.c $(CFLAGS) -o ./memoblocks
+	$(CC) memoblocks.c $(LDFLAGS) $(CFLAGS) -o ./memoblocks
 fisher: fisher.c config.h common.h
-	$(CC) fisher.c $(CFLAGS) -o ./fisher
+	$(CC) fisher.c $(LDFLAGS) $(CFLAGS) -o ./fisher
 muncher: muncher.c config.h common.h
-	$(CC) muncher.c $(CFLAGS) -o ./muncher
+	$(CC) muncher.c $(LDFLAGS) $(CFLAGS) -o ./muncher
 miketron: miketron.c config.h common.h
-	$(CC) miketron.c $(CFLAGS) -o ./miketron
+	$(CC) miketron.c $(LDFLAGS) $(CFLAGS) -o ./miketron
 redsquare: redsquare.c config.h
-	$(CC) redsquare.c $(CFLAGS) -o ./redsquare
+	$(CC) redsquare.c $(LDFLAGS) $(CFLAGS) -o ./redsquare
 darrt: darrt.c config.h common.h
-	$(CC) darrt.c $(CFLAGS) -lm -o ./darrt
+	$(CC) darrt.c $(LDFLAGS) $(CFLAGS) -lm -o ./darrt
 
 snakeduel: snakeduel.c config.h
-	$(CC) snakeduel.c $(CFLAGS)  -o ./snakeduel
+	$(CC) snakeduel.c $(LDFLAGS) $(CFLAGS)  -o ./snakeduel
 clean:
 	rm ./jewels ./sudoku ./checkers ./mines ./reversi ./battleship ./rabbithole ./sos ./pipes ./fifteen ./memoblocks ./fisher ./muncher ./miketron ./redsquare ./darrt ./snakeduel
 uninstall:
