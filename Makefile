@@ -16,13 +16,13 @@ scorefiles:
 	touch $(SCORES_DIR)/muncher_scores
 	touch $(SCORES_DIR)/fisher_scores
 	touch $(SCORES_DIR)/darrt_scores
-	chmod 666 $(SCORES_DIR)/pipes_scores
-	chmod 666 $(SCORES_DIR)/jewels_scores
-	chmod 666 $(SCORES_DIR)/miketron_scores
-	chmod 666 $(SCORES_DIR)/muncher_scores
-	chmod 666 $(SCORES_DIR)/fisher_scores
-	chmod 666 $(SCORES_DIR)/darrt_scores
-	
+	chown :games $(SCORES_DIR)/pipes_scores
+	chown :games $(SCORES_DIR)/jewels_scores
+	chown :games $(SCORES_DIR)/miketron_scores
+	chown :games $(SCORES_DIR)/muncher_scores
+	chown :games $(SCORES_DIR)/fisher_scores
+	chown :games $(SCORES_DIR)/darrt_scores
+
 jewels: jewels.c config.h common.h
 	$(CC) jewels.c $(LDFLAGS) $(CFLAGS) -o ./jewels
 sudoku: sudoku.c config.h 
