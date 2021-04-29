@@ -1,18 +1,13 @@
 //for easier access
 
 //the default scorefiles
-#ifdef Plan9
-    #define SCORES_DIR "/sys/lib/games/"
-#else
-    #define SCORES_DIR "/var/games/"
-/*    #define PP_SCORES "/usr/games/pp_scores"
-    #define JW_SCORES "/usr/games/jw_scores"
-    #define FSH_SCORES "/usr/games/fsh_scores"
-    #define MNCH_SCORES "/usr/games/mnch_scores"
-    #define MT_SCORES "/usr/games/mt_scores"
-    #define DRT_SCORES "/usr/games/drt_scores"*/
-#endif
-
+#ifndef SCORES_DIR
+	#ifdef Plan9
+	    #define SCORES_DIR "/sys/lib/games/"
+	#else
+	    #define SCORES_DIR "/var/games/"
+	#endif 
+#endif //SCORES_DIR
 #ifdef Plan9
 	#define NO_VLA
 	//Many ancient compilers don't have VLA support, including the Plan9 compiler

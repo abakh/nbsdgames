@@ -1,32 +1,29 @@
 # -*- Makefile -*-
 
-CFLAGS+= -O3 -Wno-unused-result
-LDFLAGS+= -lncurses -lm
 #-O3 --std=c99 -lcurses -DNO_MOUSE for NetBSD curses
 #adding --std=c99 makes warnings in GNU, and the blame is upon glibc feature test macros. my code is correct.
 
 GAMES_DIR?=/usr/games
 SCORES_DIR?=/var/games
 
-all: jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare darrt snakeduel
+CFLAGS+= -O3 -Wno-unused-result -D SCORES_DIR=\"$(SCORES_DIR)\"
+LDFLAGS+= -lncurses -lm
+
+
+ALL= jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare darrt snakeduel
+SCORE_FILES= pipes_scores jewels_scores miketron_scores muncher_scores fisher_scores darrt_scores
+
+all: $(ALL)
+
 scorefiles:
-	touch $(SCORES_DIR)/pipes_scores
-	touch $(SCORES_DIR)/jewels_scores
-	touch $(SCORES_DIR)/miketron_scores
-	touch $(SCORES_DIR)/muncher_scores
-	touch $(SCORES_DIR)/fisher_scores
-	touch $(SCORES_DIR)/darrt_scores
-	chown :games $(SCORES_DIR)/pipes_scores
-	chown :games $(SCORES_DIR)/jewels_scores
-	chown :games $(SCORES_DIR)/miketron_scores
-	chown :games $(SCORES_DIR)/muncher_scores
-	chown :games $(SCORES_DIR)/fisher_scores
-	chown :games $(SCORES_DIR)/darrt_scores
+	for sf in $(SCORE_FILES); do touch $(SCORES_DIR)/$$sf ; chown :games $(SCORES_DIR)/$$sf ; done;
+	for game in $(ALL); do chown :games $(GAMES_DIR)/$$game; chmod +s $(GAMES_DIR)/$$game ; done;
+
 
 jewels: jewels.c config.h common.h
 	$(CC) jewels.c $(LDFLAGS) $(CFLAGS) -o ./jewels
 sudoku: sudoku.c config.h 
-	$(CC) sudoku.c $(LDFLAGS) $(CFLAGS) -lm -o ./sudoku
+	$(CC) sudoku.c $(LDFLAGS) $(CFLAGS)  -o ./sudoku
 mines: mines.c config.h
 	$(CC) mines.c $(LDFLAGS) $(CFLAGS) -o ./mines
 reversi: reversi.c config.h
@@ -39,7 +36,7 @@ rabbithole: rabbithole.c config.h
 	$(CC) rabbithole.c $(LDFLAGS) $(CFLAGS) -o ./rabbithole
 sos: sos.c config.h
 	$(CC) sos.c $(LDFLAGS) $(CFLAGS) -o ./sos
-pipes: pipes.c config.h
+pipes: pipes.c config.h common.h
 	$(CC) pipes.c $(LDFLAGS) $(CFLAGS) -o ./pipes
 fifteen: fifteen.c config.h
 	$(CC) fifteen.c $(LDFLAGS) $(CFLAGS) -o ./fifteen
@@ -54,14 +51,14 @@ miketron: miketron.c config.h common.h
 redsquare: redsquare.c config.h
 	$(CC) redsquare.c $(LDFLAGS) $(CFLAGS) -o ./redsquare
 darrt: darrt.c config.h common.h
-	$(CC) darrt.c $(LDFLAGS) $(CFLAGS) -lm -o ./darrt
+	$(CC) darrt.c $(LDFLAGS) $(CFLAGS)  -o ./darrt
 
 snakeduel: snakeduel.c config.h
 	$(CC) snakeduel.c $(LDFLAGS) $(CFLAGS)  -o ./snakeduel
 clean:
-	rm ./jewels ./sudoku ./checkers ./mines ./reversi ./battleship ./rabbithole ./sos ./pipes ./fifteen ./memoblocks ./fisher ./muncher ./miketron ./redsquare ./darrt ./snakeduel
+	rm $(ALL)
 uninstall:
-	rm $(GAMES_DIR)/jewels $(GAMES_DIR)/sudoku $(GAMES_DIR)/checkers $(GAMES_DIR)/mines $(GAMES_DIR)/reversi $(GAMES_DIR)/battleship $(GAMES_DIR)/rabbithole $(GAMES_DIR)/sos $(GAMES_DIR)/pipes $(GAMES_DIR)/fifteen $(GAMES_DIR)/memoblocks $(GAMES_DIR)/fisher $(GAMES_DIR)/muncher $(GAMES_DIR)/miketron $(GAMES_DIR)/redsquare $(GAMES_DIR)/darrt $(GAMES_DIR)/snakeduel
-install: jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare darrt snakeduel
-	cp jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare darrt snakeduel $(GAMES_DIR)
+	for game in $(ALL); do rm $(GAMES_DIR)/$$game; done;
+install: $(ALL)
+	cp $(ALL) $(GAMES_DIR)
 

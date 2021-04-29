@@ -117,6 +117,7 @@ void show_scores(byte playerrank){
 		printw(") %s : %ld",pname,pscore);
 		++rank;
 	}
+	fclose(score_file);
 	refresh();
 }
 //move in direction

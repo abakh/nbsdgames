@@ -11,11 +11,16 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include <stdlib.h>
 #include <limits.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "config.h"
 #define FOPEN_FAIL -10
 typedef signed char byte;
 FILE* score_file;
 byte score_write(const char* path, long wscore, byte save_to_num){// only saves the top 10, returns the place in the chart
+	#ifdef __unix__ 
+	setgid(getgid());
+	setuid(getuid());
+	#endif
 	score_file=fopen(path,"r");
 	if(!score_file){
 		score_file=fopen(path,"w");
@@ -43,7 +48,9 @@ byte score_write(const char* path, long wscore, byte save_to_num){// only saves 
 		scanned_score=0;
 	}
 	score_file = fopen(path,"w+") ;//will get  rid of the previous text
-
+	if(!score_file){
+		return FOPEN_FAIL;
+	}
 	byte scores_count=location;//if 5 scores were scanned, it is 5. the number of scores it reached
 	byte ret = -1;
 	bool wrote_it=0;
