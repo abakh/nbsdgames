@@ -262,7 +262,6 @@ void gameplay(void){
 	move(4,0);
 	printw("Eat the food and avoid the traps.\n");
 	refresh();
-	erase();
 	getch();
 	halfdelay(1);
 }
@@ -293,7 +292,6 @@ int main(int argc, char** argv){
 			puts("At least one of your given dimensions is either too small or too big.");
 			return EXIT_FAILURE;
 		}
-	
 	}
 	else{
 		autoset=1;
