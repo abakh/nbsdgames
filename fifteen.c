@@ -137,8 +137,6 @@ void shuffle(char board[size][size]){
 				break;
 		}
 	}
-	refresh();
-	getch();
 }
 //peacefully close when ^C is pressed
 void sigint_handler(int x){
