@@ -76,13 +76,13 @@ It's been made available for rpm distros thanks to Zinjanthropus: https://build.
 It's available on pkgsrc (default on NetBSD, Minix, supports everything else) thanks to nia: https://pkgsrc.se/games/nbsdgames
 ## How do these look like
 Linux+xterm+tmux
-![Screenshot from 4 games in tmux](https://raw.githubusercontent.com/abakh/nbsdgames/master/screenshot.png)
+![Screenshot from 4 games in tmux](https://raw.githubusercontent.com/abakh/junk/master/screenshot.png)
 
 Plan9
-![Screenshot from the games in Plan9](https://raw.githubusercontent.com/abakh/nbsdgames/master/screenshot_plan9.png)
+![Screenshot from the games in Plan9](https://raw.githubusercontent.com/abakh/junk/master/screenshot_plan9.png)
 
 Windows
-![Screenshot from the games in Windows 7](https://raw.githubusercontent.com/abakh/nbsdgames/master/screenshot_windows.jpg)
+![Screenshot from the games in Windows 7](https://raw.githubusercontent.com/abakh/junk/master/screenshot_windows.jpg)
 
 ## How to contribute
 * Share these with your friends and others
@@ -92,4 +92,4 @@ Windows
 * Make a package for your distro (or put it on repos if the package is not there)
 * Does anyone understand debian's .orig.tar.gz and the process to make packages to the repos? Any help would be appreciated.
 
-Also thank to all the people who helped in the previous versions, all what i requested was done! I didn't expect such an amount of assistance on this project :heart:
+Also thank to all the people who helped in the previous versions, all what I requested was done! I didn't expect such an amount of assistance on this project :heart:
