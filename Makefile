@@ -5,7 +5,7 @@
 
 GAMES_DIR?=/usr/games
 SCORES_DIR?=/var/games
-
+MAN_DIR?=/usr/share/man/man6
 CFLAGS+= -O3 -Wno-unused-result -D SCORES_DIR=\"$(SCORES_DIR)\"
 LDFLAGS+= -lncurses -lm
 
@@ -19,7 +19,8 @@ scorefiles:
 	for sf in $(SCORE_FILES); do touch $(SCORES_DIR)/$$sf ; chown :games $(SCORES_DIR)/$$sf ; done;
 	for game in $(ALL); do chown :games $(GAMES_DIR)/$$game; chmod +s $(GAMES_DIR)/$$game ; done;
 
-
+manpages:
+	cp man/* $(MAN_DIR)
 jewels: jewels.c config.h common.h
 	$(CC) jewels.c $(LDFLAGS) $(CFLAGS) -o ./jewels
 sudoku: sudoku.c config.h 
@@ -58,7 +59,7 @@ snakeduel: snakeduel.c config.h
 clean:
 	rm $(ALL)
 uninstall:
-	for game in $(ALL); do rm $(GAMES_DIR)/$$game; done;
+	for game in $(ALL); do rm $(GAMES_DIR)/$$game; rm $(MAN_DIR)/$$game.6.gz done;
 install: $(ALL)
 	cp $(ALL) $(GAMES_DIR)
 
