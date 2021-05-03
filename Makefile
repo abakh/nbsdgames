@@ -6,7 +6,7 @@
 GAMES_DIR?=/usr/games
 SCORES_DIR?=/var/games
 MAN_DIR?=/usr/share/man/man6
-CFLAGS+= -O3 -Wno-unused-result -D SCORES_DIR=\"$(SCORES_DIR)\"
+CFLAGS+=  -Wno-unused-result -D SCORES_DIR=\"$(SCORES_DIR)\"
 LDFLAGS+= -lncurses -lm
 
 
@@ -16,8 +16,8 @@ SCORE_FILES= pipes_scores jewels_scores miketron_scores muncher_scores fisher_sc
 all: $(ALL)
 
 scorefiles:
-	for sf in $(SCORE_FILES); do touch $(SCORES_DIR)/$$sf ; chown :games $(SCORES_DIR)/$$sf ; done;
-	for game in $(ALL); do chown :games $(GAMES_DIR)/$$game; chmod +s $(GAMES_DIR)/$$game ; done;
+	for sf in $(SCORE_FILES); do touch $(SCORES_DIR)/$$sf ; chmod 664 $(SCORES_DIR)/$$sf; chown :games $(SCORES_DIR)/$$sf ; done;
+	for game in $(ALL); do chown :games $(GAMES_DIR)/$$game; chmod g+s $(GAMES_DIR)/$$game ; done;
 
 manpages:
 	cp man/* $(MAN_DIR)
