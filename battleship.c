@@ -364,7 +364,7 @@ void sink_announce(bool side){
 					goto Next;
 			}
 		}
-		//there is no instance of 'type' in the opponet's board
+		//there is no instance of 'type' in the opponent's board
 		if( ( (1 << type) | sunk[!side] ) != sunk[!side] ){//if it is not yet announced as sunk
 			sunk[!side] |= (1 << type);
 			if(computer[side]){
@@ -518,9 +518,9 @@ void gameplay(bool side){//side is only there to feed header()
 	mvprintw(3,0,"  **** THE GAMEPLAY ****");
 	attroff(A_BOLD);
 	move(4,0);
-	printw("Guess the location of your opponet's\n");
+	printw("Guess the location of your opponent's\n");
 	printw("ships and sink them! The player\n");
-	printw("who sinks all the opponet's ships wins.");
+	printw("who sinks all the opponent's ships wins.");
 	getch();
 	erase();
 }
