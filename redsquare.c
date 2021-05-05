@@ -419,6 +419,7 @@ void sigint_handler(int x){
 void help(void){
 	erase();
 	logo();
+	nocbreak();
 	attron(A_BOLD);
 	mvprintw(3,0,"  **** THE CONTROLS ****");
 	attroff(A_BOLD);
@@ -427,20 +428,25 @@ void help(void){
 	mvprintw(6,0,"F1 & F2 : Help on controls & gameplay");
 	mvprintw(8,0,"Press a key to continue");
 	refresh();
+	cbreak();
 	getch();
+	halfdelay(1);
 	erase();
 }
 void gameplay(void){
 	erase();
 	logo();
+	nocbreak();
 	attron(A_BOLD);
 	mvprintw(3,0,"  **** THE GAMEPLAY ****");
 	attroff(A_BOLD);
-	mvprintw(4,0,"Catch the cross or overwhelm the\n");
+	mvprintw(4,0,"Move the square and catch the X or outnumber the\n");
 	printw(      "white cells with those of your own,\n");
 	printw(      "in the environment of Conway's game of life.\n");
 	refresh();
+	cbreak();
 	getch();
+	halfdelay(1);
 	erase();
 }
 int main(void){
