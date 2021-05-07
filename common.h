@@ -17,10 +17,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 typedef signed char byte;
 FILE* score_file;
 byte score_write(const char* path, long wscore, byte save_to_num){// only saves the top 10, returns the place in the chart
-	#ifdef __unix__ 
-	setgid(getgid());
-	setuid(getuid());
-	#endif
 	score_file=fopen(path,"r");
 	if(!score_file){
 		score_file=fopen(path,"w");
