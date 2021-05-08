@@ -49,6 +49,11 @@ They have been ported to Plan9 thanks to Jens Staal!
 * The standard library
 * ncurses (libncurses5-dev if you are on debian-based distros)
 
+To install them all on debian-base :
+
+``` sh
+        sudo apt install git make gcc libncurses5-dev
+```
 ## How to run
 
 1) Download the files
