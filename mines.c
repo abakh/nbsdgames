@@ -28,7 +28,6 @@ typedef signed char byte;
 #else
 int len,wid;
 #endif
-
 int py,px,flags;
 int untouched;
 int mscount;
@@ -99,13 +98,15 @@ void drawmines(int sy,int sx,byte board[len][wid],bool mines[len][wid]){
 void mine(bool mines[len][wid]){
 	int y=rand()%len;
 	int x=rand()%wid;
+	mines[py][px]=1;//so it doesn't place mines where you click first
 	for(int n=0;n<mscount;++n){
 		while(mines[y][x]){
 			y=rand()%len;
 			x=rand()%wid;
 		}
-		mines[y][x]=true;
+		mines[y][x]=1;
 	}
+	mines[py][px]=0;
 }
 
 bool click(byte board[len][wid],bool mines[len][wid],int ty,int tx){
@@ -284,16 +285,21 @@ int main(int argc, char** argv){
 	bool mines[len][wid];
 	char result[70];
 	int input;
-	int sy,sx;		
+	int sy,sx;
+	bool first_click;	
 	Start:
+	first_click=1;
 	sy=sx=0;
 	py=px=0;
 	untouched=len*wid;
 	flags=0;
 	curs_set(0);
-	memset(board,-1,len*wid);
-	memset(mines,false,len*wid);
-	mine(mines);
+	for(int y=0;y<len;++y){
+		for(int x=0;x<wid;++x){
+			board[y][x]=-1;
+			mines[y][x]=0;
+		}
+	}
 	
 	while(1){
 		erase();
@@ -343,7 +349,12 @@ int main(int argc, char** argv){
 		if( input=='q')
 			sigint_handler(0);
 		if(input=='x' && getch()=='y' && getch()=='z' && getch()=='z' && getch()=='y' ){
-			strcpy(result,"It is now pitch dark. If you proceed you will likely fall into a pit.");
+			if(first_click){
+				strcpy(result,"That is for Windows.");
+			}
+			else{
+				strcpy(result,"It is now pitch dark. If you proceed you will likely fall into a pit.");
+			}
 			break;
 		}
 		if((input=='\n'||input==KEY_ENTER) && board[py][px] < 9){
@@ -359,6 +370,13 @@ int main(int argc, char** argv){
 						strcpy(result,"Bring your MRAP with you next time!");
 				}
 				break;
+			}
+
+
+
+			if(first_click){
+				mine(mines);
+				first_click=0;
 			}
 			click(board,mines,py,px);
 		}
