@@ -293,7 +293,6 @@ byte save_score(void){
 }
 
 void show_scores(byte playerrank){
-	byte y,x;
 	attron(colors[3]);
 	filled_rect(0,0,LEN,WID);
 	red_border();
@@ -386,7 +385,6 @@ int main(void){
 		for(byte b=0;b<3;++b)
 			colors[b]=COLOR_PAIR(b+1);
 	}
-	byte n;
 	
 	make_background();
 	Start:
@@ -428,7 +426,6 @@ int main(void){
 			move_aim(aims+i);
 		}
 	}
-	End:
 	flushinp();
 	nocbreak();
 	cbreak();
