@@ -86,8 +86,8 @@ void draw(void){
 	/*while(LEN< 15 || COL<80)
 		mvprintw(0,0,"Screen size should at least be 80*15 characters");*/
 	attron(colors[0]);
-	byte y,x;
 	filled_rect(0,0,12,80);
+	byte y;
 	mvprintw(0,0," __       Hooks:%d",hooknum);
 	mvprintw(1,0,"|__       Score:%d",score);
 	mvprintw(2,0,"|  ISHER");
@@ -190,7 +190,6 @@ byte save_score(void){
 
 
 void show_scores(byte playerrank){
-	byte y,x;
 	attron(colors[3]);
 	filled_rect(0,0,LEN,WID);
 	green_border();
@@ -368,7 +367,6 @@ int main(void){
 			flushinp();
 		}
 	}
-	End:
 	flushinp();
 	nocbreak();
 	cbreak();

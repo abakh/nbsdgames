@@ -480,7 +480,6 @@ long decide(byte board[len][wid],snake *me,snake *enemy){
 	int dist=(y_dist+x_dist);
 	long g=go_deep(board,*me,1);
 	reportd(g);
-	long max_survival;
 	byte directions[4]={0,1,2,3};
 	long advantages[4]={0};
 	if(me->strategy==IMITATE ){
