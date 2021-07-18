@@ -355,9 +355,7 @@ int main(int argc, char** argv){
 #endif
 	srand(time(NULL)%UINT_MAX);		
 	byte board[len][wid];
-	int prex,prey;
 	bool halfspeed=0;
-	const int constant=150*(80*24)/(len*wid);//that is added to score
 	initscr();
 	noecho();
 	cbreak();
@@ -388,7 +386,7 @@ int main(int argc, char** argv){
 	memset(board,0,len*wid);
 	put_stuff(board,20);
 
-	int preinput,input;
+	int preinput=0,input=0;
 	while(1){
 		erase();
 		logo();

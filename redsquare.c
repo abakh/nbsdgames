@@ -471,7 +471,6 @@ int main(void){
 	}
 	byte board[RLEN][RWID];
 	memset(board,0,RLEN*RWID);
-	char result[70];
 	int input=0;
 	int prey,prex;
 	int cinred;

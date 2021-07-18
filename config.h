@@ -1,5 +1,6 @@
 //for easier access
-
+#ifndef CONFIG_H
+#define CONFIG_H
 //the default scorefiles
 #ifndef SCORES_DIR
 	#ifdef Plan9
@@ -54,3 +55,5 @@ typedef signed char byte;
 #ifndef M_PI //i don't know why tf, but it happens
 	#define M_PI 3.1415
 #endif
+
+#endif //CONFIG_H
