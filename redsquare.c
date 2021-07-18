@@ -24,7 +24,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #define DEAD 0
 #define ALIVE 1
 #define RED 2
-typedef signed char byte;
 
 int level;
 byte py,px;

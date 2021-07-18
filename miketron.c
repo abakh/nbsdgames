@@ -25,7 +25,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #define MINWID 40
 #define MAXWID 80
 enum {UP=1,RIGHT,DOWN,LEFT,FLIGHT,NOTRAIL,BOMB,SPAWN,STOP,SUPERFOOD,TRAIL};
-typedef signed char byte;
 
 /* The Plan9 compiler can not handle VLAs and usleep is a POSIX function */
 #ifdef NO_VLA 

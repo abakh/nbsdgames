@@ -14,7 +14,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include <unistd.h>
 #include "config.h"
 #define FOPEN_FAIL -10
-typedef signed char byte;
+
 FILE* score_file;
 byte score_write(const char* path, long wscore, byte save_to_num){// only saves the top 10, returns the place in the chart
 	score_file=fopen(path,"r");

@@ -30,7 +30,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #define SHOTS_WHEN_STARTING 10
 
 #define randint(a,b) ((a)+(rand()%((b+1)-(a))))
-typedef signed char byte;
 #ifdef Plan9
 int usleep(long usec) {
     int second = usec/1000000;

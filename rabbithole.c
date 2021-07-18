@@ -25,7 +25,6 @@ compile with -lncurses
 #define LEFT 8
 #define VISITED 16
 #define CARROT 32
-typedef signed char byte;
 typedef unsigned char bitbox;
 
 /* The Plan9 compiler can not handle VLAs */

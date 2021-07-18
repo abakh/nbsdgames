@@ -16,7 +16,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include <time.h>
 #include <signal.h>
 #include "config.h"
-typedef signed char byte;
 
 /* The Plan9 compiler can not handle VLAs */
 #ifdef NO_VLA

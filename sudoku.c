@@ -19,7 +19,6 @@ NOTE: This program is only made for entertainment porpuses. The puzzles are gene
 #include <signal.h>
 #include <math.h>
 #include "config.h"
-typedef signed char byte;
 
 byte _wait=0, waitcycles=0;//apparently 'wait' conflicts with a variable in a library macOS includes by default
 byte py,px;

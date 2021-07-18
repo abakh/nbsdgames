@@ -20,7 +20,6 @@ compile with -lncurses
 #include "config.h"
 #define FLAG 9
 #define UNCLEAR 10
-typedef signed char byte;
 
 #ifdef NO_VLA //The Plan9 compiler can not handle VLAs
 #define len 8

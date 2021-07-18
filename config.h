@@ -48,3 +48,9 @@
 	}
 	#define usleep(x) microsleep(x)
 #endif
+
+typedef signed char byte;
+
+#ifndef M_PI //i don't know why tf, but it happens
+	#define M_PI 3.1415
+#endif

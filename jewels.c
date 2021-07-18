@@ -24,7 +24,6 @@ TODO make it like puyo puyo instead of the remake of what i poorly remembered*/
 #define WID 19
 #define DELAY 2
 #define SAVE_TO_NUM 10
-typedef signed char byte;
 
 chtype board[LEN][WID];
 chtype colors[6]={0};

@@ -18,7 +18,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include <signal.h>
 #include "config.h"
 #define NOTHING 123
-typedef signed char byte;
 
 #ifdef NO_VLA
 #define len 5

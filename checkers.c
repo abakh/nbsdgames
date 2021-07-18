@@ -28,7 +28,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #define ALT_IMG 2
 #define ALT_NRM 3
 #define WIN 100000
-typedef signed char byte;
+
 
 byte py,px;//cursor
 byte cy,cx;//selected(choosen) piece

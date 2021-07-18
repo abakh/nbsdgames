@@ -40,7 +40,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 enum {UP=0,RIGHT,DOWN,LEFT};
 enum {BLOCK=0,SURVIVAL,MIRROR,IMITATE};
-typedef signed char byte;
 /* The Plan9 compiler can not handle VLAs */
 #ifdef NO_VLA
 #define len 36

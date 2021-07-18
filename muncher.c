@@ -25,7 +25,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #define MINWID 40
 #define MAXWID 80
 enum {UP=1,RIGHT,DOWN,LEFT,FOOD,SUPERFOOD,TRAP};
-typedef signed char byte;
 
 /* The Plan9 compiler can not handle VLAs */
 #ifdef NO_VLA

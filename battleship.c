@@ -25,7 +25,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #define RED 3
 #define CYAN 2
 #define ENGLISH_LETTERS 26
-typedef signed char byte;
 typedef unsigned char bitbox;
 
 bool multiplayer;

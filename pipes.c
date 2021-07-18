@@ -30,7 +30,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #define SAVE_TO_NUM 10
 #define SY 0
 #define SX 7
-typedef signed char byte;
 typedef unsigned char bitbox;
 
 /* The Plan9 compiler can not handle VLAs */

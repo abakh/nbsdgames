@@ -16,8 +16,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include <stdlib.h>
 #include <signal.h>
 #include <stdbool.h>
-typedef signed char byte;
-
+#include "config.h"
 byte py,px;//cursor
 const char piece[2] = {'O','X'};
 char game[8][8];//main board
