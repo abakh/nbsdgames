@@ -9,8 +9,9 @@ MAN_DIR?=/usr/share/man/man6
 CFLAGS+=  -Wno-unused-result -D SCORES_DIR=\"$(SCORES_DIR)\"
 LDFLAGS+= -lncurses -lm
 
+COLORMODE:=FGCOLOR
 
-ALL= jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare darrt snakeduel
+ALL= jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare darrt snakeduel logik
 SCORE_FILES= pipes_scores jewels_scores miketron_scores muncher_scores fisher_scores darrt_scores
 
 all: $(ALL)
@@ -53,9 +54,11 @@ redsquare: redsquare.c config.h
 	$(CC) redsquare.c $(LDFLAGS) $(CFLAGS) -o ./redsquare
 darrt: darrt.c config.h common.h
 	$(CC) darrt.c $(LDFLAGS) $(CFLAGS)  -o ./darrt
-
 snakeduel: snakeduel.c config.h
 	$(CC) snakeduel.c $(LDFLAGS) $(CFLAGS)  -o ./snakeduel
+logik: logik.c 
+	$(CC) $@.c -o $@ -D$(COLORMODE)
+
 clean:
 	rm $(ALL)
 uninstall:
