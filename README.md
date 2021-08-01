@@ -70,6 +70,7 @@ Like this:
 ```
 ## Packages
 Also, If you are on a debian-based OS (Ubuntu, Mint) on a 64-bit PC you can download the deb package and simply install it with dpkg or apt.
+
 the deb package: https://sid.ethz.ch/debian/nbsdgames/nbsdgames_4.0-1_amd64.deb
 Thanks to Gürkan Myczko for packaging.
 
@@ -79,6 +80,10 @@ It's available on Arch (AUR)  thanks to Elias Riedel Gårding: https://aur.archl
 It's been made available for rpm distros thanks to Zinjanthropus: https://build.opensuse.org/package/show/home:Zinjanthropus/nbsdgames
 
 It's available on pkgsrc (default on NetBSD, Minix, supports everything else) thanks to nia: https://pkgsrc.se/games/nbsdgames
+
+It's available on homebrew (package manager for Linux people using Mac OSX, and Linux people using OSX using Linux) thanks to kind strangers: https://formulae.brew.sh/formula/nbsdgames
+
+ 
 ## How do these look like
 Linux+xterm+tmux
 ![Screenshot from 4 games in tmux](https://raw.githubusercontent.com/abakh/junk/master/screenshot.png)
