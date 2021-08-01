@@ -29,7 +29,6 @@ The games include:
 * Redsquare (Conway's Game of Life made playable!)
 * Darrt (with original gameplay!)
 * Snakeduel
-* Logik (or also known as Mastermind)
 
 
 The difficulty and/or dimensions are adjustable through simple command line options, you can play a minesweeper game that take hours to complete, or exprience hexadecimal sudoku and 8x8 fifteen-like puzzles!
