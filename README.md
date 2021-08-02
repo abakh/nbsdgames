@@ -83,7 +83,8 @@ It's available on pkgsrc (default on NetBSD, Minix, supports everything else) th
 
 It's available on homebrew (package manager for Linux people using Mac OSX, and Linux people using OSX using Linux) thanks to kind strangers: https://formulae.brew.sh/formula/nbsdgames
 
- 
+It's available on FreeBSD thanks to Robert Clausecker https://www.freshports.org/games/nbsdgames/
+
 ## How do these look like
 Linux+xterm+tmux
 ![Screenshot from 4 games in tmux](https://raw.githubusercontent.com/abakh/junk/master/screenshot.png)
