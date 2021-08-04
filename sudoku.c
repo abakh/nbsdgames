@@ -27,19 +27,21 @@ unsigned int filled;
 chtype colors[6]={0};
 
 
-#if defined Plan9 //the Plan9 compiler can not handle VLAs  
-#define size 3
-#define s 9
-// I hope this is approximately right 
-int round(float x)
-{
-    int y;
-    if(x > 0)
-        y = (int)(x + 0.5); //int will round down, so if the decimal of x is .5 or higher this will round up.
-    else if(x < 0)
-        y = (int)(x - 0.5); // the same but opposite
-    return y;
-}   
+#ifdef NO_VLA//the Plan9 compiler can not handle VLAs  
+	#define size 3
+	#define s 9
+	#ifdef Plan9
+		// I hope this is approximately right 
+		int round(float x)
+		{
+		    int y;
+		    if(x > 0)
+		        y = (int)(x + 0.5); //int will round down, so if the decimal of x is .5 or higher this will round up.
+		    else if(x < 0)
+		        y = (int)(x - 0.5); // the same but opposite
+		    return y;
+		}
+	#endif
 #else
 byte size,s;//s=size*size
 #endif
@@ -87,7 +89,7 @@ char int2sgn(byte num){// convert integer to representing sign
 	return 0;
 }
 
-bool isvalid(byte ty,byte tx,char board[s][s]){ //is it allowed to place that char there?
+const bool isvalid(const byte ty,const byte tx,const char board[s][s]){ //is it allowed to place that char there?
 	char t= board[ty][tx];
 	if(!t)
 		return 0;
@@ -322,7 +324,7 @@ void gameplay(void){
 }
 int main(int argc,char** argv){
 	signal(SIGINT,sigint_handler);
-#ifndef Plan9
+#ifndef NO_VLA
 	if(argc>4 || (argc==2 && !strcmp("help",argv[1])) ){
 		printf("Usage: %s [size [ difficulty]] \n",argv[0]);
 		return EXIT_FAILURE;
@@ -385,7 +387,7 @@ int main(int argc,char** argv){
 			colors[b]=COLOR_PAIR(b+1);
 		}
 	}
-#ifndef Plan9
+#ifndef NO_VLA
 	s= size*size;
 #endif
 	char board[s][s];
