@@ -315,6 +315,8 @@ void new_level(byte board[LEN][WID]){
 		break;
 		default:
 			srand(level);
+			cy=rand()%(RLEN/2);
+			cx=rand()%(RWID/2)
 			rand_level(board);
 	}
 }
@@ -583,8 +585,9 @@ int main(void){
 			mk_square(board);
 		}
 		DidntMove:
-		if( input=='q')
+		if( input=='q'){
 			sigint_handler(0);
+		}
 		if( input=='p'){
 			nocbreak();
 			cbreak();
@@ -599,7 +602,12 @@ int main(void){
 
 			halfdelay(9);
 		}
-
+		if( input=='?' || input==KEY_F(1)){
+			help();
+		}
+		if( input=='!' || input==KEY_F(2)){
+			gameplay();
+		}
 	}
 	
 	printw("Wanna play again?(y/n)");
