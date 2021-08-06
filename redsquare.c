@@ -316,7 +316,7 @@ void new_level(byte board[LEN][WID]){
 		default:
 			srand(level);
 			cy=rand()%(RLEN/2);
-			cx=rand()%(RWID/2)
+			cx=rand()%(RWID/2);
 			rand_level(board);
 	}
 }
