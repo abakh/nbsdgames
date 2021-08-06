@@ -57,9 +57,21 @@ darrt: darrt.c config.h common.h
 snakeduel: snakeduel.c config.h
 	$(CC) snakeduel.c $(LDFLAGS) $(CFLAGS)  -o ./snakeduel
 clean:
-	rm $(ALL)
+	for game in $(ALL); do rm $$game; done;
 uninstall:
 	for game in $(ALL); do rm $(GAMES_DIR)/$$game; rm $(MAN_DIR)/$$game.6.gz done;
 install: $(ALL)
 	cp $(ALL) $(GAMES_DIR)
 
+
+#######for namespacing #######
+
+nb: $(ALL) 
+	for game in $(ALL); do cp {,nb}$$game ;done;
+	for manpage in $(ls man); do cp man/{,nb}$$manpage ;done;
+nbinstall: nb 
+	cp nb* $(GAMES_DIR)
+nbmanpages: nb
+	cp man/nb* $(MAN_DIR)
+nbclean:
+	rm nb* man/nb*
