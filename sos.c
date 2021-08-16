@@ -23,13 +23,13 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #define len 5
 #define wid 6
 #else
-int len,wid;
+int len=5,wid=6;
 #endif
 
 int py,px;
 chtype colors[6]={A_BOLD};
 int score[2] ={0};
-int computer[2]={0};
+int sides[2]={'h','h'};
 char so[2] = {'S','O'};
 
 char rd(char board[len][wid],int y, int x){
@@ -248,57 +248,42 @@ int main(int argc, char** argv){
 	int dpt=1;
 	signal(SIGINT,sigint_handler);
 #ifndef NO_VLA
-	if(argc>4 || (argc==2 && !strcmp("help",argv[1])) ){
-		printf("Usage: %s [len wid [AIpower]]\n",argv[0]);
-		return EXIT_FAILURE;
-	}
-	if(argc==2){
-		puts("Give both dimensions.");
-		return EXIT_FAILURE;
-	}
-	if(argc>=3){
-		bool lool = sscanf(argv[1],"%d",&len) && sscanf(argv[2],"%d",&wid);
-		if(!lool){
-			puts("Invalid input.");
-			return EXIT_FAILURE;
-		}
-		if(len<3 || wid<3 || len>300 || wid>300){
-			puts("At least one of your given dimensions is either too small or too big.");
-			return EXIT_FAILURE;
-		}
-	
-	}
-	else{
-		len=5;
-		wid=6;
-	}
-	if(argc==4){
-		if( !sscanf(argv[3],"%d",&dpt)){
-			puts("Invalid input.");
-			return EXIT_FAILURE;
-		}
-		if( dpt<1 || dpt>= 127){
-			puts("That should be between 1 and 127.");
-			return EXIT_FAILURE;
-		}
-	}
-#else
-	if(argc>2 || (argc==2 && !strcmp("help",argv[1])) ){
-		printf("Usage: %s [AIpower]\n",argv[0]);
-		return EXIT_FAILURE;
-	}
+	int opt;
+	bool sides_chosen=0,no_replay=0;
+	while( (opt= getopt(argc,argv,"hnp:1:2:"))!= -1 ){
+		switch(opt){
+			case '1':
+			case '2':
+				if(!strcmp("c",optarg) || !strcmp("h",optarg)){
+					sides[opt-'1']=optarg[0];
+					sides_chosen=1;
+				}
+				else{
+					puts("That should be either h or c\n");
+					return EXIT_FAILURE;
+				}
+			break;
+			case 'p':
+				if(sscanf(optarg,"%d",&dpt) && dpt<128 && dpt>0)
+					;
+				else{
+					puts("That should be a number from 1 to 127.");
+					return EXIT_FAILURE;
+				}
+				
+			break;
 
-	if(argc==2){
-		if( !sscanf(argv[1],"%d",&dpt)){
-			puts("Invalid input.");
-			return EXIT_FAILURE;
-		}
-		if( dpt<1 || dpt>= 127){
-			puts("That should be between 1 and 127.");
-			return EXIT_FAILURE;
+			case 'n':
+				no_replay=1;
+			break;
+			case 'h':
+			default:
+				printf("Usage: %s [options]\n -p ai power\n -1 type of player 1\n -2 type of player 2\n -h help\n -n dont ask for replay\n",argv[0]);
+				return EXIT_SUCCESS;
+			break;
+	
 		}
 	}
-	
 #endif
 	srand(time(NULL)%UINT_MAX);
 	int input;		
@@ -310,28 +295,30 @@ int main(int argc, char** argv){
 	noecho();
 	cbreak();
 	keypad(stdscr,1);
-	printw("Black plays first.\n Choose the type of the blue player(H/c)\n" );
-	refresh();
-	input=getch();
-	if(input=='c'){
-		computer[0]=dpt;
-		printw("Computer.\n");
-	}
-	else{
-		computer[0]=0;
-		printw("Human.\n");
-	}
-	refresh();
-	printw("Choose the type of the yellow player(h/C)\n");
-	refresh();
-	input=getch();
-	if(input=='h'){
-		computer[1]=0;
-		printw("Human.\n");
-	}
-	else{
-		computer[1]=dpt;
-		printw("Computer.\n");
+	if(!sides_chosen){
+		printw("Blue plays first.\n Choose the type of the blue player(H/c)\n" );
+		refresh();
+		input=getch();
+		if(input=='c'){
+			sides[0]='c';
+			printw("Computer.\n");
+		}
+		else{
+			sides[0]='h';
+			printw("Human.\n");
+		}
+		refresh();
+		printw("Choose the type of the yellow player(h/C)\n");
+		refresh();
+		input=getch();
+		if(input=='h'){
+			sides[1]=0;
+			printw("Human.\n");
+		}
+		else{
+			sides[1]=dpt;
+			printw("Computer.\n");
+		}
 	}
 	if(has_colors()){
 		start_color();
@@ -364,7 +351,7 @@ int main(int argc, char** argv){
 		goto End;
 	refresh();
 	t=!t;
-	if(computer[t]){
+	if(sides[t]=='c'){
 		mvprintw(sy+len+5,sx+0,"Thinking...");
 		refresh();
 		decide(board,colored,dpt,t);
@@ -430,13 +417,19 @@ int main(int argc, char** argv){
 		mvprintw(sy+len+5,sx+0,"Draw!!");
 	else
 		mvprintw(sy+len+5,sx+0,"Player %d won the game!",(score[1]>score[0]) +1);
-	printw(" Wanna play again?(y/n)");
-	curs_set(1);
-	flushinp();
-	input=getch();
-	curs_set(0);
-	if(input != 'N' && input != 'n' && input!='q')
-		goto Start;
+	if(!no_replay){
+		printw(" Wanna play again?(y/n)");
+		curs_set(1);
+		flushinp();
+		input=getch();
+		curs_set(0);
+		if(input != 'N' && input != 'n' && input!='q')
+			goto Start;
+	}
+	else{
+		printw("Please press a key on your computer's keyboard to continue.");
+		getch();
+	}
 	endwin();
 	return EXIT_SUCCESS;
 }

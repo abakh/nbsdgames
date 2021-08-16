@@ -18,6 +18,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include <signal.h>
 #include <math.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "config.h"
 #define LIGHT -1
 #define DARK 1
@@ -35,6 +36,7 @@ byte cy,cx;//selected(choosen) piece
 int dpt;
 byte game[8][8];
 byte computer[2]={0,0};
+char sides[2]={'h','h'};
 byte score[2];//set by header()
 bool endgame=false;
 byte jumpagainy , jumpagainx;
@@ -374,7 +376,7 @@ double decide(byte side,byte depth,byte s){//s is the type of move, it doesn't s
 							else{
 								if(nextturn==side)
 									adv=decide(nextturn,depth,nexts);
-								else{ //best move is the one that gives least advantage to the opponet
+								else{ //best move is the one that gives least advantage to the opponent 
 									adv=decide(nextturn,depth-!fj,nexts);
 									if(adv==WIN)
 										adv=0;
@@ -485,15 +487,15 @@ void gameplay(void){
 	move(4,0);
 	printw("1) The game starts with each player having 12 men;\n");
 	printw("   men can only diagonally move forwards \n");
-	printw("   (toward the opponet's side).\n\n");
-	printw("2) Men can become kings by reaching the opponet's \n");
+	printw("   (toward the opponent's side).\n\n");
+	printw("2) Men can become kings by reaching the opponent's \n");
 	printw("   first rank; kings can diagonally move both forwards\n");
 	printw("   and backwards.\n\n");
-	printw("3) Pieces can capture opponet's pieces by jumping over them\n");
+	printw("3) Pieces can capture opponent's pieces by jumping over them\n");
 	printw("   also they can capture several pieces at once by doing a\n");
 	printw("   chain of jumps.\n\n");
 	printw("4) You have to do a jump if you can.\n\n");
-	printw("5) A player wins when the opponet can't do a move e. g. \n");
+	printw("5) A player wins when the opponent can't do a move e. g. \n");
 	printw("   all of their pieces are captured.\n\n");
 	refresh();
 	getch();
@@ -501,18 +503,43 @@ void gameplay(void){
 }
 int main(int argc,char** argv){
 	dpt=4;
-	if(argc>2){
-		printf("Usage: %s [AIpower]\n",argv[0]);
-		return EXIT_FAILURE;
-	}
-	if(argc==2){
-		if(sscanf(argv[1],"%d",&dpt) && dpt<128 && dpt>0)
-			;
-		else{
-			puts("That should be a number from 1 to 127.");
-			return EXIT_FAILURE;
+	int opt;
+	bool sides_chosen=0,no_replay=0;
+	while( (opt= getopt(argc,argv,"hnp:1:2:"))!= -1 ){
+		switch(opt){
+			case '1':
+			case '2':
+				if(!strcmp("c",optarg) || !strcmp("h",optarg)){
+					sides[opt-'1']=optarg[0];
+					sides_chosen=1;
+				}
+				else{
+					puts("That should be either h or c\n");
+					return EXIT_FAILURE;
+				}
+			break;
+			case 'p':
+				if(sscanf(optarg,"%d",&dpt) && dpt<128 && dpt>0)
+					;
+				else{
+					puts("That should be a number from 1 to 127.");
+					return EXIT_FAILURE;
+				}
+				
+			break;
+
+			case 'n':
+				no_replay=1;
+			break;
+			case 'h':
+			default:
+				printf("Usage: %s [options]\n -p ai power\n -1 type of player 1\n -2 type of player 2\n -h help\n -n dont ask for replay\n",argv[0]);
+				return EXIT_SUCCESS;
+			break;
+	
 		}
 	}
+
 	initscr();
 #ifndef NO_MOUSE
 	mousemask(ALL_MOUSE_EVENTS,NULL);
@@ -521,28 +548,35 @@ int main(int argc,char** argv){
 	cbreak();
 	keypad(stdscr,1);
 	int input ;
-	printw("Dark plays first.\nChoose type of the dark player(H/c)\n" );
-	refresh();
-	input=getch();
-	if(input=='c'){
-		computer[0]=dpt;
-		printw("Computer.\n");
+	if(!sides_chosen){
+		printw("Black plays first.\nChoose type of the black player(H/c)\n" );
+		refresh();
+		input=getch();
+		if(input=='c'){
+			computer[0]=dpt;
+			sides[0]='c';
+			printw("Computer.\n");
+		}
+		else{
+			computer[0]=0;
+			sides[0]='h';
+			printw("Human.\n");
+		}
+		printw("Choose type of the white player(h/C)\n");
+		refresh();
+		input=getch();
+		if(input=='h'){
+			computer[1]=0;
+			sides[0]='h';
+			printw("Human.\n");
+		}
+		else{
+			computer[1]=dpt;
+			sides[1]='c';
+			printw("Computer.\n");
+		}
 	}
-	else{
-		computer[0]=0;
-		printw("Human.\n");
-	}
-	printw("Choose type of the bright player(h/C)\n");
-	refresh();
-	input=getch();
-	if(input=='h'){
-		computer[1]=0;
-		printw("Human.\n");
-	}
-	else{
-		computer[1]=dpt;
-		printw("Computer.\n");
-	}
+
 	if(has_colors()){
 		start_color();
 		use_default_colors();
@@ -583,7 +617,11 @@ int main(int argc,char** argv){
 		else 
 			todraw=0;
 	}
-	if(!score[0] || (turn==-1 && !fj && !can_move(-1))){
+	if(score[0]==score[1] && !can_move(1) && !can_move(-1) && !forced_jump(1) && !forced_jump(-1)){
+		result=0;
+		goto End;
+	}
+	else if(!score[0] || (turn==-1 && !fj && !can_move(-1))){
 		result=1;
 		goto End;
 	}
@@ -598,11 +636,10 @@ int main(int argc,char** argv){
 	endgame= score[t]<=5 || score[!t]<=5;
 	draw(3,0);
 	refresh();
-	while(computer[t]){
+	while(sides[t]=='c'){
 		mvprintw(13,0,"Thinking...");
 		refresh();
-		computer[t]=dpt+ (score[!t] != score[t]) + endgame;
-		decide(turn,computer[t],1);
+		decide(turn,dpt+(score[t]<score[!t])+endgame,1);
 		if(!(fj && jumpagainy>=0 && !kinged )){
 			goto Turn;
 		}
@@ -613,10 +650,10 @@ int main(int argc,char** argv){
 		header();
 		if(!(computer[0]||computer[1])){
 			if(t)
-				addstr(" Bright's turn");
+				addstr(" White's turn");
 			else{
 				attron(COLOR_PAIR(1));
-				addstr(" Dark's turn");
+				addstr(" Black's turn");
 				attroff(COLOR_PAIR(1));
 			}
 		}	
@@ -671,29 +708,36 @@ int main(int argc,char** argv){
 	move(13,0);
 	switch(result){
 		case -1:
-			printw("The dark side has won the game.");
+			printw("Black side has won the game.");
 			break;
 		case 0:
 			printw("Draw.");
 			break;
 		case 1:
-			printw("The bright side has won the game.");
+			printw("White side has won the game.");
 			break;
 		case 2:
 			printw("You resigned.");
 	}
-	printw(" Wanna rematch?(y/n)");
-	curs_set(1);
-	input=getch();
-	if(result==2){
-		if (input=='Y' || input=='y') 
+	if(!no_replay){
+		printw(" Wanna rematch?(y/n)");
+		refresh();
+		curs_set(1);
+		input=getch();
+		if(result==2){
+			if (input=='Y' || input=='y') 
+				goto Start;
+		}
+		else if(input!='n' && input!='N' && input!= 'q'){
+			/*byte b=computer[0]; //switch sides, i don't know if it's necessary
+			computer[0]=computer[1];
+			computer[1]=b;*/
 			goto Start;
+		}
 	}
-	else if(input!='n' && input!='N' && input!= 'q'){
-		/*byte b=computer[0]; //switch sides, i don't know if it's necessary
-		computer[0]=computer[1];
-		computer[1]=b;*/
-		goto Start;
+	else{
+		printw("Press any key on your keyboard to continue.");
+		getch();
 	}
 	endwin();
 	return EXIT_SUCCESS;

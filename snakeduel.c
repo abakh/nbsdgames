@@ -59,7 +59,7 @@ int usleep(long usec) {
 
 
 #else
-int len,wid;
+int len=MINLEN,wid=MINWID;
 #endif//NO_VLA
 typedef struct snake{
 	int y;
@@ -617,31 +617,32 @@ int main(int argc, char** argv){
 	lol=fopen("lol","w");
 	fflush(lol);
 	#endif 
-	bool autoset=0;
+	bool autoset=1;
 	signal(SIGINT,sigint_handler);
 	#ifndef NO_VLA
-	if(argc>3 || (argc==2 && !strcmp("help",argv[1])) ){
-		printf("Usage: %s [len wid]\n",argv[0]);
-		return EXIT_FAILURE;
-	}
-	if(argc==2){
-		puts("Give both dimensions.");
-		return EXIT_FAILURE;
-	}
-	if(argc==3){
-		bool lool = sscanf(argv[1],"%d",&len) && sscanf(argv[2],"%d",&wid);
-		if(!lool){
-			puts("Invalid input.");
-			return EXIT_FAILURE;
+	int opt;
+	while( (opt=getopt(argc,argv,"hnl:w:"))!=-1){
+		switch(opt){
+			case 'l':
+				len=atoi(optarg);
+				if(len<MINLEN || len>MAXLEN){
+					fprintf(stderr,"Length too high or low.\n");
+				}
+				autoset=0;
+			break;
+			case 'w':
+				wid=atoi(optarg);
+				if(wid<MINWID || wid>MAXWID){
+					fprintf(stderr,"Width too high or low.\n");
+				}
+				autoset=0;
+			break;
+			case 'h':
+			default:
+				printf("Usage:%s [options]\n -l length\n -w width\n -h help\n",argv[0]);
+				return EXIT_FAILURE;
+			break;
 		}
-		if(len<MINLEN || wid<MINWID || len>500 || wid>500){
-			puts("At least one of your given dimensions is either too small or too big.");
-			return EXIT_FAILURE;
-		}
-	
-	}
-	else{
-		autoset=1;
 	}
 	#endif
 	initscr();

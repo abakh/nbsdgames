@@ -20,7 +20,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 byte py,px;//cursor
 const char piece[2] = {'O','X'};
 char game[8][8];//main board
-byte computer[2] = {0,0};
+char sides[2]={'h','h'};
 byte score[2];//set by header()
 
 void rectangle(byte sy,byte sx){
@@ -263,25 +263,51 @@ void gameplay(void){
 	printw("   another piece of the current player's color would turn\n");
 	printw("   to the current player's color.\n\n");
 	printw("2) You can only put pieces if at least one of your \n");
-	printw("   opponet's pieces turns into your color.\n\n");
+	printw("   opponent's pieces turns into your color.\n\n");
 	printw("3) The game ends when neither side can do a move and\n");
 	printw("   the player with more pieces wins.\n");
 	getch();
 }
 int main(int argc , char** argv){
 	int depth=2;
-	if(argc>2){
-		printf("Usage:%s [AIpower]",argv[0]);
-		return EXIT_FAILURE;
-	}
-	if(argc==2){
-		if(sscanf(argv[1],"%d",&depth) && depth<128 && 0<depth)
-			;//already done in sscanf
-		else{
-			printf("That should be a number from 1 to 127.\n");
-			return EXIT_FAILURE;
+	int opt;
+	bool sides_chosen=0,no_replay=0;
+	while( (opt= getopt(argc,argv,"hnp:1:2:"))!= -1 ){
+		switch(opt){
+			case '1':
+			case '2':
+				if(!strcmp("c",optarg) || !strcmp("h",optarg)){
+					sides[opt-'1']=optarg[0];
+					sides_chosen=1;
+				}
+				else{
+					puts("That should be either h or c\n");
+					return EXIT_FAILURE;
+				}
+			break;
+			case 'p':
+				if(sscanf(optarg,"%d",&depth) && depth<128 && depth>0)
+					;
+				else{
+					puts("That should be a number from 1 to 127.");
+					return EXIT_FAILURE;
+				}
+				
+			break;
+
+			case 'n':
+				no_replay=1;
+			break;
+			case 'h':
+			default:
+				printf("Usage: %s [options]\n -p ai power\n -1 type of player 1\n -2 type of player 2\n -h help\n -n dont ask for replay\n",argv[0]);
+				return EXIT_SUCCESS;
+			break;
+	
 		}
-	} 
+	}
+
+	
 	signal(SIGINT,sigint_handler);
 	initscr();
 #ifndef NO_MOUSE
@@ -291,29 +317,31 @@ int main(int argc , char** argv){
 	cbreak();
 	keypad(stdscr,1);
 	int input;
-	printw("Black plays first:\n");
-	printw("Choose type of the white player (H/c)\n");
-	refresh();
-	input=getch();
-	if(input == 'c'){
-		computer[0]=depth;
-		printw("Computer.\n");
-	}
-	else{
-		computer[1]=0;
-		printw("Human.\n");
-	}
-	refresh();
-	printw("Choose type of the black player(h/C)\n");
-	refresh();
-	input=getch();
-	if(input == 'h'){
-		computer[1]=0;
-		printw("Human.\n");
-	}
-	else{
-		computer[1]=depth;
-		printw("Computer.\n");
+	if(!sides_chosen){
+		printw("Black plays first:\n");
+		printw("Choose type of the white player (H/c)\n");
+		refresh();
+		input=getch();
+		if(input == 'c'){
+			sides[0]='c';
+			printw("Computer.\n");
+		}
+		else{
+			sides[0]='h';
+			printw("Human.\n");
+		}
+		refresh();
+		printw("Choose type of the black player(h/C)\n");
+		refresh();
+		input=getch();
+		if(input == 'h'){
+			sides[1]='h';
+			printw("Human.\n");
+		}
+		else{
+			sides[1]='c';
+			printw("Computer.\n");
+		}
 	}
 	Start: 
 	curs_set(0);
@@ -337,11 +365,11 @@ int main(int argc , char** argv){
 		goto End;
 
 	turn = !turn;
-	if(computer[turn]){
+	if(sides[turn]=='c'){
 		if(can_move(game,piece[turn])){
 			mvprintw(13,0,"Thinking...");
 			refresh();
-			decide(game,piece[turn],piece[!turn],computer[turn]);
+			decide(game,piece[turn],piece[!turn],depth);
 			cantmove=0;
 		}
 		else
@@ -360,8 +388,9 @@ int main(int argc , char** argv){
 			erase();
 			draw(3,0);
 			header();
-			if(!(computer[0]||computer[1]))
-				mvprintw(0,5,"%c's turn",piece[turn]);
+			if(sides[0]=='h' && sides[1] =='h'){
+				mvprintw(2,10,"%c's turn",piece[turn]);
+			}
 			refresh();
 			input=getch();
 			if( input==KEY_F(1) || input=='?' )
@@ -401,16 +430,21 @@ int main(int argc , char** argv){
 		mvprintw(13,0,"'%c' won.",piece[0]);
 	else
 		mvprintw(13,0,"'%c' won.",piece[1]);
-		
-	printw(" Wanna play again?(y/n)");
-	curs_set(1);
-	input=getch();
-	if( resign){
-		if (input=='Y' || input=='y') 
+	if(!no_replay){	
+		printw(" Wanna play again?(y/n)");
+		curs_set(1);
+		input=getch();
+		if( resign){
+			if (input=='Y' || input=='y') 
+				goto Start;
+		}
+		else if(input != 'N' && input != 'n' && input != 'q')
 			goto Start;
 	}
-	else if(input != 'N' && input != 'n' && input != 'q')
-		goto Start;
+	else{
+		printw(" Press any key on your keyboard to continue:");
+		getch();
+	}
 	endwin();
 	return EXIT_SUCCESS;
 }

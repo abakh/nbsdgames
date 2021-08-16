@@ -270,47 +270,20 @@ void sigint_handler(int x){
 	exit(x);
 }
 int main(int argc, char** argv){
-	bool autoset=0;
 	signal(SIGINT,sigint_handler);
-#ifndef NO_VLA
-	if(argc>3 || (argc==2 && !strcmp("help",argv[1])) ){
-		printf("Usage: %s [len wid]\n",argv[0]);
-		return EXIT_FAILURE;
-	}
-	if(argc==2){
-		puts("Give both dimensions.");
-		return EXIT_FAILURE;
-	}
-	if(argc==3){
-		bool lool = sscanf(argv[1],"%d",&len) && sscanf(argv[2],"%d",&wid);
-		if(!lool){
-			puts("Invalid input.");
-			return EXIT_FAILURE;
-		}
-		if(len<MINLEN || wid<MINWID || len>500 || wid>500){
-			puts("At least one of your given dimensions is either too small or too big.");
-			return EXIT_FAILURE;
-		}
-	}
-	else{
-		autoset=1;
-	}
-#endif
 	initscr();
 #ifndef NO_VLA
-	if(autoset){
-		len=LINES-7;
-		if(len<MINLEN)
-			len=MINLEN;
-		else if(len>MAXLEN)
-			len=MAXLEN;
+	len=LINES-7;
+	if(len<MINLEN)
+		len=MINLEN;
+	else if(len>MAXLEN)
+		len=MAXLEN;
 
-		wid=COLS-5;
-		if(wid<MINWID)
-			wid=MINWID;
-		else if(wid>MAXWID)
-			wid=MAXWID;
-	}
+	wid=COLS-5;
+	if(wid<MINWID)
+		wid=MINWID;
+	else if(wid>MAXWID)
+		wid=MAXWID;
 #endif
 	srand(time(NULL)%UINT_MAX);		
 	byte board[len][wid];

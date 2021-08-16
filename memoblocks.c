@@ -19,13 +19,9 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "config.h"
 typedef unsigned char ubyte;
 
-/* The Plan9 compiler can not handle VLAs */
-#ifdef NO_VLA
 #define size 8
 #define size2 16
-#else
-byte size,size2;//size2 is there to avoid a lot of multiplications
-#endif
+
 byte py,px;
 byte fy,fx; //the first tile
 chtype colors[6]={0};
@@ -172,23 +168,7 @@ void gameplay(void){
 	getch();
 	erase();
 }
-int main(int argc, char** argv){
-#ifndef NO_VLA
-    size=8;
-#endif
-	if(argc>=2){
-#ifndef NO_VLA
-		size=atoi(argv[1]);
-#endif
-		if(size<3 || size>19){
-			fprintf(stderr,"3<=size<=19\n");
-			return EXIT_FAILURE;
-		}
-		if(!strcmp("help",argv[1])){
-			printf("Usage: %s [size]\n",argv[0]);
-			return EXIT_SUCCESS;
-		}
-	}
+int main(void){
 	signal(SIGINT,sigint_handler);
 	srand(time(NULL)%UINT_MAX);
 	initscr();
@@ -215,12 +195,7 @@ int main(int argc, char** argv){
 			}
 		}
 	}
-#ifndef NO_VLA
-	else if(size>8)//big sizes depend on color display
-        size=8;
-	size2=size*2;
-#endif
-    chtype board[size][size2];
+    	chtype board[size][size2];
 	bool show[size][size2];
 	int input;
 	time_t tstart,now;
@@ -267,11 +242,14 @@ int main(int argc, char** argv){
 	}
 	now=time(NULL)-tstart;
 	mvprintw(size+7,0,"Time spent: %d:%2d:%2d",now/3600,(now%3600)/60,now%60);
-	mvprintw(size+5,0,"You solved it! Wanna play again?(y/n)");
+	mvprintw(size+5,0,"You solved it!");
+	printw(" Wanna play again?(y/n)");
+	refresh();
 	curs_set(1);
 	input=getch();
 	if(input != 'N' && input != 'n' && input != 'q')
 		goto Start;
+
 	endwin();
 	return EXIT_SUCCESS;
 }

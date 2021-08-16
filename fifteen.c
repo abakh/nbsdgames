@@ -192,15 +192,23 @@ void gameplay(void){
 int main(int argc, char** argv){
 #ifndef NO_VLA
 	size=4;
-	if(argc==2){
-		if(!strcmp("help",argv[1])){
-			printf("Usage: %s [size]\n",argv[0]);
-			return EXIT_SUCCESS;
-		}
-		size=atoi(argv[1]);
-		if(size<3 || size>7){
-			fprintf(stderr,"3<=size<=7\n");
-			return EXIT_FAILURE;
+	int opt;
+	bool no_replay=0;
+	while( (opt=getopt(argc,argv,"hns:"))!=-1){
+		switch(opt){
+			case 's':
+				size=atoi(optarg);
+				if(size<3 || size>7){
+					fprintf(stderr,"3<=size<=7");
+				}
+			break;
+			case 'n':
+				no_replay=1;
+			break;	
+			case 'h':
+			default:
+				printf("Usage:%s [options]\n -s size\n -h help\n -n don't ask for replay\n",argv[0]);
+			break;
 		}
 	}
 #endif
@@ -257,11 +265,19 @@ int main(int argc, char** argv){
 			slide_multi(board,py,px);
 		}
 	}
-	mvprintw(size+5,0,"You solved it! Wanna play again?(y/n)");
-	curs_set(1);
-	input=getch();
-	if(input != 'N' && input != 'n' && input != 'q')
-		goto Start;
+	mvprintw(size+5,0,"You solved it!");
+	if(!no_replay){
+		printw(" Wanna play again?(y/n)");
+		refresh();
+		curs_set(1);
+		input=getch();
+		if(input != 'N' && input != 'n' && input != 'q')
+			goto Start;
+	}
+	else{
+		printw(" Press any key on this computer's keyboard if you want to continue.");
+		getch();
+	}
 	endwin();
 	return EXIT_SUCCESS;
 }

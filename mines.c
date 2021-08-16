@@ -20,12 +20,15 @@ compile with -lncurses
 #include "config.h"
 #define FLAG 9
 #define UNCLEAR 10
-
+#define MINLEN 8
+#define MINWID 8
+#define MAXLEN 1000
+#define MAXWID 1000
 #ifdef NO_VLA //The Plan9 compiler can not handle VLAs
 #define len 8
 #define wid 8
 #else
-int len,wid;
+int len=8,wid=8;
 #endif
 int py,px,flags;
 int untouched;
@@ -221,40 +224,37 @@ void gameplay(void){
 int main(int argc, char** argv){
 	signal(SIGINT,sigint_handler);
 #ifndef	NO_VLA 
-	if(argc>4 || (argc==2 && !strcmp("help",argv[1])) ){
-		printf("Usage: %s [len wid [minescount]]\n",argv[0]);
-		return EXIT_FAILURE;
-	}
-	if(argc==2){
-		puts("Give both dimensions.");
-		return EXIT_FAILURE;
-	}
-	if(argc>=3){
-		bool lool = sscanf(argv[1],"%d",&len) && sscanf(argv[2],"%d",&wid);
-		if(!lool){
-			puts("Invalid input.");
-			return EXIT_FAILURE;
-		}
-		if(len<5 || wid<5 || len>1000 || wid>1000){
-			puts("At least one of your given dimensions is either too small or too big.");
-			return EXIT_FAILURE;
-		}
-	
-	}
-	else
-		len=wid=8;
-	if(argc==4){
-		if( !sscanf(argv[3],"%d",&mscount)){
-			puts("Invalid input.");
-			return EXIT_FAILURE;
-		}
-		if( mscount<5 || mscount>= len*wid){
-			puts("Too few/many mines.");
-			return EXIT_FAILURE;
+	int opt;
+	while( (opt=getopt(argc,argv,"hnm:l:w:"))!=-1){
+		switch(opt){
+			case 'm':
+				mscount=atoi(optarg);
+				if(mscount<0 || mscount>len*wid){
+					fprintf(stderr,"Too few/many mines.\n");
+				}
+			break;
+			case 'l':
+				len=atoi(optarg);
+				if(len<MINLEN || len>MAXLEN){
+					fprintf(stderr,"Length too high or low.\n");
+				}
+			break;
+			case 'w':
+				wid=atoi(optarg);
+				if(wid<MINWID || wid>MAXWID){
+					fprintf(stderr,"Width too high or low.\n");
+				}
+			break;
+			case 'h':
+			default:
+				printf("Usage:%s [options]\n -l length\n -w width\n -m number of mines\n -h help\n",argv[0]);
+				return EXIT_FAILURE;
+			break;
 		}
 	}
-	else
-		mscount = len*wid/6;
+	if(!mscount){
+		mscount=len*wid/6;
+	}
 #else
 	mscount=len*wid/6;
 #endif
@@ -313,23 +313,27 @@ int main(int argc, char** argv){
 		input = getch();
 		if( input==KEY_PPAGE && LINES< len+3){//the board starts in 3
 			sy+=10;
-			if(sy>0)
+			if(sy>0){
 				sy=0;
+			}
 		}
 		if( input==KEY_NPAGE && LINES< len+3){
 			sy-=10;
-			if(sy< -(len+3) )
+			if(sy< -(len+3) ){
 				sy=-(len+3);
+			}
 		}
 		if( input=='<' && COLS< wid*2+1){
 			sx+=10;
-			if(sx>0)
+			if(sx>0){
 				sx=0;
+			}
 		}
 		if( input=='>' && COLS< wid*2+1){
 			sx-=10;
-			if(sx< -(wid*2+1))
+			if(sx< -(wid*2+1)){
 				sx=-(wid*2+1);
+			}
 		}	
 		if( input==KEY_F(1) || input=='?' )
 			help();

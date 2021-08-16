@@ -33,12 +33,12 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 typedef unsigned char bitbox;
 
 /* The Plan9 compiler can not handle VLAs */
-#ifdef NO_VLA
+//#ifdef NO_VLA who uses that len wid arguments for this one? removed them
 #define wid 20
 #define len 14
-#else
-int len,wid;
-#endif
+//#else
+//int len,wid;
+//#endif
 
 int py,px,fy,fx;//p: pointer f: fluid
 bitbox tocome[5]={0};//the row of pipes in the left side
@@ -301,32 +301,6 @@ void gameplay(void){
 }
 int main(int argc, char** argv){
 	signal(SIGINT,sigint_handler);
-#ifndef NO_VLA
-	if(argc>3 || (argc==2 && !strcmp("help",argv[1])) ){
-		printf("Usage: %s [len wid]\n",argv[0]);
-		return EXIT_FAILURE;
-	}
-	if(argc==2){
-		puts("Give both dimensions.");
-		return EXIT_FAILURE;
-	}
-	if(argc==3){
-		bool lool = sscanf(argv[1],"%d",&len) && sscanf(argv[2],"%d",&wid);
-		if(!lool){
-			puts("Invalid input.");
-			return EXIT_FAILURE;
-		}
-		if(len<5 || wid<5 || len>1000 || wid>1000){
-			puts("At least one of your given dimensions is too small or too big.");
-			return EXIT_FAILURE;
-		}
-	
-	}
-	else{
-		wid=20;
-		len=14;	
-	}
-#endif
 	initscr();
 #ifndef NO_MOUSE
 	mousemask(ALL_MOUSE_EVENTS,NULL);

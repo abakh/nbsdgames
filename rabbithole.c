@@ -178,46 +178,21 @@ void sigint_handler(int x){
 	puts("Quit.");
 	exit(x);
 }
-int main(int argc, char** argv){
-	bool autoset=0;
+int main(void){
 	signal(SIGINT,sigint_handler);
-#ifndef NO_VLA
-	if(argc>3 || (argc==2 && !strcmp("help",argv[1])) ){
-		printf("Usage: %s [len wid]\n",argv[0]);
-		return EXIT_FAILURE;
-	}
-	if(argc==2){
-		puts("Give both dimensions.");
-		return EXIT_FAILURE;
-	}
-	if(argc==3){
-		bool lool = sscanf(argv[1],"%d",&len) && sscanf(argv[2],"%d",&wid);
-		if(!lool){
-			puts("Invalid input.");
-			return EXIT_FAILURE;
-		}
-		if(len<5 || wid<5 || len>800 || wid>800){
-			puts("At least one of your given dimensions is either too small or too big.");
-			return EXIT_FAILURE;
-		}
-	
-	}
-	else{
-		autoset=1;
-	}
-#endif
 	initscr();
 #ifndef NO_VLA
-	if(autoset){
-		if((LINES-7)/2 < 10)
-			len=10;
-		else
-			len=(LINES-7)/2;
-
-		if((COLS-5)/2 < 20)
-			wid=20;
-		else
-			wid=(COLS-5)/2;
+	if((LINES-7)/2 < 5){
+		len=5;
+	}
+	else{
+		len=(LINES-7)/2;
+	}
+	if((COLS-5)/2 < 20){
+		wid=20;
+	}
+	else{
+		wid=(COLS-5)/2;
 	}
 #endif
 	int carrot_count= (len*wid)/50;

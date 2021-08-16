@@ -324,48 +324,38 @@ void gameplay(void){
 }
 int main(int argc,char** argv){
 	signal(SIGINT,sigint_handler);
+	bool fastgen;
+	int opt;
+	while( (opt=getopt(argc,argv,"hfs:d:"))!=-1){
+		switch(opt){
 #ifndef NO_VLA
-	if(argc>4 || (argc==2 && !strcmp("help",argv[1])) ){
-		printf("Usage: %s [size [ difficulty]] \n",argv[0]);
-		return EXIT_FAILURE;
-	}
-	if(argc>1 ){
-		if(strlen(argv[1])>1 || argv[1][0]-'0'>7 || argv[1][0]-'0'< 2){ 
-			printf("2 <= size <= 7\n");
-			return EXIT_FAILURE;
+			case 's':
+				size=atoi(optarg);
+				if(size>7 || size<2){
+					printf("2 <= size <= 7\n");
+					return EXIT_FAILURE;
+				}
+			break;
+#endif //NO_VLA
+			case 'd':
+				diff=atoi(optarg);
+				if(diff>4 || diff<0){
+					printf("0 <= difficulty <= 4\n");
+					return EXIT_FAILURE;
+				}
+			break;
+			case 'f':
+				fastgen=1;
+			break;
+			case 'h':
+			default:
+				printf("Usage:%s [options]\n -s size\n -d difficulty\n -h help\n -f fast (flawed) generation\n",argv[0]);
+				return EXIT_FAILURE;
+			break;
 		}
-		else
-			size = *argv[1]-'0';
-	}	
-	else
-		size=3;
-	if(argc>2){ 
-		if (strlen(argv[2])>1 || argv[2][0]-'0'>4 || argv[2][0]-'0'<= 0 ){
-			printf("1 <= diff <=4\n");
-			return EXIT_FAILURE;
-		}
-		else
-			diff = *argv[2]-'0'+1;
 	}
-	else
-		diff=2;
-#else //Plan9 doesn't take size
-	if(argc>2 || (argc==2 && !strcmp("help",argv[1])) ){
-		printf("Usage: %s  [difficulty]\n",argv[0]);
-		return EXIT_FAILURE;
-	}
-	if(argc>1){ 
-		if (strlen(argv[2])>1 || argv[2][0]-'0'>4 || argv[2][0]-'0'<= 0 ){
-			printf("1 <= diff <=4\n");
-			return EXIT_FAILURE;
-		}
-		else
-			diff = *argv[2]-'0'+1;
-	}
-	else
-		diff=2;
-#endif
-	bool fastgen= !(!getenv("SUDOKU_FASTGEN"));
+	
+	bool fastgen= fastgen || !(!getenv("SUDOKU_FASTGEN"));
 	initscr();
 #ifndef NO_MOUSE
 	mousemask(ALL_MOUSE_EVENTS,NULL);
