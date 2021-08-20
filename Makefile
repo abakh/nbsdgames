@@ -59,10 +59,11 @@ snakeduel: snakeduel.c config.h
 clean:
 	for game in $(ALL); do rm $$game; done;
 uninstall:
-	for game in $(ALL); do rm $(GAMES_DIR)/$$game; rm $(MAN_DIR)/$$game.6.gz done;
+	for game in $(ALL); do rm $(GAMES_DIR)/$$game; rm $(MAN_DIR)/$$game.6.gz ;done;
 install: $(ALL)
 	cp $(ALL) $(GAMES_DIR)
-
+test:
+	for game in $(ALL); do ./$$game ;done;
 
 #######for namespacing #######
 
