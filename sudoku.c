@@ -355,7 +355,7 @@ int main(int argc,char** argv){
 		}
 	}
 	
-	bool fastgen= fastgen || !(!getenv("SUDOKU_FASTGEN"));
+	fastgen= fastgen || !(!getenv("SUDOKU_FASTGEN"));
 	initscr();
 #ifndef NO_MOUSE
 	mousemask(ALL_MOUSE_EVENTS,NULL);
