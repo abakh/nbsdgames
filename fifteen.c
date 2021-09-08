@@ -3,7 +3,7 @@
 |__
 |  IFTEEN
 
-Authored by abakh <abakh@tuta.io>
+Authored by abakh <abakh!tuta,io>
 To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
 
 You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
@@ -21,7 +21,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #ifdef NO_VLA
 #define size 4
 #else
-byte size;
+byte size=4;
 #endif
 byte py,px;
 byte ey,ex; //the empty tile
@@ -190,18 +190,18 @@ void gameplay(void){
 	erase();
 }
 int main(int argc, char** argv){
-#ifndef NO_VLA
-	size=4;
 	int opt;
 	bool no_replay=0;
 	while( (opt=getopt(argc,argv,"hns:"))!=-1){
 		switch(opt){
+#ifndef NO_VLA
 			case 's':
 				size=atoi(optarg);
 				if(size<3 || size>7){
 					fprintf(stderr,"3<=size<=7");
 				}
 			break;
+#endif //NO_VLA
 			case 'n':
 				no_replay=1;
 			break;	
@@ -211,7 +211,6 @@ int main(int argc, char** argv){
 			break;
 		}
 	}
-#endif
 	signal(SIGINT,sigint_handler);
 	srand(time(NULL)%UINT_MAX);
 	initscr();
