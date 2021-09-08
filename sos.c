@@ -3,7 +3,7 @@
 (_'| |(_'
 ._):_:._)
 
-Authored by abakh <abakh@tuta.io>
+Authored by abakh <abakh!tuta,io>
 To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
 
 You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
@@ -247,7 +247,6 @@ void gameplay(void){
 int main(int argc, char** argv){
 	int dpt=1;
 	signal(SIGINT,sigint_handler);
-#ifndef NO_VLA
 	int opt;
 	bool sides_chosen=0,no_replay=0;
 	while( (opt= getopt(argc,argv,"hnp:1:2:"))!= -1 ){
@@ -272,7 +271,20 @@ int main(int argc, char** argv){
 				}
 				
 			break;
-
+#ifndef NO_VLA
+			case 'l':
+				len=atoi(optarg);
+				if(len<0 || len>1000){
+					fprintf(stderr,"Length too high or low.\n");
+				}
+			break;
+			case 'w':
+				wid=atoi(optarg);
+				if(wid<0 || wid>1000){
+					fprintf(stderr,"Width too high or low.\n");
+				}
+			break;
+#endif //NO_VLA			
 			case 'n':
 				no_replay=1;
 			break;
@@ -284,7 +296,6 @@ int main(int argc, char** argv){
 	
 		}
 	}
-#endif
 	srand(time(NULL)%UINT_MAX);
 	int input;		
 	initscr();
