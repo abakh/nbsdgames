@@ -22,7 +22,6 @@ NOTE: This program is only made for entertainment porpuses. The puzzles are gene
 
 byte _wait=0, waitcycles=0;//apparently 'wait' conflicts with a variable in a library macOS includes by default
 byte py,px;
-byte diff;
 unsigned int filled;
 chtype colors[6]={0};
 
@@ -43,7 +42,7 @@ chtype colors[6]={0};
 		}
 	#endif
 #else
-byte size,s;//s=size*size
+byte size=3,s=9;//s=size*size
 #endif
 void cross(byte sy,byte sx,chtype start,chtype middle,chtype end){ //to simplify drawing tables. doesn't draw a cross (why did I choose that name?)
 		mvaddch(sy,sx,start);
@@ -89,7 +88,7 @@ char int2sgn(byte num){// convert integer to representing sign
 	return 0;
 }
 
-const bool isvalid(const byte ty,const byte tx,const char board[s][s]){ //is it allowed to place that char there?
+bool isvalid(byte ty,byte tx,char board[s][s]){ //is it allowed to place that char there?
 	char t= board[ty][tx];
 	if(!t)
 		return 0;
@@ -112,13 +111,48 @@ const bool isvalid(const byte ty,const byte tx,const char board[s][s]){ //is it 
 	}				
 	return 1;
 }
+void swap(char *a,char *b){
+	char s=*a;
+	*a=*b;
+	*b=s;
+}
+void random_order(char a[size]){
+	byte i;
+	for(i=0;i<size;++i){
+		a[i]=i;
+	}
+	for(i=0;i<size;++i){
+		swap(&a[rand()%size],&a[rand()%size]);
+	}
+}
+void swap_row(char board[s][s],byte row_a, byte row_b){
+	for(byte i=0;i<s;++i){
+		swap(&board[i][row_a],&board[i][row_b]);
+	}
+}
+void swap_col(char board[s][s],byte col_a, byte col_b){
+	for(byte i=0;i<s;++i){
+		swap(&board[col_a][i],&board[col_b][i]);
+	}
+}
+void swap_super_row(char board[s][s],byte row_a,byte row_b){
+	for(byte i=0;i<size;++i){
+		swap_row(board,row_a+i,row_b+i);
+	}
+}
+void swap_super_col(char board[s][s],byte col_a,byte col_b){
+	for(byte i=0;i<size;++i){
+		swap_col(board,col_a+i,col_b+i);
+	}
+}
 
-void genocide(char board[s][s],char victim){
+void cleanse(char board[s][s],char victim){
 	for(byte y=0;y<s;++y)
 		for(byte x=0;x<s;++x)
 			if(board[y][x]==victim)
 				board[y][x]=0;
 }
+
 bool fill_with(char board[s][s],char fillwith){//returns 1 on failure
 	byte firstx,x,tries=0;
 	Again:
@@ -144,7 +178,7 @@ bool fill_with(char board[s][s],char fillwith){//returns 1 on failure
 				if(x==s)
 					x=0;
 				if(x==firstx){
-					genocide(board,fillwith);
+					cleanse(board,fillwith);
 					goto Again;
 				}
 			}
@@ -172,7 +206,7 @@ void fill(char board[s][s]){
 		}
 	}
 }
-void swap(char board[s][s],char A,char B){
+void swap_instances(char board[s][s],char A,char B){
 	byte y,x;
 	for(y=0;y<s;++y){
 		for(x=0;x<s;++x){
@@ -183,7 +217,8 @@ void swap(char board[s][s],char A,char B){
 		}
 	}
 }
-void justfill(char board[s][s]){//sometimes fill() gets too much , and you just want a 49x49 sudoku puzzle of any quality
+
+void just_fill(char board[s][s]){//sometimes fill() gets too much , and you just want a 49x49 sudoku puzzle of any quality
 	byte y,x,k;//k is here to minimize calls to isvalid()
 	for(y=0;y<s;++y){//fill with 1,2,3,4...
 		k=1;
@@ -200,17 +235,49 @@ void justfill(char board[s][s]){//sometimes fill() gets too much , and you just 
 		}
 	}
 	for(byte n=0;n<s*2;++n)//randomize
-		swap(board,int2sgn(1+(rand()%s)),int2sgn(1+(rand()%s)) );
+		swap_instances(board,int2sgn(1+(rand()%s)),int2sgn(1+(rand()%s)) );
 }
-void mkpuzzle(char board[s][s],char empty[s][s],char game[s][s]){//makes a puzzle to solve
+
+void mk_puzzle(char board[s][s],char empty[s][s],char game[s][s]){//makes a puzzle to solve
 	byte y,x;
 	for(y=0;y<s;++y){
 		for(x=0;x<s;++x){
-			if( !(rand()%diff) ){
+			if( (size+x+y)%2==0 ){
 				empty[y][x]=board[y][x];
 				game[y][x]=board[y][x];
 			}
 		}
+	}
+	char order[size];
+	byte h=0,i=0,j=0;
+	for(h=0;h<s;++h){
+	for(i=0;i<size;++i){
+		random_order(order);
+		for(j=0;j<size;++j){
+			swap_row(empty,size*i+j,size*i+order[j]);
+			swap_row(game,size*i+j,size*i+order[j]);
+			swap_row(board,size*i+j,size*i+order[j]);
+		}
+		random_order(order);
+		for(j=0;j<size;++j){
+			swap_col(empty,size*i+j,size*i+order[j]);
+			swap_col(game,size*i+j,size*i+order[j]);
+			swap_col(board,size*i+j,size*i+order[j]);
+		}
+		random_order(order);
+		for(j=0;j<size;++j){
+			swap_super_row(empty,size*i,size*order[j]);
+			swap_super_row(game,size*i,size*order[j]);
+			swap_super_row(board,size*i,size*order[j]);
+		}
+	
+		random_order(order);
+		for(j=0;j<size;++j){
+			swap_super_col(empty,size*i,size*order[j]);
+			swap_super_col(game,size*i,size*order[j]);
+			swap_super_col(board,size*i,size*order[j]);
+		}
+	}
 	}
 }
 
@@ -324,7 +391,7 @@ void gameplay(void){
 }
 int main(int argc,char** argv){
 	signal(SIGINT,sigint_handler);
-	bool fastgen;
+	bool fastgen=0;
 	int opt;
 	while( (opt=getopt(argc,argv,"hfs:d:"))!=-1){
 		switch(opt){
@@ -337,25 +404,18 @@ int main(int argc,char** argv){
 				}
 			break;
 #endif //NO_VLA
-			case 'd':
-				diff=atoi(optarg);
-				if(diff>4 || diff<0){
-					printf("0 <= difficulty <= 4\n");
-					return EXIT_FAILURE;
-				}
-			break;
 			case 'f':
 				fastgen=1;
 			break;
 			case 'h':
 			default:
-				printf("Usage:%s [options]\n -s size\n -d difficulty\n -h help\n -f fast (flawed) generation\n",argv[0]);
+				printf("Usage:%s [options]\n -s size\n -h help\n -f fast (flawed) generation\n",argv[0]);
 				return EXIT_FAILURE;
 			break;
 		}
 	}
 	
-	fastgen= fastgen || !(!getenv("SUDOKU_FASTGEN"));
+	fastgen= (size>4) || fastgen || !(!getenv("SUDOKU_FASTGEN"));
 	initscr();
 #ifndef NO_MOUSE
 	mousemask(ALL_MOUSE_EVENTS,NULL);
@@ -394,10 +454,10 @@ int main(int argc,char** argv){
 	memset(empty,0,s*s);
 	memset(game,0,s*s);
 	if(fastgen)
-		justfill(board);
+		just_fill(board);
 	else
 		fill(board);
-	mkpuzzle(board,empty,game);
+	mk_puzzle(board,empty,game);
 	py=px=0;
 
 	while(1){
