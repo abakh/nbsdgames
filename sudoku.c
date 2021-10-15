@@ -112,9 +112,9 @@ bool isvalid(byte ty,byte tx,char board[s][s]){ //is it allowed to place that ch
 	return 1;
 }
 void swap(char *a,char *b){
-	char s=*a;
+	char sw=*a;
 	*a=*b;
-	*b=s;
+	*b=sw;
 }
 void random_order(char a[size]){
 	byte i;
