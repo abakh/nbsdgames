@@ -168,7 +168,10 @@ void gameplay(void){
 	getch();
 	erase();
 }
-int main(void){
+int main(int argc,char** argv){
+	if(argc>1){
+		printf("This game doesn't take arguments");
+	}
 	signal(SIGINT,sigint_handler);
 	srand(time(NULL)%UINT_MAX);
 	initscr();

@@ -309,7 +309,10 @@ void sigint_handler(int x){
 	puts("Quit.");
 	exit(x);
 }
-int main(void){
+int main(int argc,char** argv){
+	if(argc>1){
+		printf("This game doesn't take arguments");
+	}
 #ifndef NO_VLA
 	signal(SIGINT,sigint_handler);
 #endif

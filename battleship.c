@@ -523,7 +523,10 @@ void gameplay(bool side){//side is only there to feed header()
 	getch();
 	erase();
 }
-int main(void){
+int main(int argc,char** argv){
+	if(argc>1){
+		printf("This game doesn't take arguments");
+	}
 	initscr();
 #ifndef NO_MOUSE
 	mousemask(ALL_MOUSE_EVENTS,NULL);

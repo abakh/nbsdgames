@@ -244,7 +244,10 @@ void draw(void){
 	mvaddstr(LINES-2,middle-5,controls);
 	refresh();
 }
-int main(void){
+int main(int argc,char** argv){
+	if(argc>1){
+		printf("This game doesn't take arguments");
+	}
 	initscr();
 	cbreak();
 	halfdelay(DELAY);

@@ -51,22 +51,16 @@ FILE* scorefile;
 chtype background[LEN][WID];
 
 int input;
-typedef struct aim{
-	char sign;
-	float y,x;
-	float angle;
-	float v;
-	byte brake;
-	bool visible;
-}aim;
-
-aim aims[26];
-aim landed_aims[SHOTS_WHEN_STARTING];//so an aim couldn't pass below one that has already landed, doesn't make sense visually.
-
-byte shots,aims_to_stop;
-
 char msg[150]={0};
 byte msg_show=0;
+
+bool timed[3];
+byte circlex[3];
+byte circley[3];
+byte loops_left=0;
+float shooting_angle=0;
+float rotation_angle=0;
+
 byte digit_count(int num){
 	byte ret=0;
 	do{
@@ -110,104 +104,6 @@ float center_distance(byte y,byte x){
 	//y distance is twice accounted for. visual reasons
 	return sqrt( (y-HLEN)*(y-HLEN)+0.25*(x-HWID)*(x-HWID) );
 }
-long calculate_points(aim *a){
-	int distance=center_distance((byte)a->y,(byte)a->x);
-	long points;
-	if(distance>HLEN){
-		points=-2*pow(2,distance-HLEN);
-	}
-	else if((byte) a->y == HLEN && (byte) a->x == HWID){
-		points=1000000;
-	}
-	else{
-		points=pow(2,HLEN-distance);
-	}
-	return points;
-}
-void aim_lands(aim *a){
-	landed_aims[SHOTS_WHEN_STARTING-aims_to_stop]=*a;
-	--aims_to_stop;
-	score+=calculate_points(a);
-	a->visible=0;
-
-	float distance= center_distance((byte)a->y,(byte)a->x);
-	if((byte)a->y==HLEN && (byte)a->x==HWID){
-		strcpy(msg,"Bravo!");
-	}
-	else if(distance<2){
-		strcpy(msg,"Very close...");
-	}
-	else{
-		goto NoMessage;
-	}
-	msg_show=30;
-	NoMessage: return;
-}
-void move_aim(aim *a){
-	if(a->brake==1){
-		return;
-	}
-	else if(a->brake>0){
-		--a->brake;
-	}
-	bool bounce;
-	bounce=0;
-
-	//bounce when hitting the borders, and don't get stuck there
-	if(a->x<0 || (int)a->x>=WID-1 || ((int)a->x==13 && a->y<=7 ) ){
-		a->angle =M_PI- a->angle;
-		bounce=1;
-	}
-	if(a->y <0 || (int)a->y >= LEN-1 || (a->x<=13 && (int)a->y==7)){
-		a->angle =0- a->angle;
-		bounce=1;
-	}
-	if(a->x<0)//these are for getting unstuck
-		a->x=1;
-	if(a->y<0)
-		a->y=1;
-	if(a->x>=WID)
-		a->x=WID-1;
-	if(a->y>=LEN)
-		a->y=LEN-1;
-
-	if((int)a->x==13 && a->y<7) 
-		a->x=14;
-
-	if(a->x<=13 && (int)a->y==7) 
-		a->y=8;
-
-	while(a->angle<0){//preventing overflow
-		a->angle +=M_PI*2;
-	}
-	
-	//move
-	a->x+=cos(a->angle)*a->v;
-	a->y+=sin(a->angle)*a->v;
-
-
-	if(bounce && a->x>=WID-1)//getting unstuck
-		a->x=WID-1;
-	if(bounce && a->y>=LEN-1)
-		a->y=LEN-1;
-	
-	if(bounce){//bounce in a slightly different direction than it should be
-		a->angle +=randint(-1,1)*0.1;
-	}
-	if(a->x<13 && a->y<7){// don't go into the logo area
-		if(13 - a->x < 7 - a->y){
-			a->y=8;
-		}
-		else{
-			a->x=14;
-		}
-	}
-
-	if(a->brake==1){//the aim has just been stopped
-		aim_lands(a);
-	}
-
-}
 void star_line(byte y){
 	for(byte x=1;x<WID-1;++x)
 		mvaddch(y,x,'.');
@@ -231,69 +127,58 @@ void make_background(){
 		}
 	}
 }
-void draw_aim(aim a){
-	if(!a.visible)
-		return;
-
-	chtype color;
-	if(a.brake)
-		color=colors[2]|A_BOLD;
-	else
-		color=colors[2];
-	mvaddch((int) a.y,(int)a.x,a.sign|color);
-}
 void logo(){
 	mvaddstr(0,0," _        ");
 	mvaddstr(1,0,"| '.      ");
 	mvaddstr(2,0,"|  :      ");
         mvaddstr(3,0,"|.' ARRT  ");
 }
-void draw(){
-	for(byte y=0;y<LEN;++y){
-		for(byte x=0;x<WID;++x){
-			mvaddch(y,x,background[y][x]);
+void draw_circle(byte sy,byte sx,char c){
+	/*chtype c=colors[2];
+	switch(loops_left){
+		case -1:
+			c|='.'
+		break;
+		default:
+			c|='0'+loops_left;
+	}*/
+	for(byte y=0;y<5;++y){
+		for(byte x=0;x<10;++x){
+			if((y-5)*(y-5)+(x-5)/2*(x-5)/2<25){
+				mvaddch(sy+y,sx+x,c);
+			}
 		}
 	}
+}
+void draw_angle(byte sy,byte sx){
+	float y=sy+5;
+	float x=sx+5;
 
+	for(byte i=0;i<5;++i){
+		mvaddch((byte)y,(byte)x,'#'|A_BOLD);
+		y+=sin(shooting_angle);
+		x+=cos(shooting_angle)/2;
+	}
+}
+
+void draw(){
+	for(byte i=0;i<3;++i){
+		draw_circle(circley[i],circlex[i],'.');
+	}
+	draw_angle(circley[0],circlex[0]);	
 	logo();
-	mvprintw(5,0,"Score: %d",score);
-	mvprintw(6,0,"Shots: %d",shots);
-	for(byte i=0;i<SHOTS_WHEN_STARTING-aims_to_stop;++i){
-		draw_aim(landed_aims[i]);
-	}
-	for(byte i=0;i<26;++i){
-		draw_aim(aims[i]);
-	}
 	if(msg_show){
 		--msg_show;
 		mvaddstr(LEN-1,0,msg);
 	}
 }
 
-void end_scene(){
-	for(byte y=0;y<LEN;++y){
-		for(byte x=0;x<WID;++x){
-			mvaddch(y,x,background[y][x]);
-		}
-	}
-
-	logo();
-	mvprintw(5,0,"Score: %d",score);
-	for(byte i=0;i<SHOTS_WHEN_STARTING-aims_to_stop;++i){
-		draw_aim(landed_aims[i]);
-	}
-	mvaddstr(LEN-1,0,"Press any key to continue:");
-	getch();
-	refresh();
-}
-
 byte save_score(void){
-	return fallback_to_home("darrt_scores",score,SAVE_TO_NUM);
+	return fallback_to_home("circlejump_scores",score,SAVE_TO_NUM);
 
 }
 
 void show_scores(byte playerrank){
-	attron(colors[3]);
 	filled_rect(0,0,LEN,WID);
 	red_border();
 	if(playerrank==FOPEN_FAIL){
@@ -347,7 +232,6 @@ void show_scores(byte playerrank){
 		mvprintw(2+2*rank,WID-1-digit_count(pscore),"%d",pscore);
 		++rank;
 	}
-	attroff(colors[3]);
 	refresh();
 }
 void help(void){
@@ -370,10 +254,7 @@ void sigint_handler(int x){
 	puts("Quit.");
 	exit(x);
 }
-int main(int argc,char** argv){
-	if(argc>1){
-		printf("This game doesn't take arguments");
-	}
+int main(void){
 	signal(SIGINT,sigint_handler);
 	initscr();
 	noecho();
@@ -405,15 +286,6 @@ int main(int argc,char** argv){
 
 		if(input=='?' || input==KEY_F(1))
 			help();
-		if(input>='a' && input<='z'){
-			input=input-'a'+'A';
-		}
-		if(input>='A' && input<='Z' && shots){
-			if(!aims[input-'A'].brake){
-				aims[input-'A'].brake=15;
-				--shots;
-			}
-		}
 		if(input=='Q'){
 			strcpy(msg,"Ctrl-C to quit.");
 			msg_show=50;
