@@ -10,14 +10,14 @@ CFLAGS+=  -Wno-unused-result -D SCORES_DIR=\"$(SCORES_DIR)\"
 LDFLAGS+= -lncurses -lm
 
 
-ALL= jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare darrt snakeduel
-SCORE_FILES= pipes_scores jewels_scores miketron_scores muncher_scores fisher_scores darrt_scores
+ALL= jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare darrt snakeduel tugow
+SCORE_FILES= pipes_scores jewels_scores miketron_scores muncher_scores fisher_scores darrt_scores tugow_scores
 
 all: $(ALL)
 
 scorefiles:
 	for sf in $(SCORE_FILES); do touch $(SCORES_DIR)/$$sf ; chmod 664 $(SCORES_DIR)/$$sf; chown :games $(SCORES_DIR)/$$sf ; done;
-	for game in $(ALL); do chown :games $(GAMES_DIR)/$$game; chmod g+s $(GAMES_DIR)/$$game ; done;
+	for game in $(ALL); do chown :games $(GAMES_DIR)/$$game; chmod g $(GAMES_DIR)/$$game ; done;
 
 manpages:
 	cp man/* $(MAN_DIR)
@@ -56,6 +56,8 @@ darrt: darrt.c config.h common.h
 
 snakeduel: snakeduel.c config.h
 	$(CC) snakeduel.c $(LDFLAGS) $(CFLAGS)  -o ./snakeduel
+tugow: tugow.c common.h
+	$(CC) tugow.c $(LDFLAGS) $(CFLAGS) -o ./tugow
 clean:
 	for game in $(ALL); do rm $$game; done;
 uninstall:
