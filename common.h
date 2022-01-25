@@ -14,7 +14,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include <unistd.h>
 #include "config.h"
 #define FOPEN_FAIL -10
-
+#define ENV_VAR_OR_USERNAME (getenv("NB_PLAYER")?getenv("NB_PLAYER"):getenv("USER"))
 FILE* score_file;
 byte score_write(const char* path, long wscore, byte save_to_num){// only saves the top 10, returns the place in the chart
 	score_file=fopen(path,"r");
@@ -24,12 +24,16 @@ byte score_write(const char* path, long wscore, byte save_to_num){// only saves 
 			return FOPEN_FAIL;
 		}
 	}
-		
-	char name_buff[save_to_num][60];
-	long score_buff[save_to_num];
+	#ifdef NO_VLA 
+		#define save_to_num_ 10
+	#else //such a dirty cpp hack
+		byte save_to_num_=save_to_num;
+	#endif
+	char name_buff[save_to_num_][60];
+	long score_buff[save_to_num_];
 
-	memset(name_buff,0,save_to_num*60*sizeof(char) );
-	memset(score_buff,0,save_to_num*sizeof(long) );
+	memset(name_buff,0,save_to_num_*60*sizeof(char) );
+	memset(score_buff,0,save_to_num_*sizeof(long) );
 
 	long scanned_score =0;
 	char scanned_name[60]={0};
@@ -51,13 +55,13 @@ byte score_write(const char* path, long wscore, byte save_to_num){// only saves 
 	byte ret = -1;
 	bool wrote_it=0;
 
-	for(byte i=0;i<=scores_count && i<save_to_num-wrote_it;++i){
+	for(byte i=0;i<=scores_count && i<save_to_num_-wrote_it;++i){
 		if(!wrote_it && (i>=scores_count || wscore>=score_buff[i]) ){
-			fprintf(score_file,"%s : %ld\n",getenv("USER"),wscore);
+			fprintf(score_file,"%s : %ld\n",ENV_VAR_OR_USERNAME,wscore);
 			ret=i;
 			wrote_it=1;
 		}
-		if(i<save_to_num-wrote_it && i<scores_count){
+		if(i<save_to_num_-wrote_it && i<scores_count){
 			fprintf(score_file,"%s : %ld\n",name_buff[i],score_buff[i]);
 		}
 	}
@@ -68,6 +72,13 @@ byte score_write(const char* path, long wscore, byte save_to_num){// only saves 
 byte fallback_to_home(const char* name,long wscore,byte save_to_num){// only saves the top 10, returns the place in the chart
 	byte ret;
 	char full_path[1000]={0};
+	if(getenv("NB_SCORES_DIR")){
+		snprintf(full_path,1000,"%s/%s",getenv("NB_SCORES_DIR"),name);
+		ret=score_write(full_path,wscore,save_to_num);
+		if(ret==FOPEN_FAIL){
+			return ret;//do not fallback this
+		}
+	}
 	snprintf(full_path,1000,"%s/%s",SCORES_DIR,name);
 	ret=score_write(full_path,wscore,save_to_num);
 	if(ret==FOPEN_FAIL){
