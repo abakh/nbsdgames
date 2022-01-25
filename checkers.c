@@ -567,7 +567,7 @@ int main(int argc,char** argv){
 		input=getch();
 		if(input=='h'){
 			computer[1]=0;
-			sides[0]='h';
+			sides[1]='h';
 			printw("Human.\n");
 		}
 		else{
