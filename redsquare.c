@@ -24,7 +24,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #define DEAD 0
 #define ALIVE 1
 #define RED 2
-
+#define EMPTY_LINES 7
 int level;
 byte py,px;
 byte cy,cx;//cross
@@ -43,19 +43,36 @@ void logo(void){
 	addstr("|_) (_\n");
 	addstr("| \\ED_)QUARE");
 }
+
+int beginy,view_len;
+byte setup_scroll(){
+	beginy=0;
+	if(0<py+3-(LINES-EMPTY_LINES)){
+		beginy=py+3-(LINES-EMPTY_LINES);
+	}
+	view_len=LEN;
+	if(LINES-EMPTY_LINES<LEN){
+		view_len=LINES-EMPTY_LINES;
+	}
+	if(beginy+view_len>LEN){
+		beginy-=beginy+view_len-LEN;
+	}
+}
+
 void rectangle(int sy,int sx){
-	for(int y=0;y<=LEN;++y){
+	setup_scroll();
+	for(int y=0;y<=view_len;++y){
 		mvaddch(sy+y,sx,ACS_VLINE);
 		mvaddch(sy+y,sx+WID+1,ACS_VLINE);
 	}
 	for(int x=0;x<=WID;++x){
 		mvaddch(sy,sx+x,ACS_HLINE);
-		mvaddch(sy+LEN+1,sx+x,ACS_HLINE);
+		mvaddch(sy+view_len+1,sx+x,ACS_HLINE);
 	}
 	mvaddch(sy,sx,ACS_ULCORNER);
-	mvaddch(sy+LEN+1,sx,ACS_LLCORNER);
+	mvaddch(sy+view_len+1,sx,ACS_LLCORNER);
 	mvaddch(sy,sx+WID+1,ACS_URCORNER);
-	mvaddch(sy+LEN+1,sx+WID+1,ACS_LRCORNER);
+	mvaddch(sy+view_len+1,sx+WID+1,ACS_LRCORNER);
 }
 void count(byte board[LEN][WID]){
 	byte y,x;
@@ -69,24 +86,29 @@ void count(byte board[LEN][WID]){
 		}
 	}
 }
+byte get_cell(byte board[LEN][WID],int y,int x){
+	return board[(y+LEN)%LEN][(x+WID)%WID];
+}
+
 //display
 void draw(byte board[RLEN][RWID]){
 	rectangle(3,0);
 	chtype prnt;
 	byte y,x;
-	for(y=0;y<LEN;++y){
+	setup_scroll();
+	for(y=beginy;y<beginy+view_len;++y){
 		for(x=0;x<WID;++x){
 			if(y==cy && x==cx){
 				prnt='X';
-				if(board[y][x]==ALIVE)
+				if(get_cell(board,y,x)==ALIVE)
 					prnt|=A_STANDOUT;
-				else if(board[y][x]==RED)
+				else if(get_cell(board,y,x)==RED)
 					prnt|=colors[3]|A_STANDOUT;
 			}
 			else{
-				if(board[y][x]==ALIVE)
+				if(get_cell(board,y,x)==ALIVE)
 					prnt=ACS_BLOCK;
-				else if(board[y][x]==RED){
+				else if(get_cell(board,y,x)==RED){
 					if(coherent)
 						prnt=' '|A_STANDOUT|colors[3];
 					else
@@ -95,7 +117,7 @@ void draw(byte board[RLEN][RWID]){
 				else
 					prnt=' ';
 			}
-			mvaddch(4+y,x+1,prnt);
+			mvaddch(4+y-beginy,x+1,prnt);
 		}
 	}
 }

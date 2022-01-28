@@ -24,6 +24,7 @@ compile with -lncurses
 #define MINWID 8
 #define MAXLEN 1000
 #define MAXWID 1000
+#define EMPTY_LINES 7 
 #ifdef NO_VLA //The Plan9 compiler can not handle VLAs
 #define len 8
 #define wid 8
@@ -34,20 +35,38 @@ int py,px,flags;
 int untouched;
 int mscount;
 chtype colors[6]={0};
+int beginy,view_len;
+byte setup_scroll(){
+	beginy=0;
+	if(0<py+3-(LINES-EMPTY_LINES)){
+		beginy=py+3-(LINES-EMPTY_LINES);
+	}
+	view_len=len;
+	if(LINES-EMPTY_LINES<len){
+		view_len=LINES-EMPTY_LINES;
+	}
+	if(beginy+view_len>len){
+		beginy-=beginy+view_len-len;
+	}
+}
 
 void rectangle(int sy,int sx){
-	for(int y=0;y<=len+1;++y){
+	setup_scroll();
+	for(int y=0;y<=view_len;++y){
 		mvaddch(sy+y,sx,ACS_VLINE);
 		mvaddch(sy+y,sx+wid*2,ACS_VLINE);
 	}
 	for(int x=0;x<=wid*2;++x){
 		mvaddch(sy,sx+x,ACS_HLINE);
-		mvaddch(sy+len+1,sx+x,ACS_HLINE);
+		mvaddch(sy+view_len+1,sx+x,ACS_HLINE);
 	}
 	mvaddch(sy,sx,ACS_ULCORNER);
-	mvaddch(sy+len+1,sx,ACS_LLCORNER);
+	mvaddch(sy+view_len+1,sx,ACS_LLCORNER);
 	mvaddch(sy,sx+wid*2,ACS_URCORNER);
-	mvaddch(sy+len+1,sx+wid*2,ACS_LRCORNER);
+	mvaddch(sy+view_len+1,sx+wid*2,ACS_LRCORNER);
+}
+byte get_cell(byte board[len][wid],int y,int x){
+	return board[(y+len)%len][(x+wid)%wid];
 }
 //display
 void draw(int sy,int sx,byte board[len][wid]){
@@ -55,49 +74,53 @@ void draw(int sy,int sx,byte board[len][wid]){
 	chtype attr ;
 	char prnt;
 	int y,x;
-	for(y=0;y<len;++y){
+	setup_scroll();
+	for(y=beginy;y<beginy+view_len;++y){
 		for(x=0;x<wid;++x){
 			attr=A_NORMAL;
-			if(y==py && x==px)
+			if(y==py && x==px){
 				attr |= A_STANDOUT;
-
-			if(board[y][x]<0)
-				prnt='.';
-			else if(!board[y][x])
-				prnt=' ';
-			else if(board[y][x] < 8){
-				attr |= colors[board[y][x]-1];
-				prnt='0'+board[y][x];
 			}
-			else if(board[y][x]==9){
+			if(get_cell(board,y,x)<0){
+				prnt='.';
+			}
+			else if(!get_cell(board,y,x)){
+				prnt=' ';
+			}
+			else if(get_cell(board,y,x) < 8){
+				attr |= colors[board[y][x]-1];
+				prnt='0'+get_cell(board,y,x);
+			}
+			else if(get_cell(board,y,x)==9){
 				attr |= colors[3];
 				prnt='P';
 			}
-			else if(board[y][x]>9)
+			else if(get_cell(board,y,x)>9){
 				prnt='?';
-
-			mvaddch(sy+1+y,sx+x*2+1,attr|prnt);
+			}
+			mvaddch(sy+1+(y-beginy),sx+x*2+1,attr|prnt);
 		}
 	}
 }
 //show the mines
-void drawmines(int sy,int sx,byte board[len][wid],bool mines[len][wid]){
+void drawmines(int sy,int sx,byte board[len][wid],byte mines[len][wid]){
 	int y,x;
-	for(y=0;y<len;++y){
+	setup_scroll();
+	for(y=beginy;y<beginy+view_len;++y){
 		for(x=0;x<wid;++x){
 			if(mines[y][x]){
 				if(y==py&&x==px)
-					mvaddch(sy+y+1,sx+x*2+1,'X');
-				else if(board[y][x]==9)
-					mvaddch(sy+y+1,sx+x*2+1,'%');
+					mvaddch(sy+y-beginy+1,sx+x*2+1,'X');
+				else if(get_cell(board,y,x)==9)
+					mvaddch(sy+y-beginy+1,sx+x*2+1,'%');
 				else
-					mvaddch(sy+y+1,sx+x*2+1,'*');
+					mvaddch(sy+y-beginy+1,sx+x*2+1,'*');
 			}
 		}
 	}
 }
 //place mines
-void mine(bool mines[len][wid]){
+void mine(byte mines[len][wid]){
 	int y=rand()%len;
 	int x=rand()%wid;
 	mines[py][px]=1;//so it doesn't place mines where you click first
@@ -111,7 +134,7 @@ void mine(bool mines[len][wid]){
 	mines[py][px]=0;
 }
 
-bool click(byte board[len][wid],bool mines[len][wid],int ty,int tx){
+byte click(byte board[len][wid],byte mines[len][wid],int ty,int tx){
 	if(board[ty][tx]>=0 && board[ty][tx] <9)//it has been click()ed before
 		return 0;
 	else{//untouched
@@ -281,7 +304,7 @@ int main(int argc, char** argv){
 
 	}
 	byte board[len][wid];
-	bool mines[len][wid];
+	byte mines[len][wid];
 	char result[70];
 	int input;
 	int sy,sx;
@@ -397,7 +420,9 @@ int main(int argc, char** argv){
 		}
 	}
 	drawmines(sy+3,sx+0,board,mines);
-	mvprintw(sy+len+5,sx+0,"%s Wanna play again?(y/n)",result);
+	move(sy+view_len+5,sx+0);
+	printw("%s Wanna play again?(y/n)",result);
+
 	curs_set(1);
 	input=getch();
 	if(input != 'N' && input != 'n' && input != 'q')
