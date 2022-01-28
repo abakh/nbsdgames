@@ -634,7 +634,7 @@ int main(int argc,char** argv){
 			gameplay();
 		}
 	}
-	
+	move(EMPTY_LINES+view_len,0);
 	printw("Wanna play again?(y/n)");
 	nocbreak();
 	cbreak();

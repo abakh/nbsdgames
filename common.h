@@ -88,3 +88,12 @@ byte fallback_to_home(const char* name,long wscore,byte save_to_num){// only sav
 	return ret;
 }
 
+byte digit_count(int num){
+	byte ret=0;
+	do{
+		++ret;
+		num/=10;
+	}while(num);
+	return ret;
+}
+
