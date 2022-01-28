@@ -67,14 +67,6 @@ byte shots,aims_to_stop;
 
 char msg[150]={0};
 byte msg_show=0;
-byte digit_count(int num){
-	byte ret=0;
-	do{
-		++ret;
-		num/=10;
-	}while(num);
-	return ret;
-}
 void filled_rect(byte sy,byte sx,byte ey,byte ex){
 	byte y,x;
 	for(y=sy;y<ey;++y)
