@@ -10,10 +10,10 @@ CFLAGS+=  -Wno-unused-result -D SCORES_DIR=\"$(SCORES_DIR)\"
 LDFLAGS+= -lncurses -lm
 
 
-ALL= jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare darrt snakeduel tugow
+ALL= nbsdgames jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare darrt snakeduel tugow
 SCORE_FILES= pipes_scores jewels_scores miketron_scores muncher_scores fisher_scores darrt_scores tugow_scores
 
-all: $(ALL)
+all: $(ALL) 
 
 scorefiles:
 	for sf in $(SCORE_FILES); do touch $(SCORES_DIR)/$$sf ; chmod 664 $(SCORES_DIR)/$$sf; chown :games $(SCORES_DIR)/$$sf ; done;
@@ -53,28 +53,32 @@ redsquare: redsquare.c config.h
 	$(CC) redsquare.c $(LDFLAGS) $(CFLAGS) -o ./redsquare
 darrt: darrt.c config.h common.h
 	$(CC) darrt.c $(LDFLAGS) $(CFLAGS)  -o ./darrt
-
+nbsdgames: nbsdgames.c
+	$(CC) nbsdgames.c $(LDFLAGS) $(CFLAGS) -o ./nbsdgames
 snakeduel: snakeduel.c config.h
 	$(CC) snakeduel.c $(LDFLAGS) $(CFLAGS)  -o ./snakeduel
 tugow: tugow.c common.h
 	$(CC) tugow.c $(LDFLAGS) $(CFLAGS) -o ./tugow
+menu:
+	cp nbsdgames.desktop /usr/share/applications
+	cp nbsdgames.svg /usr/share/pixmaps
 clean:
 	for game in $(ALL); do rm $$game; done;
 uninstall:
 	for game in $(ALL); do rm $(GAMES_DIR)/$$game; rm $(MAN_DIR)/$$game.6.gz ;done;
 install: $(ALL)
-	cp $(ALL) $(GAMES_DIR)
+	cp $(ALL)  $(GAMES_DIR)
 test:
 	for game in $(ALL); do ./$$game ;done;
 
 #######for namespacing #######
-
-nb: $(ALL) 
-	for game in $(ALL); do cp {,nb}$$game ;done;
-	for manpage in $(ls man); do cp man/{,nb}$$manpage ;done;
+nb:
+	CFLAGS="$$CFLAGS -D NB=\\\"nb\\\"" make
+	for game in $(ALL); do cp $$game nb$$game ;done;
+	for manpage in $(ls man); do cp man/$$manpage man/nb$$manpage ;done;
 nbinstall: nb 
 	cp nb* $(GAMES_DIR)
 nbmanpages: nb
 	cp man/nb* $(MAN_DIR)
 nbclean:
-	rm nb* man/nb*
+	for game in $(ALL); do rm nb$$game; done;
