@@ -24,6 +24,10 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #define MAXLEN 24
 #define MINWID 40
 #define MAXWID 80
+
+#define FLIGHT_TIME 16
+#define NOTRAIL_TIME 30
+#define BOMB_RANGE 8
 enum {UP=1,RIGHT,DOWN,LEFT,FLIGHT,NOTRAIL,BOMB,SPAWN,STOP,SUPERFOOD,TRAIL};
 
 /* The Plan9 compiler can not handle VLAs and usleep is a POSIX function */
@@ -165,9 +169,9 @@ void put_stuff(byte board[len][wid],byte num){
 		do{
 			y=rand()%len;
 			x=rand()%wid;
-		}while(y==py&&x==px);
+		}while((y==py&&x==px)||board[y][x]==TRAIL);
 		board[y][x]=STOP;
-		if(!rand())
+		if(!(rand()%40))
 			board[y][x]=SUPERFOOD;
 		else if(!(rand()%20))
 			board[y][x]=SPAWN;
@@ -177,6 +181,16 @@ void put_stuff(byte board[len][wid],byte num){
 			board[y][x]=NOTRAIL;
 		else if(!(rand()%4))
 			board[y][x]=FLIGHT;
+	}
+}
+void put_trail(byte board[len][wid],byte num){
+	byte y,x;
+	for(byte n=0;n<num;++n){
+		do{
+			y=rand()%len;
+			x=rand()%wid;
+		}while(y>py-5 && y<py+5 && x>px-10 && x<px+10);
+		board[y][x]=TRAIL;
 	}
 }
 void rectangle(void){
@@ -240,10 +254,10 @@ void draw(byte board[len][wid]){
 }
 void explode(byte board[len][wid],int by,int bx){
 	board[by][bx]=0;//prevent endless recursion
-	int sy=by-2;
-	int sx=bx-4;
-	int ey=by+2;
-	int ex=bx+4;
+	int sy=by-BOMB_RANGE/2;
+	int sx=bx-BOMB_RANGE;
+	int ey=by+BOMB_RANGE/2;
+	int ex=bx+BOMB_RANGE;
 	if(ey>=len)
 		ey-=len;
 	if(ex>=wid)
@@ -409,9 +423,9 @@ int main(int argc,char** argv){
 		else if(board[py][px]==SUPERFOOD)
 			immunity+=len+wid;
 		else if(board[py][px]==FLIGHT)
-			flight+=8;
+			flight+=FLIGHT_TIME;
 		else if(board[py][px]==NOTRAIL)
-			notrail+=15;	
+			notrail+=NOTRAIL_TIME;	
 		else
 			goto NoFeatures;
 		board[py][px]=0;//if one of conditions is true, it executes! keep nagging about goto being redundant!
@@ -480,8 +494,10 @@ int main(int argc,char** argv){
 				px=0;
 		}
 		++score;
-		if(!(score%100))
+		if(!(score%100)){
 			put_stuff(board,5);
+			put_trail(board,20);
+		}
 		if(immunity)
 			--immunity;
 		else if(flight)
