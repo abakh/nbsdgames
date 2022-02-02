@@ -439,7 +439,7 @@ int main(int argc,char** argv){
 		}
 		if( input == KEY_F(1) || input=='?' )
 			help();
-		if( input == KEY_F(2) )
+		if( (input==KEY_F(2)||input=='!') )
 			gameplay();
 		halfspeed=!halfspeed;
 		if( (input=='k' || (input==KEY_UP||input=='w')) ){
@@ -454,7 +454,7 @@ int main(int argc,char** argv){
 			direction=LEFT;
 		else if( (input=='l' || (input==KEY_RIGHT||input=='d')) )
 			direction=RIGHT;
-		if( input=='q')
+		if( (input=='q'||input==27))
 			sigint_handler(0);
 		if(input=='e'){
 			for(int b=0;b<6;++b){

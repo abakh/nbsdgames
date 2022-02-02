@@ -387,7 +387,7 @@ int main(int argc, char** argv){
 			if(!flow)
 				tstart += time(NULL)-now;
 		}
-		if( input == KEY_F(2) ){
+		if( (input==KEY_F(2)||input=='!') ){
 			gameplay();
 			if(!flow)
 				tstart += time(NULL)-now;
@@ -436,13 +436,13 @@ int main(int argc, char** argv){
 			flow=1;
 		if( score < -1000)
 			goto End;
-		if( input=='q'){
+		if( (input=='q'||input==27)){
 			nocbreak();
 			cbreak();
 			curs_set(1);
 			mvprintw(len+2,0,"Do you want to see the high scores?(y/n)");
 			input=getch();
-			if(input == 'N' || input=='n' || input =='q')
+			if(input == 'N' || input=='n' || (input=='q'||input==27))
 				sigint_handler(EXIT_SUCCESS);
 			
 			show_scores(save_score());

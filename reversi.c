@@ -395,7 +395,7 @@ int main(int argc , char** argv){
 			input=getch();
 			if( input==KEY_F(1) || input=='?' )
 				help();
-			if( input==KEY_F(2) )
+			if( (input==KEY_F(2)||input=='!') )
 				gameplay();
 			if( input==KEY_MOUSE )
 				mouseinput();
@@ -407,7 +407,7 @@ int main(int argc , char** argv){
 				--px;
 			if( (input=='l' || (input==KEY_RIGHT||input=='d')) && px<7)
 				++px;
-			if( input=='q'){
+			if( (input=='q'||input==27)){
 				resign=1;
 				goto End;
 			}

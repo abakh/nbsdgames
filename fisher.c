@@ -353,7 +353,7 @@ int main(int argc,char** argv){
 		}
 		if(input=='?' || input==KEY_F(1))
 			help();
-		if(input=='q')
+		if((input=='q'||input==27))
 			break;
 		if(!hooknum)
 			break;	

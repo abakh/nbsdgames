@@ -490,7 +490,7 @@ int main(int argc,char** argv){
 		}
 		if(input == KEY_F(1))
 			help();
-		if(input == KEY_F(2))
+		if((input==KEY_F(2)||input=='!'))
 			gameplay();
 		if(input == KEY_MOUSE)
 			mouseinput(sy,sx);
@@ -508,7 +508,7 @@ int main(int argc,char** argv){
 			else if(input<=CHAR_MAX && sgn2int(input) && sgn2int(input)<=s )
 				game[py][px]=input;
 		}
-		if( (input=='q' && size<= 5) || input=='Q')
+		if( ((input=='q'||input==27) && size<= 5) || input=='Q')
 			sigint_handler(EXIT_SUCCESS);
 		if(input=='n'&& size <= 4)
 			goto Start;

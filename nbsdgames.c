@@ -282,7 +282,7 @@ int menu(char* entries,char* title){
 	if(input=='\n'){
 		return chosen;
 	}
-	if(input=='q'){
+	if((input=='q'||input==27)){
 		return -1;
 	}
 	goto Refresh;

@@ -267,7 +267,7 @@ void set_the_board(bool side){
 				++px;
 			if( input=='\n'||input==KEY_ENTER )
 				break;
-			if( input=='q' )
+			if( (input=='q'||input==27) )
 				sigint_handler(EXIT_SUCCESS);
 		}
 
@@ -603,7 +603,7 @@ int main(int argc,char** argv){
 			input=getch();
 			if(input == KEY_F(1) || input=='?' )
 				help(turn);
-			if(input == KEY_F(2) )
+			if((input==KEY_F(2)||input=='!') )
 				gameplay(turn);
 			if(input == KEY_MOUSE)
 				mouseinput(1);
@@ -615,7 +615,7 @@ int main(int argc,char** argv){
 				--px;
 			if( (input=='l' || (input==KEY_RIGHT||input=='d')) && px<19)
 				++px;
-			if( input=='q')
+			if( (input=='q'||input==27))
 				sigint_handler(EXIT_SUCCESS);
 			if( input=='\n' || input==KEY_ENTER){
 				byte r=shoot(turn,py,px-10);

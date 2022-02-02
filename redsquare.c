@@ -579,7 +579,7 @@ int main(int argc,char** argv){
 
 		if( input==KEY_F(1) || input=='?' )
 			help();
-		if( input==KEY_F(2) )
+		if( (input==KEY_F(2)||input=='!') )
 			gameplay();
 		prey=py;
 		prex=px;
@@ -610,7 +610,7 @@ int main(int argc,char** argv){
 			mk_square(board);
 		}
 		DidntMove:
-		if( input=='q'){
+		if( (input=='q'||input==27)){
 			sigint_handler(0);
 		}
 		if( input=='p'){
@@ -630,7 +630,7 @@ int main(int argc,char** argv){
 		if( input=='?' || input==KEY_F(1)){
 			help();
 		}
-		if( input=='!' || input==KEY_F(2)){
+		if( input=='!' || (input==KEY_F(2)||input=='!')){
 			gameplay();
 		}
 	}

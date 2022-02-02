@@ -272,7 +272,7 @@ int main(int argc,char** argv){
 			if(sx< -(wid*2+1))
 				sx=-(wid*2+1);
 		}
-		if( input == KEY_F(2) )
+		if( (input==KEY_F(2)||input=='!') )
 			gameplay();
 		if( input == KEY_F(1) || input=='?' )
 			help();
@@ -284,7 +284,7 @@ int main(int argc,char** argv){
 			--px;
 		if( (input=='l' || (input==KEY_RIGHT||input=='d')) && px<wid-1 && (board[py][px]&RIGHT) )
 			++px;
-		if( input=='q')
+		if( (input=='q'||input==27))
 			sigint_handler(0);
 		if( board[py][px] & CARROT ){
 			++carrots_found;

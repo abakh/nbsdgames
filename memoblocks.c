@@ -220,7 +220,7 @@ int main(int argc,char** argv){
 		input = getch();
 		if( input==KEY_F(1) || input=='?' )
 			help();
-		if( input==KEY_F(2) )
+		if( (input==KEY_F(2)||input=='!') )
 			gameplay();
 		if( input==KEY_MOUSE )
 			mouseinput();
@@ -232,7 +232,7 @@ int main(int argc,char** argv){
 			--px;
 		if( (input=='l' || (input==KEY_RIGHT||input=='d')) && px<size2-1)
 			++px;
-		if( input=='q')
+		if( (input=='q'||input==27))
 			sigint_handler(0);
 		if(input=='\n' || input==KEY_ENTER){
 			if(fy!=-1 && board[py][px]==board[fy][fx] && !(fy==py && fx==px) )

@@ -706,7 +706,7 @@ int main(int argc, char** argv){
 		input = getch();
 		if( input == KEY_F(1) || input=='?' )
 			help();
-		if( input==KEY_F(2) )
+		if( (input==KEY_F(2)||input=='!') )
 			gameplay();
 		if( (input=='k' || (input==KEY_UP||input=='w')) && p.y>0 && p.direction != DOWN ){
 			p.direction=UP;
@@ -720,7 +720,7 @@ int main(int argc, char** argv){
 		if( (input=='l' || (input==KEY_RIGHT||input=='d')) && p.x<wid-1 && p.direction != LEFT){
 			p.direction=RIGHT;
 		}
-		if( input=='q')
+		if( (input=='q'||input==27))
 			sigint_handler(0);
 		if( input=='p'){
 			nocbreak();

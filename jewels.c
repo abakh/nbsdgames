@@ -319,7 +319,7 @@ int main(int argc,char** argv){
                                 getch();
                                 halfdelay(DELAY);
                         }
-                        else if(input=='q')
+                        else if((input=='q'||input==27))
                                 goto Lose;
                         else if(input==' ')
                                 while( (falls=fall()) )
