@@ -80,7 +80,7 @@ void show_scores(byte playerrank){
 			mvprintw(SY,SX+4,"CONGRATULATIONS!");
 			attroff(green);
 
-			mvprintw(SY+a+1,SX,"     _____ You bet the");
+			mvprintw(SY+a+1,SX,"     _____You beat the");
 			mvprintw(SY+a+2,SX,"   .'     |   previous");
 			mvprintw(SY+a+3,SX," .'       |     record");
 			mvprintw(SY+a+4,SX," |  .|    |         of");

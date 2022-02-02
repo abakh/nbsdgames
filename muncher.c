@@ -90,7 +90,7 @@ void show_scores(byte playerrank){
 		if ( fscanf(score_file,"%s : %ld\n",formername,&formerscore)==2){
 			halfdelay(1);
 			printw("*****CONGRATULATIONS!****\n");
-			printw("              You bet the\n");
+			printw("             You beat the\n");
 			printw("                 previous\n");
 			printw("                   record\n");
 			printw("                       of\n");

@@ -304,7 +304,7 @@ void show_scores(byte playerrank){
 			star_line(1);
 			star_line(LEN-2);
 			mvaddstr(1,WID/2-8,"CONGRATULATIONS!!");
-			mvprintw(a+1,HWID-10,"     _____ You bet the");
+			mvprintw(a+1,HWID-10,"     _____You beat the");
 			mvprintw(a+2,HWID-10,"   .'     |   previous");
 			mvprintw(a+3,HWID-10," .'       |     record");
 			mvprintw(a+4,HWID-10," |  .|    |         of");

@@ -49,7 +49,7 @@ void show_scores(byte playerrank){
 		fscanf(score_file,"%*s : %*d\n");
 		if ( fscanf(score_file,"%s : %ld\n",formername,&formerscore)==2){
 			printf("\n*****CONGRATULATIONS!****\n");
-			printf("     _____    You bet the\n");
+			printf("     _____   You beat the\n");
 			printf("   .'     |      previous\n");
 			printf(" .'       |        record\n");
 			printf(" |  .|    |            of\n");

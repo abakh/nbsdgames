@@ -1,8 +1,9 @@
 /*
-    O__/|
- ___|_/ |    __
-|     / |   |__
-	    |  ISHER
+_____   _
+  |   .' '.  :   :
+  |   :   :  : . :
+  |UG '._.'F '.'.'AR
+
 
 Authored by abakh <abakh@tuta.io>
 To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
@@ -14,6 +15,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include <stdbool.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 #include <signal.h>
 #include <string.h>
 #include <limits.h>
@@ -24,9 +26,9 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #define SAVE_TO_NUM 11
 #define HOOKS 10
 #define LEN 24
-#define HLEN LEN/2
 #define WID 80
-#define HWID WID/2
+#define HWID 40
+#define DUDES_WID 32
 #ifdef Plan9
 int usleep(long usec) {
     int second = usec/1000000;
@@ -41,16 +43,60 @@ int usleep(long usec) {
 // 12 lines of water
 // 80 columns
 
-chtype colors[4]={A_NORMAL,A_STANDOUT};
-byte fish[10]={0};//positions
-byte caught=-1;
-bool stop[10]={0};
-unsigned int count[10]={0};
-unsigned long score=0;
-const char sym[]="~:=!@+><;&";
-byte hook=0, hooknum=0;
-byte clb,clbtime=0;
+char dudes[]=
+	" O                           O \n"
+	"/|\\                         /|\\\n"
+	"\\--\\-----------------------/--/\n" 
+	"/ \\                         / \\\n"
+	"\\  \\                       /  /\n"
+	"\f"
+        "                             O\n"
+	" O                          /| \\\n"
+	"/|\\                        / | /\n"
+	"\\--\\----------------------/---/ \n"
+	"/ \\                         / \\\n"
+	"\\  \\                       /   \\\n" 
+	"                          /    /\n"
+	"\f"
+        "                              O\n"
+        "                             /|\\\n"
+	" O                          / | \\\n"
+	"/|\\                        /  | /\n"
+	"\\--\\----------------------/----/\n"
+	"/ \\                          / \\\n"
+	"\\  \\                        /   \\\n" 
+	"                           /    /\n"
+        "                          /    /\n"
+        "\f"
+        "                             O\n"
+        "                            /| \\\n"
+        "                           / |  \\\n"
+	" O                        /  |  /\n"
+	"/|\\                      /   | /\n"
+	"\\--\\--------------------/-----/\n" 
+	"/ \\                         / \\\n"
+	"\\  \\                       /   \\\n" 
+	"                          /     \\\n"
+        "                         /      /\n"
+        "                        /      / \n"
+;
 
+
+
+char logo[]=
+	"_____   _           \n"  
+	"  |   .' '.  :   :  \n"
+	"  |   :   :  : . :  \n"
+	"  |UG '._.'F '.'.'AR\n"
+;
+
+
+char choose_from[]="7894561230";
+char type_str[10]={0};
+byte offset=0;
+byte level=0;
+chtype colors[4]={A_NORMAL,A_STANDOUT};
+unsigned long score=0;
 int input;
 void filled_rect(byte sy,byte sx,byte ey,byte ex){
 	byte y,x;
@@ -58,7 +104,7 @@ void filled_rect(byte sy,byte sx,byte ey,byte ex){
 		for(x=sx;x<ex;++x)
 			mvaddch(y,x,' ');
 }
-void green_border(void){
+void blue_border(void){
 	byte y,x;
 	for(y=0;y<LEN;++y){
 		mvaddch(y,WID-1,' '|colors[2]);
@@ -68,123 +114,62 @@ void green_border(void){
 		mvaddch(LEN-1,x,' '|colors[2]);
 		mvaddch(0,x,' '|colors[2]);
 	}
-		
 }
 void star_line(byte y){
 	for(byte x=1;x<WID-1;++x)
 		mvaddch(y,x,'.');
 }
-void draw(void){
-	/*while(LEN< 15 || COL<80)
-		mvprintw(0,0,"Screen size should at least be 80*15 characters");*/
-	attron(colors[0]);
-	filled_rect(0,0,12,80);
-	byte y;
-	mvprintw(0,0," __       Hooks:%d",hooknum);
-	mvprintw(1,0,"|__       Score:%d",score);
-	mvprintw(2,0,"|  ISHER");
-	mvprintw(9,32, "    O__/");
-	mvprintw(10,32," ___|_/ ");
-	mvprintw(11,32,"|     / ");
-	
-	if(clbtime){
-		if(count[clb]!=1){
-			mvprintw(9,43,"%d ",count[clb]);
-			switch(clb){
-				case 0:
-					addstr("plastic bags!");
-				break;
-				case 1:
-					addstr("PVC bottles!");
-				break;
-				case 2:
-					addstr("face masks!");
-				break;
-				case 3:
-					addstr("shrimp!");
-				break;
-				case 4:
-					addstr("algae!");
-				break;
-				case 5:
-					addstr("jellyfish!");
-				break;
-				case 6:
-					addstr("molluscs!");
-				break;
-				case 7:
-					addstr("actual fish!");
-				break;
-				case 8:
-					addstr("salmon!");
-				break;
-				case 9:
-					addstr("tuna!");
-				break;
-			}
+void draw_sprite(byte sy, byte sx, char* str, byte frame){
+	byte f=0;
+	int index=0;
+	while(f!=frame){
+		if(str[index]=='\f'){
+			++f;
 		}
-		else{
-			move(9,43);
-			switch(clb){
-				case 0:
-					addstr("A plastic bag!");
-				break;
-				case 1:
-					addstr("A PVC bottle!");
-				break;
-				case 2:
-					addstr("A face mask!");
-				break;
-				case 3:
-					addstr("A shrimp!");
-				break;
-				case 4:
-					addstr("Algae!");
-				break;
-				case 5:
-					addstr("A jellyfish!");
-				break;
-				case 6:
-					addstr("A mollusc!");
-				break;
-				case 7:
-					addstr("Actual fish!");
-				break;
-				case 8:
-					addstr("A salmon!");
-				break;
-				case 9:
-					addstr("A tuna!");
-				break;
-			}
+		if(str[index]=='\0'){
+			break;
+		}
+		++index;
+		if(f==frame){
+			break;
 		}
 	}
-	for(y=-3;y<0;++y)
-		mvaddch(HLEN+y,HWID,ACS_VLINE);
-	attroff(colors[0]);
-	attron(colors[1]);
-	filled_rect(HLEN,0,LEN,WID);
-	for(y=0;y<hook;++y)
-		mvaddch(HLEN+y,HWID,ACS_VLINE);
-	if(caught==-1)
-		mvaddch(HLEN+hook,HWID,')');
-	else
-		mvaddch(HLEN+hook,HWID,sym[caught]);
-	for(y=0;y<10;++y)
-		mvaddch(HLEN+1+y,fish[y],sym[y]);
-	attroff(colors[1]);
-	
+	byte y=sy;
+	byte x=sx+1;
+	for(;str[index]!='\0'&&str[index]!='\f';++index){
+		if(str[index]=='\n'){
+			x=sx;
+			++y;
+		}
+		else if(str[index]!=' '){
+			mvaddch(y,x,str[index]);
+		}
+		++x;
+	}
+
+
+}
+void draw(void){
+	byte i,j;
+	for(i=0;i<LEN;++i){
+		mvaddch(i,HWID,ACS_VLINE);
+	}
+	mvprintw(15+level,offset-10,"Type!");
+	mvprintw(16+level,offset-10,"%s",type_str);
+	mvprintw(11+level,offset-10,"Score: %d",score);
+	mvprintw(12+level,offset-10,"Level: %d",level);
+	draw_sprite(0,0,logo,0);
+	draw_sprite(12,offset,dudes,level%4);
 }
 byte save_score(void){
-	return fallback_to_home("fisher_scores",score,SAVE_TO_NUM);
-
+	return fallback_to_home("tugow_scores",score,SAVE_TO_NUM);
 }
 
 
 void show_scores(byte playerrank){
 	attron(colors[3]);
 	filled_rect(0,0,LEN,WID);
-	green_border();
+	blue_border();
 	if(playerrank==FOPEN_FAIL){
 		mvaddstr(1,0,"Could not open score file");
 		mvprintw(2,0,"However, your score is %ld.",score);
@@ -216,7 +201,7 @@ void show_scores(byte playerrank){
 				input=getch();
 			}while(input==KEY_UP || input==KEY_DOWN);
 			filled_rect(0,0,LEN,WID);
-			green_border();
+			blue_border();
 		}
 
 	}
@@ -244,16 +229,9 @@ void help(void){
 	cbreak();
 	attron(colors[3]);
 	filled_rect(0,0,LEN,WID);
-	green_border();
+	blue_border();
 	mvprintw(1,HWID-4,"GAME PLAY");
-	mvprintw(3,1,"Catch a fish and reel it in for points");
-	mvprintw(4,1,"The deeper the fish, the more points it is worth.");
-	mvprintw(5,1,"If a fish hits your line, you lose a hook.");
-	mvprintw(6,1,"When you run out of hooks, the game is over!");
-	mvprintw(8,HWID-4,"CONTROLS");
-	mvprintw(10,1,"UP & DOWN: Control the hook");
-	mvprintw(11,1,"q: Quit");
-	mvprintw(13,1,"This is a port of \"Deep Sea Fisher\", a MikeOS game.");
+	mvprintw(3,1,"Type those things and beat the other guy");
 	attroff(colors[3]);
 	refresh();
 	getch();
@@ -274,93 +252,60 @@ int main(int argc,char** argv){
 	cbreak();
 	keypad(stdscr,1);
 	srand(time(NULL)%UINT_MAX);
-	for(byte n=0;n<10;++n)
-		fish[n]=rand()%80;
 	if(has_colors()){
 		start_color();
+		use_default_colors();
 		init_pair(1,COLOR_BLACK,COLOR_CYAN);
 		init_pair(2,COLOR_BLACK,COLOR_BLUE);
-		init_pair(3,COLOR_WHITE,COLOR_GREEN);
-		init_pair(4,COLOR_BLACK,COLOR_WHITE);
+		init_pair(3,COLOR_WHITE,COLOR_BLUE);
+		init_pair(4,COLOR_BLUE,COLOR_WHITE);
 		for(byte b=0;b<4;++b)
 			colors[b]=COLOR_PAIR(b+1);
 	}
-	byte n;
+	byte t;
+	byte threshold;
+	for(byte i=0;i<sizeof(type_str)-1;++i){
+		type_str[i]=choose_from[rand()%(sizeof(choose_from)-1)];
+	}
 	Start:
+	t=0;
+	threshold=20/(1<<level);
+	offset=(WID-DUDES_WID)/2;
 	halfdelay(1);
 	curs_set(0);
-	clbtime=0;
-	hook=0;
-	hooknum=HOOKS;
-	score=0;
-	memset(count,0,10*sizeof(unsigned int) );
 	while(1){
+		erase();
 		draw();
 		refresh();
+		
 		input=getch();
-		for(n=0;n<10;++n){
-			if(stop[n]){
-				if(rand()%(n+15)==0)//this is to make the fish move
-					stop[n]=0;
-				continue;
+		if(input==type_str[0]){
+			for(byte i=0;i<sizeof(type_str)-2 ;++i){
+				type_str[i]=type_str[i+1];
 			}
-			if(n%2)
-				fish[n]--;
-			else
-				fish[n]++;
-			if(fish[n]<0)
-				fish[n]=79;
-			if(fish[n]>79)
-				fish[n]=0;//appear on the other end
-			if(fish[n]==40){
-				if(hook>n+1){
-					caught= -1;
-					hook=0;
-					--hooknum;
-				}
-				if(hook==n+1 && caught==-1){
-					caught=n;
-					if(n%2)
-						fish[n]=79;
-					else
-						fish[n]=0;
-				}
-			}
-			if(rand()%(14-n)==0)//this is to make it stop
-				stop[n]=1;
+			type_str[sizeof(type_str)-2]=choose_from[rand()%(sizeof(choose_from)-1)];	
+			--offset;
+			score+=(1<<level)*(1<<level)*(1<<level);
 		}
-		if(input==KEY_UP){
-			if(hook>0)
-				--hook;
-			if(hook==0 && caught!=-1){
-				count[caught]++;
-				score+=(caught+1)*(caught+1);
-				clb=caught;
-				clbtime=10;//celebrate catching the fish
-				caught=-1;
-			}
+		if(input!=ERR){
+			flushinp();
+			usleep(1e5);
 		}
-		if(input==KEY_DOWN){
-			if(hook<11)
-				++hook;
-			if(fish[hook-1]==40 && caught==-1){
-				caught=hook-1;
-				if(n%2)
-					fish[hook-1]=0;
-				else
-					fish[hook-1]=79;
-			}
+		++t;
+		if(t>threshold){
+			t=0;
+			++offset;
+		}
+		if(offset>HWID-3){
+			break;
+		}
+		if(offset<HWID-DUDES_WID+4){
+			++level;
+			goto Start;
 		}
 		if(input=='?' || input==KEY_F(1))
 			help();
-		if(input=='q')
-			break;
-		if(!hooknum)
-			break;	
-		if(input!=ERR){
-			usleep(100000);
-			flushinp();
-		}
+		
 	}
 	flushinp();
 	nocbreak();
@@ -373,8 +318,11 @@ int main(int argc,char** argv){
 	do{
 		input=getch();
 	}while(input==KEY_UP || input==KEY_DOWN);
-	if(input!='q' && input!='n' && input!='N')
+	if(input!='q' && input!='n' && input!='N'){
+		score=0;
+		level=0;
 		goto Start;
+	}
 	endwin();
 	return 0;
 }
