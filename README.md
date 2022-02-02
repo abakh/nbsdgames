@@ -1,17 +1,24 @@
 # New BSD Games
  *You have a computing machine from 1980's  and you wonder how you can use it? <br/>
   You are a bored sysadmin with no work, and need to kill time looking busy with terminal?  <br/>
-  You are the DSL developer and have cancelled the project because you lacked games? <br/>
+  Your port of a Unix-like system to a fancy platform has no GUI, but you still want to pretend it has some functional value?<br/>
+  Did you have Plan9 dual-booted with OpenBSD and kept the OpenBSD just for gaming? <br/>
+  Are you the DSL developer and have cancelled the project because you lacked games? <br/>
   Those creepy GTK/QT games make you cringe? <br/>
   You have to make a Reversi AI for your homework and you don't know where to copy it from? <br/>
   You have been so excited about the bsdgames, but have grown tired of playing tetris, snake and robots for billions of times? <br/>
-  You feel they have betrayed you by bundling stuff like phantasia with a package you expect to contain GAMES?* <br/>
+  You feel they have betrayed you by bundling stuff like phantasia with a package you expect to contain GAMES? <br/>
+  You installed this from Homebrew, thinking it is bsdgames, and now you are looking up what you actually installed?* <br/>
 
 
 **Don't worry** anymore as you've got nbsdgames now!
 
-The games include:
+This Cloud-Capable :tm: :copyright: , Artificial Intelligence :copyright: :tm:  Powered Solutions :tm: Developed by an International Team Solves the LongStanding Gaming on Linux :tm: Problem :tm:.
 
+Just enter nbsdgames at your terminal to get a fancy menu and play all sorts of games from there (You would lose the command-line options that way, though).
+
+The games include:
+ 
 * Jewels (A game with a gameplay kinda similiar to that of Tetris, NOT my invention)
 * Sudoku
 * Mines (Minesweeper)
@@ -29,17 +36,11 @@ The games include:
 * Redsquare (Conway's Game of Life made playable!)
 * Darrt (with original gameplay!)
 * Snakeduel
-
+* Tugow (Numlock practice game)
 
 The difficulty and/or dimensions are adjustable through simple command line options, you can play a minesweeper game that take hours to complete, or exprience hexadecimal sudoku and 8x8 fifteen-like puzzles!
 
 Play on xterm for best experience.
-
-## Platforms
-
-They natively run on Linux, BSD, MacOS and are known to work on Windows as well (using PDCurses, thanks to Laura Michaels for providing advice).
-
-They have been ported to Plan9 thanks to Jens Staal!
 
 ## Prerequisites
 
@@ -68,10 +69,19 @@ Like this:
         make
         sudo make install # or use the binaries already compiled
 ```
-## Packages
-Also, If you are on a debian-based OS (Ubuntu, Mint) on a 64-bit PC you can download the deb package and simply install it with dpkg or apt.
+## Platforms
 
-the deb package: https://sid.ethz.ch/debian/nbsdgames/nbsdgames_4.0-1_amd64.deb
+They natively run on Linux, BSD, MacOS and are known to work on Windows as well (using PDCurses, thanks to Laura Michaels for providing advice).
+
+They have been ported to Plan9 thanks to Jens Staal!
+
+Thanks to PDCurses they even work on DOS and every platform with SDL.
+
+They should theoretically work on OS/2 as well but I have not verified that yet.
+
+## Packages
+It is now on Debian unstable and soon on your Debian-derived distros, just install the deb from here until it gets to your repo.
+
 Thanks to Gürkan Myczko for packaging.
 
 It's available on Arch (AUR)  thanks to Elias Riedel Gårding: https://aur.archlinux.org/packages/nbsdgames-git/
@@ -97,10 +107,10 @@ Windows
 
 ## How to contribute
 * Share these with your friends and others
-* Your stars make the repo more findable in github :star:
+* Your stars make the repo more findable in Github :star:
 * Tell me your feature requests, bug reports, etc.
 * Tell me the games you want to be added (but in the same genre, I can't port Angry Birds to curses! :)
 * Make a package for your distro (or put it on repos if the package is not there)
-* Does anyone understand debian's .orig.tar.gz and the process to make packages to the repos? Any help would be appreciated.
+* Getting it to Redhat and SUSE repos would be nice.
 
 Also thank to all the people who helped in the previous versions, all what I requested was done! I didn't expect such an amount of assistance on this project :heart:
