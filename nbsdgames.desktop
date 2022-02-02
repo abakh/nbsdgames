@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Encoding=UTF-8
+Name=NBSDGAMES!
+Comment=Games! Games! Games!
+Icon=nbsdgames
+Exec=nbsdgames
+Terminal=true
+Categories=Game;ArcadeGame;
+Keywords=konsole;console;terminal;command;line;game;bored;
