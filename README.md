@@ -1,10 +1,10 @@
 # New BSD Games
  *You have a computing machine from 1980's  and you wonder how you can use it? <br/>
-  Did you have Plan9 dual-booted with OpenBSD and kept the OpenBSD just for gaming? <br/>
+  Do you have Plan9 dual-booted with OpenBSD and keep the OpenBSD just for gaming? <br/>
   Are you the DSL developer and have cancelled the project because you lacked games? <br/>
   You are a bored sysadmin with no work, and need to kill time looking busy with terminal?  <br/>
   You have to make a Reversi AI for your homework and you don't know where to copy it from? <br/>
-  Your port of a Unix-like system to a fancy platform has no GUI, but you still want screenshots?<br/>
+  Your port of a Unix-like system to a fancy platform has no GUI, but you still want nice screenshots?<br/>
   You have been so excited about the bsdgames, but have grown tired of playing tetris, snake and robots for billions of times?* <br/>
 
 **Don't worry** anymore as you've got nbsdgames now!
