@@ -1,21 +1,13 @@
 # New BSD Games
  *You have a computing machine from 1980's  and you wonder how you can use it? <br/>
-  You are a bored sysadmin with no work, and need to kill time looking busy with terminal?  <br/>
-  Your port of a Unix-like system to a fancy platform has no GUI, but you still want to pretend it has some functional value?<br/>
   Did you have Plan9 dual-booted with OpenBSD and kept the OpenBSD just for gaming? <br/>
   Are you the DSL developer and have cancelled the project because you lacked games? <br/>
-  Those creepy GTK/QT games make you cringe? <br/>
+  You are a bored sysadmin with no work, and need to kill time looking busy with terminal?  <br/>
   You have to make a Reversi AI for your homework and you don't know where to copy it from? <br/>
-  You have been so excited about the bsdgames, but have grown tired of playing tetris, snake and robots for billions of times? <br/>
-  You feel they have betrayed you by bundling stuff like phantasia with a package you expect to contain GAMES? <br/>
-  You installed this from Homebrew, thinking it is bsdgames, and now you are looking up what you actually installed?* <br/>
-
+  Your port of a Unix-like system to a fancy platform has no GUI, but you still want screenshots?<br/>
+  You have been so excited about the bsdgames, but have grown tired of playing tetris, snake and robots for billions of times?* <br/>
 
 **Don't worry** anymore as you've got nbsdgames now!
-
-This Cloud-Capable :tm: :copyright: , Artificial Intelligence :copyright: :tm:  Powered Solutions :tm: Developed by an International Team Solves the LongStanding Gaming on Linux :tm: Problem :tm:.
-
-Just enter nbsdgames at your terminal to get a fancy menu and play all sorts of games from there (You would lose the command-line options that way, though).
 
 The games include:
  
@@ -40,6 +32,9 @@ The games include:
 
 The difficulty and/or dimensions are adjustable through simple command line options, you can play a minesweeper game that take hours to complete, or exprience hexadecimal sudoku and 8x8 fifteen-like puzzles!
 
+Or just enter "nbsdgames" at your terminal to get a fancy menu and play all sorts of games from there.
+
+ 
 Play on xterm for best experience.
 
 ## Prerequisites
