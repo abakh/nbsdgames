@@ -403,13 +403,13 @@ int main(int argc, char** argv){
 			gameplay();
 		if( input==KEY_MOUSE )
 			mouseinput(sy,sx);
-		if( (input=='k' || input==KEY_UP) && py>0)
+		if( (input=='k' || (input==KEY_UP||input=='w')) && py>0)
 			--py;
-		if( (input=='j' || input==KEY_DOWN) && py<len-1)
+		if( (input=='j' || (input==KEY_DOWN||input=='s')) && py<len-1)
 			++py;
-		if( (input=='h' || input==KEY_LEFT) && px>0)
+		if( (input=='h' || (input==KEY_LEFT||input=='a')) && px>0)
 			--px;
-		if( (input=='l' || input==KEY_RIGHT) && px<wid-1)
+		if( (input=='l' || (input==KEY_RIGHT||input=='d')) && px<wid-1)
 			++px;
 		if( input=='q')
 			sigint_handler(0);

@@ -257,13 +257,13 @@ void set_the_board(bool side){
 			input = getch();
 			if( input == KEY_MOUSE )
 				mouseinput(0);
-			if( (input=='k' || input==KEY_UP) && py>0)
+			if( (input=='k' || (input==KEY_UP||input=='w')) && py>0)
 				--py;
-	  	      	if( (input=='j' || input==KEY_DOWN) && py<9)
+	  	      	if( (input=='j' || (input==KEY_DOWN||input=='s')) && py<9)
 				++py;
-	     		if( (input=='h' || input==KEY_LEFT) && px>0)
+	     		if( (input=='h' || (input==KEY_LEFT||input=='a')) && px>0)
 				--px;
-			if( (input=='l' || input==KEY_RIGHT) && px<9)
+			if( (input=='l' || (input==KEY_RIGHT||input=='d')) && px<9)
 				++px;
 			if( input=='\n'||input==KEY_ENTER )
 				break;
@@ -607,13 +607,13 @@ int main(int argc,char** argv){
 				gameplay(turn);
 			if(input == KEY_MOUSE)
 				mouseinput(1);
-			if( (input=='k' || input==KEY_UP) && py>0)
+			if( (input=='k' || (input==KEY_UP||input=='w')) && py>0)
 				--py;
-			if( (input=='j' || input==KEY_DOWN) && py<9)
+			if( (input=='j' || (input==KEY_DOWN||input=='s')) && py<9)
 				++py;
-			if( (input=='h' || input==KEY_LEFT) && px>10)
+			if( (input=='h' || (input==KEY_LEFT||input=='a')) && px>10)
 				--px;
-			if( (input=='l' || input==KEY_RIGHT) && px<19)
+			if( (input=='l' || (input==KEY_RIGHT||input=='d')) && px<19)
 				++px;
 			if( input=='q')
 				sigint_handler(EXIT_SUCCESS);

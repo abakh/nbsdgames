@@ -708,16 +708,16 @@ int main(int argc, char** argv){
 			help();
 		if( input==KEY_F(2) )
 			gameplay();
-		if( (input=='k' || input==KEY_UP) && p.y>0 && p.direction != DOWN ){
+		if( (input=='k' || (input==KEY_UP||input=='w')) && p.y>0 && p.direction != DOWN ){
 			p.direction=UP;
 		}
-		if( (input=='j' || input==KEY_DOWN) && p.y<len-1 && p.direction != UP ){
+		if( (input=='j' || (input==KEY_DOWN||input=='s')) && p.y<len-1 && p.direction != UP ){
 			p.direction=DOWN;
 		}
-		if( (input=='h' || input==KEY_LEFT) && p.x>0 && p.direction != RIGHT){
+		if( (input=='h' || (input==KEY_LEFT||input=='a')) && p.x>0 && p.direction != RIGHT){
 			p.direction=LEFT;
 		}
-		if( (input=='l' || input==KEY_RIGHT) && p.x<wid-1 && p.direction != LEFT){
+		if( (input=='l' || (input==KEY_RIGHT||input=='d')) && p.x<wid-1 && p.direction != LEFT){
 			p.direction=RIGHT;
 		}
 		if( input=='q')

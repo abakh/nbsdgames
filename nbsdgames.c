@@ -273,10 +273,10 @@ int menu(char* entries,char* title){
 	refresh();
 	int input=0;
 	input=getch();
-	if(input==KEY_UP){
+	if((input==KEY_UP||input=='w')){
 		--chosen;
 	}
-	if(input==KEY_DOWN){
+	if((input==KEY_DOWN||input=='s')){
 		++chosen;
 	}
 	if(input=='\n'){

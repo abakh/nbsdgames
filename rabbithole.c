@@ -276,13 +276,13 @@ int main(int argc,char** argv){
 			gameplay();
 		if( input == KEY_F(1) || input=='?' )
 			help();
-		if( (input=='k' || input==KEY_UP) && py>0 && (board[py][px]&UP) )
+		if( (input=='k' || (input==KEY_UP||input=='w')) && py>0 && (board[py][px]&UP) )
 			--py;
-		if( (input=='j' || input==KEY_DOWN) && py<len-1 && (board[py][px]&DOWN) )
+		if( (input=='j' || (input==KEY_DOWN||input=='s')) && py<len-1 && (board[py][px]&DOWN) )
 			++py;
-		if( (input=='h' || input==KEY_LEFT) && px>0 && (board[py][px]&LEFT) )
+		if( (input=='h' || (input==KEY_LEFT||input=='a')) && px>0 && (board[py][px]&LEFT) )
 			--px;
-		if( (input=='l' || input==KEY_RIGHT) && px<wid-1 && (board[py][px]&RIGHT) )
+		if( (input=='l' || (input==KEY_RIGHT||input=='d')) && px<wid-1 && (board[py][px]&RIGHT) )
 			++px;
 		if( input=='q')
 			sigint_handler(0);

@@ -496,11 +496,11 @@ int main(int argc,char** argv){
 			mouseinput(sy,sx);
 		if(input == KEY_UP && py)
 			--py;
-		if(input == KEY_DOWN && py<s-1)
+		if((input==KEY_DOWN||input=='s') && py<s-1)
 			++py;
-		if(input == KEY_LEFT && px)
+		if((input==KEY_LEFT||input=='a') && px)
 			--px;
-		if(input == KEY_RIGHT && px<s-1)
+		if((input==KEY_RIGHT||input=='d') && px<s-1)
 			++px;
 		if(!empty[py][px]){
 			if(input == ' ' )

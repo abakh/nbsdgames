@@ -199,7 +199,7 @@ void show_scores(byte playerrank){
 			refresh();
 			do{
 				input=getch();
-			}while(input==KEY_UP || input==KEY_DOWN);
+			}while((input==KEY_UP||input=='w') || (input==KEY_DOWN||input=='s'));
 			filled_rect(0,0,LEN,WID);
 			blue_border();
 		}
@@ -317,7 +317,7 @@ int main(int argc,char** argv){
 	attroff(colors[2]);
 	do{
 		input=getch();
-	}while(input==KEY_UP || input==KEY_DOWN);
+	}while((input==KEY_UP||input=='w') || (input==KEY_DOWN||input=='s'));
 	if(input!='q' && input!='n' && input!='N'){
 		score=0;
 		level=0;

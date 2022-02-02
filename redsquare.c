@@ -583,22 +583,22 @@ int main(int argc,char** argv){
 			gameplay();
 		prey=py;
 		prex=px;
-		if(input=='k' || input==KEY_UP){
+		if(input=='k' || (input==KEY_UP||input=='w')){
 			--py;
 			if(py==-1)
 				py=LEN-1;
 		}
-		else if(input=='j' || input==KEY_DOWN){
+		else if(input=='j' || (input==KEY_DOWN||input=='s')){
 			++py;
 			if(py==LEN)
 				py=0;
 		}
-		else if(input=='h' || input==KEY_LEFT){
+		else if(input=='h' || (input==KEY_LEFT||input=='a')){
 			--px;
 			if(px==-1)
 				px=WID-1;
 		}
-		else if(input=='l' || input==KEY_RIGHT){
+		else if(input=='l' || (input==KEY_RIGHT||input=='d')){
 			++px;
 			if(px==WID)
 				px=0;

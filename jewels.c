@@ -305,11 +305,11 @@ int main(int argc,char** argv){
                                 falls=fall();
                                 stop=0;
                         }
-                        else if(input=='l' || input==KEY_RIGHT)
+                        else if(input=='l' || (input==KEY_RIGHT||input=='d'))
                                 jmove(0,+1);
-                        else if(input=='j' || input==KEY_LEFT )
+                        else if(input=='j' || (input==KEY_LEFT||input=='a') )
                                 jmove(0,-1);
-                        else if(input=='k' || input==KEY_UP)
+                        else if(input=='k' || (input==KEY_UP||input=='w'))
                                 rotate();
                         else if(input=='p'){
                                 mvaddstr(LINES-2,COLS/2-15,"Paused - Press a key to continue   ");

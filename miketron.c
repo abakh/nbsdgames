@@ -442,17 +442,17 @@ int main(int argc,char** argv){
 		if( input == KEY_F(2) )
 			gameplay();
 		halfspeed=!halfspeed;
-		if( (input=='k' || input==KEY_UP) ){
+		if( (input=='k' || (input==KEY_UP||input=='w')) ){
 			direction=UP;
 			halfspeed=1;
 		}
-		else if( (input=='j' || input==KEY_DOWN) ){
+		else if( (input=='j' || (input==KEY_DOWN||input=='s')) ){
 			direction=DOWN;
 			halfspeed=1;
 		}
-		else if( (input=='h' || input==KEY_LEFT) )
+		else if( (input=='h' || (input==KEY_LEFT||input=='a')) )
 			direction=LEFT;
-		else if( (input=='l' || input==KEY_RIGHT) )
+		else if( (input=='l' || (input==KEY_RIGHT||input=='d')) )
 			direction=RIGHT;
 		if( input=='q')
 			sigint_handler(0);
