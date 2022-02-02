@@ -1,12 +1,13 @@
 # New BSD Games
  *You have a computing machine from 1980's  and you wonder how you can use it? <br/>
-  Do you have Plan9 dual-booted with OpenBSD and keep the OpenBSD just for gaming? <br/>
-  Are you the DSL developer and have cancelled the project because you lacked games? <br/>
   You are a bored sysadmin with no work, and need to kill time looking busy with terminal?  <br/>
+  You have Plan9 dual-booted with OpenBSD and have kept the OpenBSD just for gaming? <br/>
+  Your port of Linux to a fancy platform has no GUI, but you still want to find a use for it?<br/>
+  You the DSL developer and have cancelled the project because you lacked games? <br/>
   You have to make a Reversi AI for your homework and you don't know where to copy it from? <br/>
-  Your port of a Unix-like system to a fancy platform has no GUI, but you still want nice screenshots?<br/>
-  You have been so excited about the bsdgames, but have grown tired of playing tetris, snake and robots for billions of times?* <br/>
-
+  Your port of Linux to a fancy platform has no GUI, but you still want nice screenshots?<br/>
+  You have been so excited about the bsdgames, but have grown tired of playing tetris, snake and robots for billions of times? <br/>
+  Are you feeling that betrayed you by bundling stuff like phantasia in a package you expected to contain GAMES?*<br/>
 **Don't worry** anymore as you've got nbsdgames now!
 
 The games include:
@@ -28,7 +29,7 @@ The games include:
 * Redsquare (Conway's Game of Life made playable!)
 * Darrt (with original gameplay!)
 * Snakeduel
-* Tugow (Numlock practice game)
+* Tugow (Numpad practice game)
 
 The difficulty and/or dimensions are adjustable through simple command line options, you can play a minesweeper game that take hours to complete, or exprience hexadecimal sudoku and 8x8 fifteen-like puzzles!
 
@@ -107,5 +108,5 @@ Windows
 * Tell me the games you want to be added (but in the same genre, I can't port Angry Birds to curses! :)
 * Make a package for your distro (or put it on repos if the package is not there)
 * Getting it to Redhat and SUSE repos would be nice.
-
+* Tell distro developers to consider adding these as default games, nbsdgames packs a lot of fun games in a few hundreds of kilobytes.
 Also thank to all the people who helped in the previous versions, all what I requested was done! I didn't expect such an amount of assistance on this project :heart:
