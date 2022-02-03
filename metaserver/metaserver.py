@@ -1,9 +1,9 @@
 from socket import *
 import os, sys, time, random
 from select import select
-from cStringIO import StringIO
+from io import StringIO
 from weakref import WeakValueDictionary
-from metastruct import *
+from .metastruct import *
 from common import httpserver, stdlog
 
 if __name__ == '__main__':
@@ -40,14 +40,14 @@ class MetaServer:
     def detach(self):
         pid = os.fork()
         if pid:
-            print pid
+            print(pid)
             os._exit(0)
         # in the child process
         os.setsid()
         logfile = stdlog.LogFile(limitsize=131072)
         if logfile:
-            print >> logfile
-            print "Logging to", logfile.filename
+            print(file=logfile)
+            print("Logging to", logfile.filename)
             fd = logfile.f.fileno()
             try:
                 # detach from parent
@@ -59,7 +59,7 @@ class MetaServer:
             logfile.close()
         # record pid
         f = open('pid', 'w')
-        print >> f, os.getpid()
+        print(os.getpid(), file=f)
         f.close()
 
     def clientconnect(self):
@@ -77,7 +77,7 @@ class MetaServer:
             raise OverflowError
         self.ServersList.append(server)
         self.ServersDict[key] = server
-        print '+', key
+        print('+', key)
 
     def unpublish(self, server):
         key = server.serverkey
@@ -86,7 +86,7 @@ class MetaServer:
             if current is server:
                 del self.ServersDict[key]
                 self.ServersList.remove(server)
-                print '-', key
+                print('-', key)
 
     def makelist(self):
         items = {}
@@ -116,7 +116,7 @@ class Connexion(MessageSocket):
         self.addr = addr
         self.key = '%s:%d' % addr
         self.serverkey = None
-        print '[', self.key
+        print('[', self.key)
         self.backlinks = WeakValueDictionary()
         if len(serversockets) >= MAX_CONNEXIONS:
             self.disconnect()
@@ -129,10 +129,10 @@ class Connexion(MessageSocket):
             del serversockets[self.s]
         except KeyError:
             pass
-        print ']', self.key
+        print(']', self.key)
 
     def msg_serverinfo(self, info, *rest):
-        print '|', self.key
+        print('|', self.key)
         if len(info) > 15000:
             raise OverflowError
         info = decodedict(info)
@@ -169,7 +169,7 @@ class Connexion(MessageSocket):
     def msg_traceback(self, tb, *rest):
         f = stdlog.LogFile('tb-%s.log' % (self.addr[0],))
         if f:
-            print >> f, tb
+            print(tb, file=f)
             f.close()
 
     def msg_udp_addr(self, pattern, *rest):
@@ -198,9 +198,9 @@ class Connexion(MessageSocket):
 
 # ____________________________________________________________
 
-import htmlentitydefs
+import html.entities
 text_to_html = {}
-for key, value in htmlentitydefs.entitydefs.items():
+for key, value in list(html.entities.entitydefs.items()):
     text_to_html[value] = '&' + key + ';'
 for i in range(32):
     text_to_html[chr(i)] = '?'
@@ -305,7 +305,7 @@ httpserver.register('mbub.png', httpserver.fileloader('mbub.png', 'image/png'))
 httpserver.register('home.png', httpserver.fileloader('home.png', 'image/png'))
 
 def openhttpsocket(port = META_SERVER_HTTP_PORT):
-    from BaseHTTPServer import HTTPServer
+    from http.server import HTTPServer
     class ServerClass(HTTPServer):
         def get_request(self):
             sock, addr = self.socket.accept()
@@ -322,19 +322,19 @@ def openhttpsocket(port = META_SERVER_HTTP_PORT):
 
 def mainloop():
     while 1:
-        iwtd = serversockets.keys()
+        iwtd = list(serversockets.keys())
         iwtd, owtd, ewtd = select(iwtd, [], iwtd)
         #print iwtd, owtd, ewtd, serversockets
         for s in iwtd:
             if s in serversockets:
                 input, close = serversockets[s]
                 try:
-                    input()
+                    eval(input())
                 except:
                     import traceback
-                    print "-"*60
+                    print("-"*60)
                     traceback.print_exc()
-                    print "-"*60
+                    print("-"*60)
         for s in ewtd:
             if s in serversockets:
                 input, close = serversockets[s]
@@ -342,9 +342,9 @@ def mainloop():
                     close()
                 except:
                     import traceback
-                    print "-"*60
+                    print("-"*60)
                     traceback.print_exc()
-                    print "-"*60
+                    print("-"*60)
 
 
 if __name__ == '__main__':
@@ -353,13 +353,13 @@ if __name__ == '__main__':
         metaserver.detach()
     try:
         openhttpsocket()
-        print 'listening to client port tcp %d / http %d / udp %d.' % (
+        print('listening to client port tcp %d / http %d / udp %d.' % (
             META_SERVER_PORT,
             META_SERVER_HTTP_PORT,
-            META_SERVER_UDP_PORT)
+            META_SERVER_UDP_PORT))
         mainloop()
     finally:
         if metaserver.ServersList:
-            print '*** servers still connected, waiting 5 seconds'
+            print('*** servers still connected, waiting 5 seconds')
             time.sleep(5)
-        print '*** leaving at', time.ctime()
+        print('*** leaving at', time.ctime())

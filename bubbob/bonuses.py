@@ -1,4 +1,4 @@
-from __future__ import generators
+
 import random, os, math
 import random as random_module
 import gamesrv
@@ -646,13 +646,13 @@ class Megabonus(Bonus):
         return self.y == boards.bheight - CELL - self.ico.h
 
     def kill(self):
-        for bubble in self.bubbles.values():
+        for bubble in list(self.bubbles.values()):
             bubble.pop()
         Bonus.kill(self)
 
     def taken(self, dragon):
         poplist = [dragon]
-        for bubble in self.bubbles.values():
+        for bubble in list(self.bubbles.values()):
             bubble.pop(poplist)
 
     def bubbles_position(self):
@@ -712,7 +712,7 @@ class Megabonus(Bonus):
         while 1:
             for t in range(2):
                 yield None
-            bubbles = [dxy for dxy, b in self.bubbles.items()
+            bubbles = [dxy for dxy, b in list(self.bubbles.items())
                            if b.bubber is bubber]
             if not bubbles:
                 break
@@ -776,7 +776,7 @@ class Megabonus(Bonus):
         while 1:
             for cycle in [1]*8 + [2]*10 + [1]*8 + [0]*10:
                 yield None
-                for (dx, dy), bubble in bubbles.items():
+                for (dx, dy), bubble in list(bubbles.items()):
                     if not hasattr(bubble, 'poplist'):
                         if 0:   # disabled clipping
                             if (dx, north[dy]) in bubbles:
@@ -822,7 +822,7 @@ class Megabonus(Bonus):
                 yield None
             bubble.pop(poplist)
 
-        for bubble in self.bubbles.values():
+        for bubble in list(self.bubbles.values()):
             bubble.gen.append(bubble_timeout(bubble, self.vspeed))
         self.bubbles.clear()
         self.kill()
@@ -1249,7 +1249,7 @@ class Lollipop(TemporaryBonus):
     def taken(self, dragon):
         dragon.dcap['left2right'] = -dragon.dcap['left2right']
         if self.big:
-            perm = range(4)
+            perm = list(range(4))
             while perm[0] == 0 or perm[1] == 1 or perm[2] == 2 or perm[3] == 3:
                 random.shuffle(perm)
             names = ('key_left', 'key_right', 'key_jump', 'key_fire')
@@ -1589,7 +1589,7 @@ class Egg(RandomBonus):
                 d1 = dragons[0]
                 d1.move(x, y)
                 d1.dcap['shield'] = 50
-        for d1, bubber2 in xchg.items():
+        for d1, bubber2 in list(xchg.items()):
             d1.bubber.dragons.remove(d1)
             d1.bubber = bubber2
             bubber2.dragons.append(d1)
@@ -1705,7 +1705,7 @@ class Chestnut(RandomBonus):
 try:
     import statesaver
 except ImportError:
-    print "'statesaver' module not compiled, no clock bonus"
+    print("'statesaver' module not compiled, no clock bonus")
     Clock = None
 else:
     import new
@@ -1734,11 +1734,11 @@ else:
             boards.curboard,
             images.ActiveSprites,
             images.SpritesByLoc,
-            BubPlayer.__dict__.items(),
+            list(BubPlayer.__dict__.items()),
             gamesrv.sprites,
             gamesrv.sprites_by_n,
             ps,
-            images.Snd.__dict__.items(),
+            list(images.Snd.__dict__.items()),
             )
         #import pdb; pdb.set_trace()
         return statesaver.copy(topstate)
@@ -1938,8 +1938,8 @@ else:
             random = random_module.Random()
             localrandom = DustStar.localrandom
             self.state = 'pre'
-            self.randombase1 = hash(localrandom.random()) * 914971L
-            self.randombase2 = hash(localrandom.random()) * 914971L
+            self.randombase1 = hash(localrandom.random()) * 914971
+            self.randombase2 = hash(localrandom.random()) * 914971
             self.saved_next = None
             self.saved_last = self
             random.seed(self.randombase1)
@@ -2019,7 +2019,7 @@ else:
                     for s in touching:
                         if isinstance(s, interact):
                             s.touched(ghost)
-            for d, ghost in self.ghosts.items():
+            for d, ghost in list(self.ghosts.items()):
                 if d not in new_ghosts:
                     ghost.kill()
             self.ghosts = new_ghosts
@@ -2036,12 +2036,12 @@ else:
                 DragonBubble(*args)
             if self.state == 'restoring' and self.ghosts:
                 self.state = 'post'
-                for ghost in self.ghosts.values():
+                for ghost in list(self.ghosts.values()):
                     ghost.integrate()
 
         def flush_ghosts(self):
             if self.latest_entries:
-                for ghost in self.ghosts.values():
+                for ghost in list(self.ghosts.values()):
                     ghost.disintegrate()
                 self.latest_entries.clear()
             self.dragonlist = None
@@ -2282,7 +2282,7 @@ class Sheep(RandomBonus):
         vy = 0
         while delta or slist:
             ndelta = {}
-            for p, dp in delta.items():
+            for p, dp in list(delta.items()):
                 if dp:
                     d1 = max(-250, min(250, dp))
                     p.givepoints(d1)
@@ -2379,7 +2379,7 @@ class Donut(RandomBonus):
                     b.kill()
 
 
-Classes = [c for c in globals().values()
+Classes = [c for c in list(globals().values())
            if type(c)==type(RandomBonus) and issubclass(c, RandomBonus)]
 Classes.remove(RandomBonus)
 Classes.remove(TemporaryBonus)
@@ -2500,5 +2500,5 @@ def __cheat(c):
     c[0] = globals()[c[0]]
     assert issubclass(c[0], Bonus)
     Cheat.append(tuple(c))
-import __builtin__
-__builtin__.__cheat = __cheat
+import builtins
+builtins.__cheat = __cheat

@@ -4,8 +4,8 @@
 ################################################
 
 import os, sys, math
-from modes import KeyPressed, KeyReleased
-import caching
+from .modes import KeyPressed, KeyReleased
+from . import caching
 
 def import_trickery():
     global gtk, gdk
@@ -59,7 +59,8 @@ class Display:
         pb = self.pixmap(32, 32, ((pixel+hole)*16 + (hole+pixel)*16) * 16, 0x010101)
         self.taskbkgnd = self.renderpixbuf(pb)
 
-    def taskbar(self, (x, y, w, h)):
+    def taskbar(self, xxx_todo_changeme):
+        (x, y, w, h) = xxx_todo_changeme
         scale = self.scale
         x2 = x+w
         y2 = y+h
@@ -74,9 +75,9 @@ class Display:
     def pixmap(self, w, h, data, colorkey=-1):
         filename = self.tempppmfile
         f = open(filename, 'wb')
-        print >> f, 'P6'
-        print >> f, w, h
-        print >> f, 255
+        print('P6', file=f)
+        print(w, h, file=f)
+        print(255, file=f)
         f.write(data)
         f.close()
         pb = gdk.pixbuf_new_from_file(filename)
@@ -101,7 +102,8 @@ class Display:
         else:
             return (pixmap, self.gc, None)
 
-    def getopticon(self, input, (x, y, w, h), ignored_alpha=255):
+    def getopticon(self, input, xxx_todo_changeme1, ignored_alpha=255):
+        (x, y, w, h) = xxx_todo_changeme1
         if len(input) == 3:
             return None
         pb, = input
@@ -116,7 +118,8 @@ class Display:
         else:
             return self.renderpixbuf((newpb,))
 
-    def getppm(self, (x, y, w, h), int=int, ceil=math.ceil):
+    def getppm(self, xxx_todo_changeme2, int=int, ceil=math.ceil):
+        (x, y, w, h) = xxx_todo_changeme2
         scale = self.scale
         if isinstance(scale, int):
             x *= scale
@@ -134,7 +137,8 @@ class Display:
         bkgnd.draw_drawable(self.gc, self.offscreen, x, y, 0, 0, w, h)
         return bkgnd, self.gc, None
 
-    def putppm(self, x, y, (pixmap, gc, ignored), rect=None, int=int):
+    def putppm(self, x, y, xxx_todo_changeme3, rect=None, int=int):
+        (pixmap, gc, ignored) = xxx_todo_changeme3
         if pixmap is None:
             return
         scale = self.scale

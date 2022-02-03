@@ -1,8 +1,8 @@
 import sys
-from cStringIO import StringIO
-import puremixer
+from io import StringIO
+from . import puremixer
 import wingame
-from music1 import Music
+from .music1 import Music
 
 
 class Sound:
@@ -19,9 +19,9 @@ class Sound:
 
         try:
             self.audio = wingame.Audio(1, self.freq, self.bits, self.bufsize)
-        except Exception, e:
-            print >> sys.stderr, "sound disabled: %s: %s" % (
-                e.__class__.__name__, e)
+        except Exception as e:
+            print("sound disabled: %s: %s" % (
+                e.__class__.__name__, e), file=sys.stderr)
             return
         self.mixer = puremixer.PureMixer(self.freq, self.bits, self.bits==16,
                                          byteorder='little')
@@ -81,7 +81,7 @@ class Sound:
 
 
 def htmloptionstext(nameval):
-    import modes
+    from . import modes
     l = ['<font size=-1>Sampling <%s>' % nameval('select', 'bits')]
     for bits in (8, 16):
         l.append('<'+nameval('option', 'bits', str(bits), default='16')+'>'+

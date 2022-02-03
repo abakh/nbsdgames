@@ -1,4 +1,4 @@
-from __future__ import generators
+
 import os, math, random
 import images, gamesrv
 from images import ActiveSprite
@@ -292,7 +292,7 @@ class Galaga:
             if in_place[1]:
                 xbounds = [s.x for s in in_place[1]]
                 self.alien_bounds = min(xbounds), max(xbounds)
-                shifter.next()
+                next(shifter)
             elif toohigh:
                 self.globaly += 1
             squadtime -= 1
@@ -357,7 +357,7 @@ def run():
     boards.replace_boardgen(Galaga().bgen())
 
 def setup():
-    for key, (filename, rect) in localmap.items():
+    for key, (filename, rect) in list(localmap.items()):
         filename = os.path.join(LocalDir, filename)
         if filename.find('%d') >= 0:
             for p in BubPlayer.PlayerList:

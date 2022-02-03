@@ -27,7 +27,7 @@ RMSG_NO_HOST  = '?'
 
 def encodedict(dict):
     data = []
-    for key, value in dict.items():
+    for key, value in list(dict.items()):
         data.append(message('#', key, value))
     return ''.join(data)
 
@@ -69,7 +69,7 @@ class MessageSocket:
             if msg is None:
                 break
             if msg[0] not in self.MESSAGES:
-                print >> sys.stderr, 'unknown message %r' % (msg[0],)
+                print('unknown message %r' % (msg[0],), file=sys.stderr)
             else:
                 fn = self.MESSAGES[msg[0]]
                 fn(self, *msg[1:])

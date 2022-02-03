@@ -1,7 +1,7 @@
 import sys
-from cStringIO import StringIO
-import puremixer
-from music1 import Music
+from io import StringIO
+from . import puremixer
+from .music1 import Music
 
 
 class Sound:
@@ -30,10 +30,10 @@ class Sound:
             if name == self.format:
                 break
         else:
-            print >> sys.stderr, 'available sound formats:'
+            print('available sound formats:', file=sys.stderr)
             for name, bits, signed, byteorder in self.Formats:
-                print >> sys.stderr, '  %-8s  %s' % (name, nicefmttext(
-                    bits, signed, byteorder))
+                print('  %-8s  %s' % (name, nicefmttext(
+                    bits, signed, byteorder)), file=sys.stderr)
             sys.exit(2)
 
         import linuxaudiodev
@@ -41,9 +41,9 @@ class Sound:
             f = linuxaudiodev.open('w')
             f.setparameters(self.freq, p['bits'], 1,
                             getattr(linuxaudiodev, 'AFMT_' + self.format))
-        except Exception, e:
-            print >> sys.stderr, "sound disabled: %s: %s" % (
-                e.__class__.__name__, e)
+        except Exception as e:
+            print("sound disabled: %s: %s" % (
+                e.__class__.__name__, e), file=sys.stderr)
             return
         self.f = f
         self.mixer = mixer = puremixer.PureMixer(**p)
@@ -136,7 +136,7 @@ def nicefmttext(bits, signed, byteorder):
     return s
 
 def htmloptionstext(nameval):
-    import modes
+    from . import modes
     l = ['<font size=-1>Sampling <%s>' % nameval('select', 'fmt')]
     for name, bits, signed, byteorder in Sound.Formats:
         l.append('<'+nameval('option', 'fmt', name, default='S16_NE')+'>'+

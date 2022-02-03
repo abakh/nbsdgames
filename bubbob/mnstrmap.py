@@ -7,7 +7,7 @@ class Monster1:
         self.player = player
 
 def nrange(start,n):
-    return range(start,start+n)
+    return list(range(start,start+n))
 
 class Nasty(Monster1):
     right  = nrange(239,4)
@@ -289,11 +289,11 @@ class birange:
         self.a = a
         self.n = n
     def __getitem__(self, pn):
-        return range(self.a + 1000*pn, self.a + 1000*pn + self.n)
+        return list(range(self.a + 1000*pn, self.a + 1000*pn + self.n))
 
 class bidict:
     def __init__(self, a,b):
-        self.a = a.items()
+        self.a = list(a.items())
     def __getitem__(self, pn):
         pn *= 1000
         d = {}

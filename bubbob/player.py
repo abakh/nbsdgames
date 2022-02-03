@@ -1,4 +1,4 @@
-from __future__ import generators
+
 import random, math, time
 import gamesrv
 import images
@@ -123,7 +123,7 @@ class Dragon(ActiveSprite):
                            outcome=bonus.buildoutcome())
         elif self.bubber.letters and random.random() > 0.59 and can_loose_letter:
             # loose a letter
-            lst = range(6)
+            lst = list(range(6))
             random.shuffle(lst)
             for l in lst:
                 lettername = bubbles.extend_name(l)
@@ -758,7 +758,7 @@ class BubPlayer(gamesrv.Player):
         icons = self.transformedicons[flip]
         if flip == 'fish':
             for dir in (-1, 1):
-                for key, value in self.FISH_MODE_MAP.items():
+                for key, value in list(self.FISH_MODE_MAP.items()):
                     if value == 'black':
                         flip = ''
                     else:
@@ -768,7 +768,7 @@ class BubPlayer(gamesrv.Player):
                             flip = flip or 'hflip'
                     icons[key, dir] = images.sprget((flip, value))
         else:
-            for key, value in self.iconnames.items():
+            for key, value in list(self.iconnames.items()):
                 icons[key] = images.sprget((flip, value))
 
     def setplayername(self, name):
@@ -793,9 +793,9 @@ class BubPlayer(gamesrv.Player):
             self.loadicons(flip='')
         self.keepalive = None
         if self.points or self.letters:
-            print 'New player continues at position #%d.' % n
+            print('New player continues at position #%d.' % n)
         else:
-            print 'New player is at position #%d.' % n
+            print('New player is at position #%d.' % n)
             self.reset()
         self.key_left  = 0
         self.key_right = 0
@@ -810,7 +810,7 @@ class BubPlayer(gamesrv.Player):
         #BubPlayer.LatestLetsGo = BubPlayer.FrameCounter
 
     def playerleaves(self):
-        print 'Closing position #%d.' % self.pn
+        print('Closing position #%d.' % self.pn)
         self.savecaps()
         self.zarkoff()
         self.keepalive = time.time() + KEEPALIVE
@@ -831,7 +831,7 @@ class BubPlayer(gamesrv.Player):
         self.pcap = {}
         dragons = self.dragons
         if dragons:
-            for key, minimum in Dragon.SAVE_CAP.items():
+            for key, minimum in list(Dragon.SAVE_CAP.items()):
                 self.pcap[key] = max(minimum,
                                      max([d.dcap[key] for d in dragons]))
 
@@ -874,7 +874,7 @@ class BubPlayer(gamesrv.Player):
                     else:
                         break
             self.dragons.append(Dragon(self, x, y, dir))
-            for key in self.pcap.keys():
+            for key in list(self.pcap.keys()):
                 if key not in ('teleport', 'jumpdown'):
                     del self.pcap[key]
 
@@ -1022,7 +1022,7 @@ def scoreboard(reset=0, inplace=0, compresslimittime=0):
     if reset:
         for p in BubPlayer.PlayerList:
             if inplace:
-                for s in p.letters.values():
+                for s in list(p.letters.values()):
                     if isinstance(s, ActiveSprite):
                         s.kill()
             if len(p.letters) == 6:
@@ -1155,7 +1155,7 @@ def scoreboard(reset=0, inplace=0, compresslimittime=0):
                 lst.append((x0+9*CELL-ico.w, y0-ico.h+16, ico))
                 y0 -= 5*HALFCELL
     for p in BubPlayer.PlayerList:
-        for name, s in p.letters.items():
+        for name, s in list(p.letters.items()):
             if isinstance(s, ActiveSprite) and s not in bubblesshown:
                 p.letters[name] = 2
                 s.kill()
@@ -1208,6 +1208,6 @@ def scoreboard(reset=0, inplace=0, compresslimittime=0):
 
 # initialize global board data
 def reset_global_board_state():
-    for key, value in BubPlayer.INIT_BOARD_CAP.items():
+    for key, value in list(BubPlayer.INIT_BOARD_CAP.items()):
         setattr(BubPlayer, key, value)
 reset_global_board_state()

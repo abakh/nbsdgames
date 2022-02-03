@@ -62,7 +62,7 @@ def initpalettelut ():
 	s = "".join ([chr ((v >> shift) & 0xff) for shift in (0,8,16)])
 	PaletteIndex[s] = i
     # invalidate COLORS, but match the length to the number of alt palettes.
-    COLORS = range ((len (Palettes) / PALETTESIZE) - 1)
+    COLORS = list(range((len (Palettes) / PALETTESIZE) - 1))
     #print 'COLORS',COLORS
     COLORMAPS = [{} for n in COLORS]
     #print 'COLORMAPS',COLORMAPS
@@ -95,12 +95,12 @@ def inputfiles ():
         os.path.join (ThisDir, os.pardir, 'ext7', 'image1-%d.ppm'): 1,
         }
     d = {}
-    execfile (os.path.join(ThisDir, os.pardir, 'sprmap.py'), d)
+    exec(compile(open(os.path.join(ThisDir, os.pardir, 'sprmap.py'), "rb").read(), os.path.join(ThisDir, os.pardir, 'sprmap.py'), 'exec'), d)
     sprmap = d['sprmap']
-    for key, (filename, rect) in sprmap.items ():
+    for key, (filename, rect) in list(sprmap.items ()):
         if filename.find('%d') >= 0:
             InputFiles[os.path.join (ThisDir, filename)] = 1
-    return InputFiles.keys ()
+    return list(InputFiles.keys ())
 
 # ____________________________________________________________
 
@@ -143,7 +143,7 @@ def ppmbreak (f):
         if not line.startswith('#'):
             break
     wh = line.split ()
-    w, h = map (int, wh)
+    w, h = list(map (int, wh))
     sig = f.readline ().strip()
     assert sig == "255"
     data = f.read ()
@@ -226,15 +226,15 @@ def writeout (imglist, namepattern, paletted = False):
         w, h, data = imglist[i]
         fn = namepattern % i
         f = open (fn, 'wb')
-        print >> f, 'P6'
-        print >> f, w, h
-        print >> f, 255
+        print('P6', file=f)
+        print(w, h, file=f)
+        print(255, file=f)
         f.write (data)
         f.close ()
 
 
 def convert (name):
-    print >> sys.stderr, 'generating colors for %s...' % name
+    print('generating colors for %s...' % name, file=sys.stderr)
     imglist = [ppmbreak (open (name % 0, 'rb'))]
     paletted = False
     if Palettes:
@@ -285,7 +285,7 @@ else:
 
 
 if __name__ == '__auto__':    # when execfile'd from images.py
-    rebuild = updatecheck ().items ()
+    rebuild = list(updatecheck ().items ())
     rebuild.sort ()
     for fn, r in rebuild:
         if r:
@@ -308,15 +308,15 @@ if __name__ == '__main__':
                 except OSError:
                     pass
                 else:
-                    print 'rm', filename % n
+                    print('rm', filename % n)
         sys.exit()
     else:
         rebuild = updatecheck ()
-        if 0 in rebuild.values ():
-            print >> sys.stderr, ('%d images up-to-date. '
+        if 0 in list(rebuild.values ()):
+            print(('%d images up-to-date. '
                                   'Use -f to force a rebuild or -c to clean.' %
-                                  rebuild.values ().count(0))
-        files = [fn for fn, r in rebuild.items () if r]
+                                  list(rebuild.values ()).count(0)), file=sys.stderr)
+        files = [fn for fn, r in list(rebuild.items ()) if r]
 
     files.sort ()
     for filename in files:

@@ -1,6 +1,6 @@
 import sys, os
-from cStringIO import StringIO
-import httpserver
+from io import StringIO
+from . import httpserver
 
 PLAYERNAMES = ['Bub', 'Bob', 'Boob', 'Beb',
                'Biob', 'Bab', 'Bib',
@@ -68,11 +68,11 @@ def indexloader(**options):
     if 'cheat' in options:
         for opt in options.pop('cheat'):
             __cheat(opt)
-    import gamesrv
+    from . import gamesrv
     if gamesrv.game is None:
         indexdata = EMPTY_PAGE
     else:
-        names = playernames(options).items()
+        names = list(playernames(options).items())
         indexdata = INDEX_PAGE % {
             'title':    gamesrv.game.FnDesc,
             'width':    gamesrv.game.width,
@@ -114,16 +114,16 @@ def wav2au(data):
     return data
 
 def sampleloader(code=[], **options):
-    import gamesrv
+    from . import gamesrv
     try:
         data = wave_cache[code[0]]
     except KeyError:
-        for key, snd in gamesrv.samples.items():
+        for key, snd in list(gamesrv.samples.items()):
             if str(getattr(snd, 'code', '')) == code[0]:
                 data = wave_cache[code[0]] = wav2au(snd.read())
                 break
         else:
-            raise KeyError, code[0]
+            raise KeyError(code[0])
     return StringIO(data), 'audio/wav'
 
 

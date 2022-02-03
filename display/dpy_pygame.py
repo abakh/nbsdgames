@@ -6,7 +6,7 @@
 import os
 import pygame
 from pygame.locals import *
-from modes import KeyPressed, KeyReleased
+from .modes import KeyPressed, KeyReleased
 
 
 class Display:
@@ -154,7 +154,8 @@ class Display:
     def selectlist(self):
         return []
 
-    def taskbar(self, (x, y, w, h)):
+    def taskbar(self, xxx_todo_changeme):
+        (x, y, w, h) = xxx_todo_changeme
         tbs, tbh = self.tbcache
         if tbh != h:
             tbs = pygame.Surface((32, h)).convert_alpha(self.offscreen)
@@ -192,7 +193,7 @@ def events_dispatch(handlers = EVENT_HANDLERS):
         e = pygame.event.poll()
         if e.type == NOEVENT:
             break
-        elif handlers.has_key(e.type):
+        elif e.type in handlers:
             handlers[e.type](e)
 
 

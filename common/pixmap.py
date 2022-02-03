@@ -1,8 +1,8 @@
-from __future__ import generators
-import cStringIO
+
+import io
 
 def decodepixmap(data):
-    f = cStringIO.StringIO(data)
+    f = io.StringIO(data)
     sig = f.readline().strip()
     assert sig == "P6"
     while 1:
@@ -10,7 +10,7 @@ def decodepixmap(data):
         if not line.startswith('#'):
             break
     wh = line.split()
-    w, h = map(int, wh)
+    w, h = list(map(int, wh))
     sig = f.readline().strip()
     assert sig == "255"
     data = f.read()
@@ -20,7 +20,9 @@ def decodepixmap(data):
 def encodepixmap(w, h, data):
     return 'P6\n%d %d\n255\n%s' % (w, h, data)
 
-def cropimage((w, h, data), (x1, y1, w1, h1)):
+def cropimage(xxx_todo_changeme, xxx_todo_changeme1):
+    (w, h, data) = xxx_todo_changeme
+    (x1, y1, w1, h1) = xxx_todo_changeme1
     assert 0 <= x1 <= x1+w1 <= w
     assert 0 <= y1 <= y1+h1 <= h
     scanline = w*3
@@ -80,10 +82,12 @@ translation_darker = ('\x00\x01' + '\x00'*126 +
                       ''.join([chr(n//4) for n in range(0,128)]))
 translation_dragon = translation_darker[:255] + '\xC0'
 
-def make_dark((w, h, data), translation):
+def make_dark(xxx_todo_changeme2, translation):
+    (w, h, data) = xxx_todo_changeme2
     return w, h, data.translate(translation)
 
-def col((r, g, b)):
+def col(xxx_todo_changeme3):
+    (r, g, b) = xxx_todo_changeme3
     r = ord(r)
     g = ord(g)
     b = ord(b)

@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-from __future__ import generators
+
 
 # __________
 import os, sys
@@ -89,11 +89,11 @@ class BubBobGame(gamesrv.Game):
         if self.metaregister:
             self.do_updatemetaserver()
         frametime = 0.0
-        for i in xrange(500):
+        for i in range(500):
             import boards
             for gen in boards.BoardGen[:]:
                 try:
-                    frametime += gen.next()
+                    frametime += next(gen)
                 except StopIteration:
                     try:
                         boards.BoardGen.remove(gen)
@@ -110,7 +110,7 @@ class BubBobGame(gamesrv.Game):
                 self.game_reset_gen = boards.game_reset()
         else:
             try:
-                self.game_reset_gen.next()
+                next(self.game_reset_gen)
             except StopIteration:
                 self.game_reset_gen = None
         return frametime * boards.FRAME_TIME
@@ -132,9 +132,9 @@ class BubBobGame(gamesrv.Game):
         if kbd and not [p for p in BubPlayer.PlayerList if p.isplaying()]:
             return 0
         import traceback
-        print "-"*60
+        print("-"*60)
         traceback.print_exc()
-        print "-"*60
+        print("-"*60)
         if not kbd:
             try:
                 if self.metaserver:
@@ -145,15 +145,15 @@ class BubBobGame(gamesrv.Game):
                     else:
                         if metaclient.metaclisrv:
                             metaclient.metaclisrv.send_traceback()
-            except Exception, e:
-                print '! %s: %s' % (e.__class__.__name__, e)
+            except Exception as e:
+                print('! %s: %s' % (e.__class__.__name__, e))
         import boards
         num = getattr(boards.curboard, 'num', None)
         if self.Quiet:
-            print "Crash recovery! Automatically restarting board %s" % num
+            print("Crash recovery! Automatically restarting board %s" % num)
             import time; time.sleep(2)
         else:
-            print "Correct the problem and leave pdb to restart board %s..."%num
+            print("Correct the problem and leave pdb to restart board %s..."%num)
             import pdb; pdb.post_mortem(sys.exc_info()[2])
         self.openboard(num)
         return 1
@@ -183,7 +183,7 @@ class BubBobGame(gamesrv.Game):
             setuppath('metaserver')
             import metaclient
             metaclient.meta_register(self)
-            print '.'
+            print('.')
         else:
             try:
                 import metaclient
@@ -201,8 +201,8 @@ class BubBobGame(gamesrv.Game):
 def setuppath(dirname):
     dir = os.path.abspath(os.path.join(LOCALDIR, os.pardir, dirname))
     if not os.path.isdir(dir):
-        print >> sys.stderr, (
-            '../%s: directory not found ("cvs update -d" ?)' % dirname)
+        print((
+            '../%s: directory not found ("cvs update -d" ?)' % dirname), file=sys.stderr)
         sys.exit(1)
     if dir not in sys.path:
         sys.path.insert(0, dir)
@@ -210,28 +210,28 @@ def setuppath(dirname):
 def parse_cmdline(argv):
     # parse command-line
     def usage():
-        print >> sys.stderr, 'usage:'
-        print >> sys.stderr, '  python bb.py'
+        print('usage:', file=sys.stderr)
+        print('  python bb.py', file=sys.stderr)
 ##        print >> sys.stderr, '  python bb.py [-w/--webbrowser=no]'
 ##        print >> sys.stderr, 'where:'
 ##        print >> sys.stderr, '  -w  --webbrowser=no  don''t automatically start web browser'
-        print >> sys.stderr, 'or:'
-        print >> sys.stderr, '  python bb.py [level-file.bin] [-m] [-b#] [-s#] [-l#] [-M#]'
-        print >> sys.stderr, 'with options:'
-        print >> sys.stderr, '  -m  --metaserver  register the server on the Metaserver so anyone can join'
-        print >> sys.stderr, '  -b#  --begin #    start at board number # (default 1)'
-        print >> sys.stderr, '       --start #    synonym for --begin'
-        print >> sys.stderr, '       --final #    end at board number # (default 100)'
-        print >> sys.stderr, '  -s#  --step #     advance board number by steps of # (default 1)'
-        print >> sys.stderr, '  -l#  --lives #    limit the number of lives to #'
-        print >> sys.stderr, '       --extralife #    gain extra life every # points'
-        print >> sys.stderr, '       --limitlives #    max # of lives player can gain in one board'
-        print >> sys.stderr, '  -M#  --monsters # multiply the number of monsters by #'
-        print >> sys.stderr, '                      (default between 1.0 and 2.0 depending on # of players)'
-        print >> sys.stderr, '  -i   --infinite   restart the server at the end of the game'
-        print >> sys.stderr, '  --port LISTEN=#   set fixed tcp port for game server'
-        print >> sys.stderr, '  --port HTTP=#     set fixed tcp port for http server'
-        print >> sys.stderr, '  -h   --help       display this text'
+        print('or:', file=sys.stderr)
+        print('  python bb.py [level-file.bin] [-m] [-b#] [-s#] [-l#] [-M#]', file=sys.stderr)
+        print('with options:', file=sys.stderr)
+        print('  -m  --metaserver  register the server on the Metaserver so anyone can join', file=sys.stderr)
+        print('  -b#  --begin #    start at board number # (default 1)', file=sys.stderr)
+        print('       --start #    synonym for --begin', file=sys.stderr)
+        print('       --final #    end at board number # (default 100)', file=sys.stderr)
+        print('  -s#  --step #     advance board number by steps of # (default 1)', file=sys.stderr)
+        print('  -l#  --lives #    limit the number of lives to #', file=sys.stderr)
+        print('       --extralife #    gain extra life every # points', file=sys.stderr)
+        print('       --limitlives #    max # of lives player can gain in one board', file=sys.stderr)
+        print('  -M#  --monsters # multiply the number of monsters by #', file=sys.stderr)
+        print('                      (default between 1.0 and 2.0 depending on # of players)', file=sys.stderr)
+        print('  -i   --infinite   restart the server at the end of the game', file=sys.stderr)
+        print('  --port LISTEN=#   set fixed tcp port for game server', file=sys.stderr)
+        print('  --port HTTP=#     set fixed tcp port for http server', file=sys.stderr)
+        print('  -h   --help       display this text', file=sys.stderr)
         #print >> sys.stderr, '  -rxxx record the game in file xxx'
         sys.exit(1)
 
@@ -246,9 +246,9 @@ def parse_cmdline(argv):
                              'lives=', 'monsters=', 'infinite', 'help',
                              'extralife=', 'limitlives=', 'final=',
                              'saveurlto=', 'quiet', 'port=', 'makeimages'])
-    except error, e:
-        print >> sys.stderr, 'bb.py: %s' % str(e)
-        print >> sys.stderr
+    except error as e:
+        print('bb.py: %s' % str(e), file=sys.stderr)
+        print(file=sys.stderr)
         usage()
         
     options = {}
@@ -269,7 +269,7 @@ def parse_cmdline(argv):
         elif key in ('--final'):
             options['finalboard'] = int(value)
             if options['finalboard'] < options['beginboard']:
-                print >> sys.stderr, 'bb.py: final board value must be larger than begin board.'
+                print('bb.py: final board value must be larger than begin board.', file=sys.stderr)
                 sys.exit(1)
         elif key in ('--extralife'):
             options['extralife'] = int(value)
@@ -295,14 +295,14 @@ def parse_cmdline(argv):
         #    webbrowser = value.startswith('y')
     if args:
         if len(args) > 1:
-            print >> sys.stderr, 'bb.py: multiple level files specified'
+            print('bb.py: multiple level files specified', file=sys.stderr)
             sys.exit(1)
         levelfile = os.path.abspath(args[0])
         os.chdir(LOCALDIR)
         BubBobGame(levelfile, **options)
     else:
         if options:
-            print >> sys.stderr, 'bb.py: command-line options ignored'
+            print('bb.py: command-line options ignored', file=sys.stderr)
         start_metaserver(save_url_to, quiet)
 
 def start_metaserver(save_url_to, quiet):

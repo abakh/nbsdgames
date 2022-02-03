@@ -9,7 +9,7 @@
 
 # __________
 import os, sys
-print 'Running on Python', sys.version
+print('Running on Python', sys.version)
 if __name__ == '__main__':
     LOCALDIR = sys.argv[0]
 else:
@@ -61,12 +61,12 @@ def look_for_local_server():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         s.connect(('127.0.0.1', port))
-    except socket.error, e:
+    except socket.error as e:
         return None
     try:
         s.shutdown(2)
         s.close()
-    except Exception, e:
+    except Exception as e:
         pass
     url2, port2 = load_url_file()
     if port2 != port:
@@ -93,9 +93,9 @@ def start_local_server():
             else:
                 httppages.main(None, TAGFILENAME, 0)
             if logfile:
-                print >> logfile
+                print(file=logfile)
                 if logfile:
-                    print "Logging to", logfile.filename
+                    print("Logging to", logfile.filename)
                     fd = logfile.f.fileno()
                     try:
                         # detach from parent
@@ -130,35 +130,35 @@ if not url:
         if url:
             break
     else:
-        print >> sys.stderr, 'The local server is not starting, giving up.'
+        print('The local server is not starting, giving up.', file=sys.stderr)
         sys.exit(1)
 
 try:
     import webbrowser
     browser = webbrowser.get()
     name = getattr(browser, 'name', browser.__class__.__name__)
-    print "Trying to open '%s' with '%s'..." % (url, name)
+    print("Trying to open '%s' with '%s'..." % (url, name))
     browser.open(url)
 except:
     exc, val, tb = sys.exc_info()
-    print '-'*60
-    print >> sys.stderr, "Failed to launch the web browser:"
-    print >> sys.stderr, "  %s: %s" % (exc.__name__, val)
-    print
-    print "Sorry, I guess you have to go to the following URL manually:"
+    print('-'*60)
+    print("Failed to launch the web browser:", file=sys.stderr)
+    print("  %s: %s" % (exc.__name__, val), file=sys.stderr)
+    print()
+    print("Sorry, I guess you have to go to the following URL manually:")
 else:
-    print "Done running '%s'." % name
+    print("Done running '%s'." % name)
     if look_for_local_server() != url:
         # assume that browser.open() waited for the browser to finish
         # and that the server has been closed from the browser.
         raise SystemExit
-    print
-    print '-'*60
-    print "If the browser fails to open the page automatically,"
-    print "you will have to manually go to the following URL:"
-print ' ', url
-print '-'*60
-print "Note that the server runs in the background. You have to use"
-print "the 'Stop this program' link to cleanly stop it."
-print "Normally, however, running this script multiple times should"
-print "not create multiple servers in the background."
+    print()
+    print('-'*60)
+    print("If the browser fails to open the page automatically,")
+    print("you will have to manually go to the following URL:")
+print(' ', url)
+print('-'*60)
+print("Note that the server runs in the background. You have to use")
+print("the 'Stop this program' link to cleanly stop it.")
+print("Normally, however, running this script multiple times should")
+print("not create multiple servers in the background.")

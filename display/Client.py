@@ -16,8 +16,8 @@ LOCALDIR = os.path.dirname(os.path.abspath(LOCALDIR))
 sys.path.insert(0, os.path.dirname(LOCALDIR))
 sys.path.insert(0, LOCALDIR)
 import common
-import pclient
-import modes
+from . import pclient
+from . import modes
 
 
 UdpLookForServer = [
@@ -28,42 +28,42 @@ UdpLookForServer = [
 def parse_cmdline(argv):
     # parse command-line
     def usage():
-        print >> sys.stderr, 'usage:'
-        print >> sys.stderr, '  python Client.py [-d#] [-s#] [extra options] [host[:port]]'
-        print >> sys.stderr
-        print >> sys.stderr, 'options:'
-        print >> sys.stderr, '  host              search for a game on the given machine'
-        print >> sys.stderr, '  host:port         connect to the given game server'
-        print >> sys.stderr, '                      (default search for any local server)'
-        print >> sys.stderr, '  -d#  --display=#  graphic driver (see below)'
-        print >> sys.stderr, '  -s#  --sound=#    sound driver (see below)'
-        print >> sys.stderr, '       --music=no   disable background music'
-        print >> sys.stderr, '  -h   --help       display this text'
-        print >> sys.stderr, '  -m   --metaserver connect with the help of the metaserver'
-        print >> sys.stderr, '                      (list servers with Client.py -m)'
-        print >> sys.stderr, '  -t   --tcp        for slow or proxy connections'
-        print >> sys.stderr, '  -u   --udp        for fast direct connections'
-        print >> sys.stderr, '                      (default is to autodetect tcp or udp)'
-        print >> sys.stderr, '  --port UDP=# or #:#   fixed inbound udp port or host:port'
-        print >> sys.stderr, '  --port TCP=#          fixed inbound tcp port (-m only)'
-        print >> sys.stderr
-        print >> sys.stderr, 'graphic drivers:'
+        print('usage:', file=sys.stderr)
+        print('  python Client.py [-d#] [-s#] [extra options] [host[:port]]', file=sys.stderr)
+        print(file=sys.stderr)
+        print('options:', file=sys.stderr)
+        print('  host              search for a game on the given machine', file=sys.stderr)
+        print('  host:port         connect to the given game server', file=sys.stderr)
+        print('                      (default search for any local server)', file=sys.stderr)
+        print('  -d#  --display=#  graphic driver (see below)', file=sys.stderr)
+        print('  -s#  --sound=#    sound driver (see below)', file=sys.stderr)
+        print('       --music=no   disable background music', file=sys.stderr)
+        print('  -h   --help       display this text', file=sys.stderr)
+        print('  -m   --metaserver connect with the help of the metaserver', file=sys.stderr)
+        print('                      (list servers with Client.py -m)', file=sys.stderr)
+        print('  -t   --tcp        for slow or proxy connections', file=sys.stderr)
+        print('  -u   --udp        for fast direct connections', file=sys.stderr)
+        print('                      (default is to autodetect tcp or udp)', file=sys.stderr)
+        print('  --port UDP=# or #:#   fixed inbound udp port or host:port', file=sys.stderr)
+        print('  --port TCP=#          fixed inbound tcp port (-m only)', file=sys.stderr)
+        print(file=sys.stderr)
+        print('graphic drivers:', file=sys.stderr)
         for info in modes.graphicmodeslist():
             info.printline(sys.stderr)
-        print >> sys.stderr
-        print >> sys.stderr, 'sound drivers:'
+        print(file=sys.stderr)
+        print('sound drivers:', file=sys.stderr)
         for info in modes.soundmodeslist():
             info.printline(sys.stderr)
-        print >> sys.stderr
+        print(file=sys.stderr)
         sys.exit(2)
 
     shortopts = 'd:s:htum'
     longopts = ['display=', 'sound=', 'music=', 'help', 'tcp', 'udp',
                 'cfg=', 'metaserver', 'port=']
     for info in modes.graphicmodeslist() + modes.soundmodeslist():
-        short, long = info.getformaloptions()
+        short, int = info.getformaloptions()
         shortopts += short
-        longopts += long
+        longopts += int
     try:
         from getopt import gnu_getopt as getopt
     except ImportError:
@@ -71,9 +71,9 @@ def parse_cmdline(argv):
     from getopt import error
     try:
         opts, args = getopt(argv, shortopts, longopts)
-    except error, e:
-        print >> sys.stderr, 'Client.py: %s' % str(e)
-        print >> sys.stderr
+    except error as e:
+        print('Client.py: %s' % str(e), file=sys.stderr)
+        print(file=sys.stderr)
         usage()
 
     metaserver = 0
@@ -144,7 +144,7 @@ def parse_cmdline(argv):
     return directconnect(server), mode
 
 def directconnect(sockaddr):
-    print "connecting to %s:%d..." % sockaddr
+    print("connecting to %s:%d..." % sockaddr)
     from socket import socket, AF_INET, SOCK_STREAM
     s = socket(AF_INET, SOCK_STREAM)
     s.connect(sockaddr)

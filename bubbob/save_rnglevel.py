@@ -22,7 +22,7 @@ while idx < len(sys.argv):
     if arg == '-seed':
         arg = sys.argv[idx]
         idx += 1
-        print "# Using seed: " + arg + "\n"
+        print("# Using seed: " + arg + "\n")
         random.seed(arg)
 
 def printlvl(level):
@@ -41,7 +41,7 @@ def printlvl(level):
                 else:
                     dir = 'R'
                 s = dir + m.cls.__name__
-                if tmpmons.has_key(s):
+                if s in tmpmons:
                     tmpmons[s].append(wm)
                 else:
                     tmpmons[s] = [wm]
@@ -61,7 +61,7 @@ def printlvl(level):
         for x in range(0,level.WIDTH):
             wm = level.wmap[y][x]
             if wm >= 'a':
-                if monconv.has_key(wm):
+                if wm in monconv:
                     walls += monconv[wm]
                 else:
                     walls += '?'
@@ -84,42 +84,42 @@ def printlvl(level):
         winds += "\n"
 
     for m in mons:
-        print "    " + m + " = " + mons[m]
+        print("    " + m + " = " + mons[m])
 
     if level.letter:
-        print "    letter = 1"
+        print("    letter = 1")
     if level.fire:
-        print "    fire = 1"
+        print("    fire = 1")
     if level.lightning:
-        print "    lightning = 1"
+        print("    lightning = 1")
     if level.water:
-        print "    water = 1"
+        print("    water = 1")
     if level.top:
-        print "    top = 1"
+        print("    top = 1")
 
-    print "    walls = \"\"\"\n" + walls + "\"\"\""
-    print "    winds = \"\"\"\n" + winds + "\"\"\""
+    print("    walls = \"\"\"\n" + walls + "\"\"\"")
+    print("    winds = \"\"\"\n" + winds + "\"\"\"")
 
 
 for i in range(n_lvls):
-    print """
+    print("""
 import boarddef, mnstrmap, random
 from boarddef import LNasty, LMonky, LGhosty, LFlappy
 from boarddef import LSpringy, LOrcy, LGramy, LBlitzy
 from boarddef import RNasty, RMonky, RGhosty, RFlappy
 from boarddef import RSpringy, ROrcy, RGramy, RBlitzy
-"""
+""")
 
     d = {'__name__': 'RandomLevels'}
-    execfile('levels/RandomLevels.py', d)
+    exec(compile(open('levels/RandomLevels.py', "rb").read(), 'levels/RandomLevels.py', 'exec'), d)
 
     for i, Lvl in enumerate(d['GenerateLevels']()):
         level = Lvl(i)
 
         if level.monsters:
-            print "\n\nclass level%02d(boarddef.Level):" % (i+1)
+            print("\n\nclass level%02d(boarddef.Level):" % (i+1))
         else:
-            print "\n\nclass levelFinal(boarddef.Level):"
+            print("\n\nclass levelFinal(boarddef.Level):")
 
         printlvl(level)
-	print
+	print()

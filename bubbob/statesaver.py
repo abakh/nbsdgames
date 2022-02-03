@@ -27,7 +27,7 @@ def copy_custom_instance(x, memo):
     except KeyError:
         y = x.inst_build()
         memo[id(x)] = y
-        for key, value in x.__dict__.items():
+        for key, value in list(x.__dict__.items()):
             y.__dict__[key] = copyrec(value, memo)
         return y
 
@@ -50,25 +50,25 @@ def copy_dict(x, memo):
     except KeyError:
         y = {}
         memo[id(x)] = y
-        for key, value in x.items():
+        for key, value in list(x.items()):
             y[copyrec(key, memo)] = copyrec(value, memo)
         return y
 
 def copy_function(x, memo):
-    if not x.func_defaults:
+    if not x.__defaults__:
         return x     # not copied
     try:
         return memo[id(x)]
     except KeyError:
-        y = types.FunctionType(x.func_code, x.func_globals, x.func_name)
+        y = types.FunctionType(x.__code__, x.__globals__, x.__name__)
         memo[id(x)] = y
-        y.func_defaults = copyrec(x.func_defaults, memo)
+        y.__defaults__ = copyrec(x.__defaults__, memo)
         return y
 
 def copy_method(x, memo):
-    return types.MethodType(copyrec(x.im_func, memo),
-                            copyrec(x.im_self, memo),
-                            x.im_class)
+    return types.MethodType(copyrec(x.__func__, memo),
+                            copyrec(x.__self__, memo),
+                            x.__self__.__class__)
 
 def copy_generator(x, memo):
     try:

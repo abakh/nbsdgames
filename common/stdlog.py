@@ -24,7 +24,7 @@ class LogFile:
             self.f.close()
             self.f = None
 
-    def __nonzero__(self):
+    def __bool__(self):
         return self.f is not None
 
     def _open(self, filename):
@@ -42,8 +42,8 @@ class LogFile:
             return 0
         self.filename = filename
         if self.f.tell() > 0:
-            print >> self.f
-            print >> self.f, '='*44
+            print(file=self.f)
+            print('='*44, file=self.f)
         return 1
 
     def _check(self):

@@ -7,4 +7,4 @@ for ext in ['.py', '.bin']:
         break
 sys.argv[1] = levelfile
 
-execfile('bb.py')
+exec(compile(open('bb.py', "rb").read(), 'bb.py', 'exec'))

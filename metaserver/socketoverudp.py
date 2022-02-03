@@ -1,6 +1,6 @@
 from time import time as now
-from pipelayer import PipeLayer, InvalidPacket
-from pipelayer import FLAG_RANGE_START, FLAG_RANGE_STOP
+from .pipelayer import PipeLayer, InvalidPacket
+from .pipelayer import FLAG_RANGE_START, FLAG_RANGE_STOP
 import socket, struct
 
 SOU_RANGE_START = FLAG_RANGE_START

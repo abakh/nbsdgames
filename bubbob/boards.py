@@ -1,4 +1,4 @@
-from __future__ import generators
+
 import random, os, sys, math
 import gamesrv
 import images
@@ -72,8 +72,8 @@ class Board(Copyable):
     def enter(self, complete=1, inplace=0, fastreenter=False):
         global curboard
         if inplace:
-            print "Re -",
-        print "Entering board", self.num+1
+            print("Re -", end=' ')
+        print("Entering board", self.num+1)
         self.set_musics()
         # add board walls
         l = self.sprites.setdefault('walls', [])
@@ -96,9 +96,9 @@ class Board(Copyable):
                 righticon = patget((self.num, 'r'))
             else:
                 righticon = lefticon
-            xrange = range(2, self.width-2)
+            xrange = list(range(2, self.width-2))
         else:
-            xrange = range(self.width)
+            xrange = list(range(self.width))
             lefticon = righticon = None
 
         if BOARD_BKGND == 1:
@@ -255,7 +255,7 @@ class Board(Copyable):
 
     def reorder_walls(self):
         walls_by_pos = self.walls_by_pos
-        items = [(yx, w1.ico) for yx, w1 in walls_by_pos.items()]
+        items = [(yx, w1.ico) for yx, w1 in list(walls_by_pos.items())]
         if not items:
             return   # otherwise self.sprites['walls'] would be emptied
         items.sort()
@@ -289,7 +289,7 @@ class Board(Copyable):
                 yield 0.9
             i = 0
         sprites = []
-        for l in self.sprites.values():
+        for l in list(self.sprites.values()):
             sprites += l
         self.sprites.clear()
         self.walls_by_pos.clear()
@@ -440,7 +440,7 @@ def loadmodules(force=0):
         elif os.path.isfile(os.path.join(m, '__init__.py')):
             modulefiles[m] = os.path.join(m, '__init__.py')
     mtimes = {}
-    for m, mfile in modulefiles.items():
+    for m, mfile in list(modulefiles.items()):
         mtimes[m] = os.stat(mfile).st_mtime
     reload = force or (mtimes != getattr(sys, 'ST_MTIMES', None))
     import player
@@ -449,8 +449,8 @@ def loadmodules(force=0):
         delete = hasattr(sys, 'ST_MTIMES')
         sys.ST_MTIMES = mtimes
         if delete:
-            print "Reloading modules."
-            for m, mfile in modulefiles.items():
+            print("Reloading modules.")
+            for m, mfile in list(modulefiles.items()):
                 if m is not None and m in sys.modules:
                     del sys.modules[m]
 
@@ -471,12 +471,12 @@ def loadmodules(force=0):
         del boards.BoardList[:]
         if levelfilename.lower().endswith('.py'):
             levels = {}
-            print 'Source level file:', levelfilename
-            execfile(levelfilename, levels)
+            print('Source level file:', levelfilename)
+            exec(compile(open(levelfilename, "rb").read(), levelfilename, 'exec'), levels)
             if 'GenerateLevels' in levels:
                 levels = levels['GenerateLevels']()
                 if isinstance(levels, list):
-                    levels = dict(zip(range(len(levels)), levels))
+                    levels = dict(list(zip(list(range(len(levels))), levels)))
         else:
             import binboards
             levels = binboards.load(levelfilename)
@@ -555,7 +555,7 @@ def wait_for_one_player():
             if random.random() > 0.4321:
                 try:
                     key, (filename, (x, y, w, h)) = random.choice(
-                        images.sprmap.items())
+                        list(images.sprmap.items()))
                 except:
                     w = h = 0
                 if w == h == 32:
@@ -1116,7 +1116,7 @@ def extra_aquarium():
     for s in waves_sprites:
         s.kill()
     BubPlayer.SuperFish = True
-    fishplayers(-sys.maxint)
+    fishplayers(-sys.maxsize)
 
 def extra_walls_falling():
     walls_by_pos = curboard.walls_by_pos
@@ -1156,7 +1156,7 @@ def single_blocks_falling(xylist):
 
 def extra_display_repulse(cx, cy, dlimit=5000, dfactor=1000):
     offsets = {}
-    for s in gamesrv.sprites_by_n.values():
+    for s in list(gamesrv.sprites_by_n.values()):
         x, y = s.getdisplaypos()
         if x is not None:
             dx = x - cx
@@ -1172,7 +1172,7 @@ def extra_display_repulse(cx, cy, dlimit=5000, dfactor=1000):
     while offsets:
         prevoffsets = offsets
         offsets = {}
-        for s, (dx, dy) in prevoffsets.items():
+        for s, (dx, dy) in list(prevoffsets.items()):
             if s.alive:
                 if dx < 0:
                     dx += max(1, (-dx)//5)
@@ -1212,7 +1212,7 @@ def extra_light_off(timeout, icocache={}):
         for bubber in playerlist:
             for dragon in bubber.dragons:
                 dragons[dragon] = True
-        for s in gamesrv.sprites_by_n.values():
+        for s in list(gamesrv.sprites_by_n.values()):
             try:
                 ico = icocache[s.ico, s in dragons]
             except KeyError:
@@ -1220,12 +1220,12 @@ def extra_light_off(timeout, icocache={}):
                 icocache[s.ico, s in dragons] = ico
             s.setdisplayicon(ico)
         yield 0
-    for s in gamesrv.sprites_by_n.values():
+    for s in list(gamesrv.sprites_by_n.values()):
         s.setdisplayicon(s.ico)
 
 def extra_swap_up_down(N=27):
     # unregister all walls
-    walls = curboard.walls_by_pos.items()
+    walls = list(curboard.walls_by_pos.items())
     walls.sort()
     if not walls:
         return
@@ -1317,7 +1317,7 @@ def extra_make_random_level(cx=None, cy=None, repeat_delay=200):
     localdir = os.path.dirname(__file__)
     filename = os.path.join(localdir, 'levels', 'RandomLevels.py')
     d = {}
-    execfile(filename, d)
+    exec(compile(open(filename, "rb").read(), filename, 'exec'), d)
     Level = d['GenerateSingleLevel'](curboard.width, curboard.height)
     lvl = Level(curboard.num)
     walllist = []
@@ -1413,7 +1413,7 @@ def initsubgame(music, displaypoints):
 
 def register(dict):
     global width, height, bwidth, bheight, bheightmod
-    items = dict.items()
+    items = list(dict.items())
     items.sort()
     for name, board in items:
         try:
@@ -1433,8 +1433,8 @@ def register(dict):
             test = B(-1)
             assert test.width == width, "some boards have a different width"
             assert test.height == height, "some boards have a different height"
-    except Exception, e:
-        print 'Caught "%s" in level "%s":' % (e, B.__name__)
+    except Exception as e:
+        print('Caught "%s" in level "%s":' % (e, B.__name__))
         raise e
     bwidth = width*CELL
     bheight = height*CELL

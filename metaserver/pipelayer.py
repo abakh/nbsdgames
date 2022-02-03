@@ -209,7 +209,7 @@ class PipeLayer(object):
 
     def bad_crc(self):
         import sys
-        print >> sys.stderr, "warning: bad crc on udp connexion"
+        print("warning: bad crc on udp connexion", file=sys.stderr)
         self.in_outoforder.clear()
         self.out_flags = FLAG_NAK
         self.out_nextrepeattime = self.cur_time
@@ -217,15 +217,15 @@ class PipeLayer(object):
     _dump_indent = 0
     def dump(self, dir, rawdata):
         in_flags, ack_seqid, in_seqid = struct.unpack("!BBH", rawdata[:4])
-        print ' ' * self._dump_indent, dir,
+        print(' ' * self._dump_indent, dir, end=' ')
         if in_flags == FLAG_NAK:
-            print 'NAK',
+            print('NAK', end=' ')
         elif in_flags == FLAG_NAK1:
-            print 'NAK1',
+            print('NAK1', end=' ')
         elif in_flags == FLAG_CFRM:
-            print 'CFRM',
+            print('CFRM', end=' ')
         #print ack_seqid, in_seqid, '(%d bytes)' % (len(rawdata)-4,)
-        print ack_seqid, in_seqid, repr(rawdata[4:])
+        print(ack_seqid, in_seqid, repr(rawdata[4:]))
 
 
 def pipe_over_udp(udpsock, send_fd=-1, recv_fd=-1,
@@ -281,11 +281,11 @@ def pipe_over_udp(udpsock, send_fd=-1, recv_fd=-1,
 class PipeOverUdp(object):
 
     def __init__(self, udpsock, timeout=1.0):
-        import thread, os
+        import _thread, os
         self.os = os
         self.sendpipe = os.pipe()
         self.recvpipe = os.pipe()
-        thread.start_new_thread(pipe_over_udp, (udpsock,
+        _thread.start_new_thread(pipe_over_udp, (udpsock,
                                                 self.sendpipe[0],
                                                 self.recvpipe[1],
                                                 timeout))

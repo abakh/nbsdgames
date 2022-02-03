@@ -1,4 +1,4 @@
-from __future__ import generators
+
 import os, random
 import images, gamesrv
 from images import ActiveSprite
@@ -258,7 +258,7 @@ def run():
     boards.replace_boardgen(Tron().bgen())
 
 def setup():
-    for key, (filename, rect) in localmap.items():
+    for key, (filename, rect) in list(localmap.items()):
         filename = os.path.join(LocalDir, filename)
         if filename.find('%d') >= 0:
             for p in BubPlayer.PlayerList:

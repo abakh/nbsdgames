@@ -16,7 +16,7 @@ except ImportError:
 def create_image(name,source,extralines=0,alt=''):
     if len(sys.argv) == 2 and sys.argv[1] == '-i':
         return
-    print name, source
+    print(name, source)
     src = open(source[0],'r')
     assert src.readline().strip() == 'P6'
     line = src.readline()
@@ -29,9 +29,9 @@ def create_image(name,source,extralines=0,alt=''):
     data = src.read()
     src.close()
     img = os.popen("convert PPM:- doc/images/"+name+'.png','w')
-    print >> img, 'P6'
-    print >> img, source[1][2], source[1][3]+extralines
-    print >> img, c
+    print('P6', file=img)
+    print(source[1][2], source[1][3]+extralines, file=img)
+    print(c, file=img)
     cx = source[1][0]+source[1][2]//2
     cy = source[1][1]+source[1][3]*6//7
     for y in range(source[1][1],source[1][1]+source[1][3]):
@@ -74,7 +74,7 @@ def split_name(name):
     return words
 
 dfile = open('doc/bonuses.html','w')
-print >> dfile, """<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+print("""<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 <HTML>
  <HEAD>
   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
@@ -97,7 +97,7 @@ print >> dfile, """<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
      <I>big bonus</I>
     </TD>
    </TR>
-"""
+""", file=dfile)
 #" A stupid comment to stop emacs from mis-fontifying.
 
 class Potion4:
@@ -109,7 +109,7 @@ class Potion4:
 processed = {}
 
 for bonus in bonuses.Classes:
-    if processed.has_key(bonus):
+    if bonus in processed:
         continue
     name = split_name(bonus.__name__)
     name.reverse()
@@ -125,25 +125,25 @@ def sorter(a,b):
     else:
         return 1
 
-sorted_classes = processed.items()
+sorted_classes = list(processed.items())
 sorted_classes.sort(sorter)
 
 for clasindex, clas in enumerate(sorted_classes):
     bonus = clas[0]
     images = ''
     name = bonus.__name__
-    if bonus.__dict__.has_key('nimages'):
+    if 'nimages' in bonus.__dict__:
         # A multi image entry.
         i = 0
         l = len(bonus.nimages)
         for image in bonus.nimages:
             if image == 'potion4':
                 continue
-            images += create_image(name+`i`, sprmap[image], alt=name)
+            images += create_image(name+repr(i), sprmap[image], alt=name)
             i += 1
             if (l-3*(i/3) >= 3) and (i % 3) == 0:
                 images += '<br>'
-    elif bonus.__dict__.has_key('nimage'):
+    elif 'nimage' in bonus.__dict__:
         images = create_image(name, sprmap[bonus.nimage], alt=name)
     doc = bonus.__doc__
     if doc == None:
@@ -155,16 +155,16 @@ for clasindex, clas in enumerate(sorted_classes):
         bgcolor = '"#E0FFE0"'
     else:
         bgcolor = 'white'
-    print >> dfile, '<TR><TD width=132 align=right>',
-    print >> dfile, images,
-    print >> dfile, '</TD><TD width=20></TD>',
-    print >> dfile, '<TD bgcolor=%s>%s</TD>' % (bgcolor, doc),
-    print >> dfile, '</TD><TD width=20 bgcolor=%s></TD>' % bgcolor,
-    print >> dfile, '<TD bgcolor=%s>%s</TD></TR>' % (bgcolor, bigdoc)
+    print('<TR><TD width=132 align=right>', end=' ', file=dfile)
+    print(images, end=' ', file=dfile)
+    print('</TD><TD width=20></TD>', end=' ', file=dfile)
+    print('<TD bgcolor=%s>%s</TD>' % (bgcolor, doc), end=' ', file=dfile)
+    print('</TD><TD width=20 bgcolor=%s></TD>' % bgcolor, end=' ', file=dfile)
+    print('<TD bgcolor=%s>%s</TD></TR>' % (bgcolor, bigdoc), file=dfile)
 
-print >> dfile, """  </TABLE>
+print("""  </TABLE>
  </BODY>
 </HTML>
-"""
+""", file=dfile)
 
 dfile.close()

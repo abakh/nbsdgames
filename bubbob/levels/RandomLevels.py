@@ -3,7 +3,7 @@
 # a bit more related to each other instead of being completely independent.
 #
 
-from __future__ import generators
+
 import sys, random, math
 from random import uniform, choice, randrange
 
@@ -50,7 +50,7 @@ MnstrCategory = {
     "Orcy": 0,
     "Gramy": 0,
     "Blitzy": 2}
-MnstrNames = MnstrCategory.keys()
+MnstrNames = list(MnstrCategory.keys())
 Bonuses = ['letter', 'fire', 'lightning', 'water', 'top']
 
 def mnstrclslist(name):
@@ -61,7 +61,7 @@ def mnstrclslist(name):
 
 class Shape:
     basemnstr = ChoiceParameter('basemnstr', MnstrNames)
-    extramnstr = ChoiceParameter('extramnstr', range(4))
+    extramnstr = ChoiceParameter('extramnstr', list(range(4)))
     samemnstr = BoolParameter('samemnstr')
     baseshape = ChoiceParameter('baseshape', '   ODBGMPRWZS')
     rooms = BoolParameter('rooms')
@@ -72,15 +72,15 @@ class Shape:
     platfull  = BoolParameter('platfull')
     mess = ChoiceParameter('mess', '        ....!')
     closed = BoolParameter('closed', 0.95)
-    bonuses = ChoiceParameter('bonuses', xrange(3**len(Bonuses)))
-    smooth = ChoiceParameter('smooth', range(4))
+    bonuses = ChoiceParameter('bonuses', range(3**len(Bonuses)))
+    smooth = ChoiceParameter('smooth', list(range(4)))
     startplats = BoolParameter('startplats', 0.98)
     makespace = BoolParameter('makespace', 0.8)
     straightfall = BoolParameter('straightfall', 0.8)
     mirrored = BoolParameter('mirrored', 0.4)
     enlargeholes = BoolParameter('enlargeholes', 0.9)
 
-    all_parameters = [name for name in locals().keys()
+    all_parameters = [name for name in list(locals().keys())
                       if not name.startswith('_')]
 
     def __init__(self, shape=None):
@@ -141,7 +141,7 @@ class Shape:
         if self.mess == '!':
             self.holes = 1
 
-    all_tests = [value for (name, value) in locals().items()
+    all_tests = [value for (name, value) in list(locals().items())
                  if name.startswith('test_')]
 
     def accept(self, lvl):
@@ -327,7 +327,7 @@ def GenerateLevels():
             HEIGHT = 23
             def enter(self, *args, **kw):
                 result = RandomLevel.enter(self, *args, **kw)
-                params = self.autogen_shape.__dict__.items()
+                params = list(self.autogen_shape.__dict__.items())
                 params.sort()
 #                for keyvalue in params:
 #                    print '%20s: %s' % keyvalue
@@ -355,8 +355,8 @@ def GenerateSingleLevel(width, height):
 
 if __name__ == '__main__':
     for s in makeshapes():
-        print s.__dict__
+        print(s.__dict__)
 else:
     rnglevel = {}
-    execfile('levels/rnglevel', rnglevel)
+    exec(compile(open('levels/rnglevel', "rb").read(), 'levels/rnglevel', 'exec'), rnglevel)
     RandomLevel = rnglevel['RandomLevel']

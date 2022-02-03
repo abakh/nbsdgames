@@ -1,4 +1,4 @@
-from __future__ import generators
+
 import os, math, random
 import images, gamesrv
 from images import ActiveSprite
@@ -179,7 +179,7 @@ class BrickEyes(BubblingEyes):
                 ico = images.sprget(Bubble.exploding_bubbles[0])
                 self.tetris.score[self.bubber] = self.tetris.score.get(
                     self.bubber, 0) + 1
-                xlist = range(x1, x2)
+                xlist = list(range(x1, x2))
                 for x in xlist:
                     s = ActiveSprite(ico,
                                      x*CELL + random.randrange(CELL) - CELL,
@@ -317,7 +317,7 @@ class Tetris:
         for t in boards.result_ranking(self.score):
             self.remove_eyes()
             yield t
-        for s in self.staticbricks.values():
+        for s in list(self.staticbricks.values()):
             s.remove()
 
     def displaypoints(self, bubber):
@@ -339,7 +339,7 @@ class Tetris:
                     else:
                         height += 1
             heights[x] = height
-        xlist = range(2, curboard.width-2)
+        xlist = list(range(2, curboard.width-2))
         random.shuffle(xlist)
         for x in xlist:
             h = heights[x]
@@ -430,7 +430,7 @@ def run():
 
 def setup():
     from player import BubPlayer
-    for key, (filename, rect) in localmap.items():
+    for key, (filename, rect) in list(localmap.items()):
         filename = os.path.join(LocalDir, filename)
         if filename.find('%d') >= 0:
             for p in BubPlayer.PlayerList:

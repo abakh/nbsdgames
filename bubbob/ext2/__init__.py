@@ -1,4 +1,4 @@
-from __future__ import generators
+
 import os, math, random
 import images, gamesrv
 from images import ActiveSprite
@@ -397,8 +397,8 @@ class Pacman:
             # digs the rectangle (x1,y1,x2,y2) and marks it as
             # processed.  Also recursively mark as processed all existing
             # holes that are pacman-connected to the rectangle.
-            xrange = range(x1,x2)
-            yrange = range(y1,y2)
+            xrange = list(range(x1,x2))
+            yrange = list(range(y1,y2))
             if not reversed:
                 xrange.reverse()
                 yrange.reverse()
@@ -479,7 +479,7 @@ class Pacman:
 
         if not holes:
             holes[boards.width//2, boards.height//2] = 0
-        holeslist = holes.keys()
+        holeslist = list(holes.keys())
         random.shuffle(holeslist)
         startx, starty = holeslist.pop()
         # make the hole larger (2x2) towards the center of the board
@@ -572,7 +572,7 @@ def run():
     boards.replace_boardgen(Pacman().bgen())
 
 def setup():
-    for key, (filename, rect) in localmap.items():
+    for key, (filename, rect) in list(localmap.items()):
         filename = os.path.join(LocalDir, filename)
         images.sprmap[key] = (filename, rect)
 setup()

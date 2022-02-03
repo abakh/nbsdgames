@@ -1,4 +1,4 @@
-from __future__ import generators
+
 import gamesrv, os
 from sprmap import sprmap as original_sprmap
 from patmap import patmap
@@ -69,7 +69,7 @@ class ActiveSprite(gamesrv.Sprite):
     # common generators
     def cyclic(self, nimages, speed=5):
         images = [sprget(n) for n in nimages]
-        speed = range(speed)
+        speed = list(range(speed))
         while 1:
             for img in images:
                 self.seticon(img)
@@ -148,7 +148,7 @@ class ActiveSprite(gamesrv.Sprite):
             try:
                 for g in glist:
                     if self.alive:
-                        g.next()
+                        next(g)
             except StopIteration:
                 try:
                     self.gen.remove(g)
@@ -157,7 +157,7 @@ class ActiveSprite(gamesrv.Sprite):
                 for g in glist[glist.index(g)+1:]:
                     if self.alive:
                         try:
-                            g.next()
+                            next(g)
                         except StopIteration:
                             pass
             yield None
@@ -166,7 +166,7 @@ def touching(x1, y1, w1, h1, margin=0):
     touch = {}
     x1 = int(x1)
     y1 = int(y1)
-    xrange = range(x1>>5, (x1+w1+31)>>5)
+    xrange = list(range(x1>>5, (x1+w1+31)>>5))
     for y in range(y1>>4, (y1+h1+15)>>4):
         for x in xrange:
             touch.update(SpritesByLoc.get((x,y), {}))
@@ -181,7 +181,7 @@ def action(sprlist, len=len):
         try:
             for g in glist:
                 if self.alive:
-                    g.next()
+                    next(g)
         except StopIteration:
             try:
                 self.gen.remove(g)
@@ -190,7 +190,7 @@ def action(sprlist, len=len):
             for g in glist[glist.index(g)+1:]:
                 if self.alive:
                     try:
-                        g.next()
+                        next(g)
                     except StopIteration:
                         pass
         if self.touchable and self.alive:
@@ -202,7 +202,7 @@ def action(sprlist, len=len):
                 for key in self.ranges:
                     del key[self]
                 del self.ranges[:]
-                xrange = range(x>>5, (x+self.ico.w+38)>>5)
+                xrange = list(range(x>>5, (x+self.ico.w+38)>>5))
                 for y in range(y>>4, (y+self.ico.h+22)>>4):
                     for x in xrange:
                         key = SpritesByLoc.setdefault((x,y), {})
@@ -303,7 +303,8 @@ def loadpattern(n, keycol=None):
     bitmap = gamesrv.getbitmap(filename, keycol)
     return bitmap, rect
 
-def makebkgndpattern(bitmap, (x,y,w,h), darker={}):
+def makebkgndpattern(bitmap, xxx_todo_changeme, darker={}):
+    (x,y,w,h) = xxx_todo_changeme
     from boards import CELL
     try:
         nbitmap, hscale, vscale = darker[bitmap]
@@ -329,7 +330,7 @@ def computebiggericon(ico, bigger={}):
         bigger[ico] = None, pixmap.imagezoomer(*ico.getimage())
         return None
     if computing is not None:
-        result = computing.next() or computing.next() or computing.next()
+        result = next(computing) or next(computing) or next(computing)
         if not result:
             return None   # still computing
         w, h, data = result
@@ -456,12 +457,12 @@ def generate_sprmap():
     # check and maybe regenerate the colored image files
     file = os.path.join('images', 'buildcolors.py')
     g = {'__name__': '__auto__', '__file__': file}
-    execfile(file, g)
+    exec(compile(open(file, "rb").read(), file, 'exec'), g)
     # replace the entries 'filename_%d.ppm' by a family of entries,
     # one for each color
     sprmap = {}
-    for n, (filename, rect) in (original_sprmap.items() +
-                                extramap.items() + hatmap.items()):
+    for n, (filename, rect) in (list(original_sprmap.items()) +
+                                list(extramap.items()) + list(hatmap.items())):
         if filename.find('%d') >= 0:
             for i in range(MAX):
                 sprmap[n+1000*i] = (os.path.join('images',filename % i), rect)

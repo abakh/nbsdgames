@@ -14,7 +14,7 @@ def serverside_ping(only_port=None):
         s.bind(('', port))
         s.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
         return s
-    except error, e:
+    except error as e:
         if only_port is None:
             s = socket(AF_INET, SOCK_DGRAM)
             s.bind(('', INADDR_ANY))
@@ -25,28 +25,27 @@ def serverside_ping(only_port=None):
 def answer_ping(s, descr, addr, extra='', httpport=''):
     try:
         data, source = s.recvfrom(100)
-    except error, e:
-        print >> sys.stderr, 'ping error:', str(e)
+    except error as e:
+        print('ping error:', str(e), file=sys.stderr)
         return
     if data == PING_MESSAGE:
-        print >> sys.stderr, "ping by", source
+        print("ping by", source, file=sys.stderr)
         answer = '%s:%s:%s:%s:%s:%s' % (PONG_MESSAGE, descr,
                                         addr[0], addr[1], extra, httpport)
         s.sendto(answer, source)
     else:
-        print >> sys.stderr, \
-              "unexpected data on UDP port %d by" % UDP_PORT, source
+        print("unexpected data on UDP port %d by" % UDP_PORT, source, file=sys.stderr)
 
 
 def pick(hostlist, delay=1):
     s = socket(AF_INET, SOCK_DGRAM)
     s.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
     for host in hostlist:
-        print >> sys.stderr, "* Looking for a server on %s... " % host
+        print("* Looking for a server on %s... " % host, file=sys.stderr)
         try:
             s.sendto(PING_MESSAGE, (host, UDP_PORT))
-        except error, e:
-            print >> sys.stderr, 'send:', str(e)
+        except error as e:
+            print('send:', str(e), file=sys.stderr)
             continue
         while 1:
             iwtd, owtd, ewtd = select.select([s], [], [], delay)
@@ -54,9 +53,9 @@ def pick(hostlist, delay=1):
                 break
             try:
                 data, answer_from = s.recvfrom(200)
-            except error, e:
+            except error as e:
                 if e.args[0] != ETIMEDOUT:
-                    print >> sys.stderr, 'recv:', str(e)
+                    print('recv:', str(e), file=sys.stderr)
                     continue
                 break
             data = data.split(':')
@@ -68,20 +67,20 @@ def pick(hostlist, delay=1):
                     pass
                 else:
                     result = (hostname, port)
-                    print >> sys.stderr, "* Picking %r at" % data[1], result
+                    print("* Picking %r at" % data[1], result, file=sys.stderr)
                     return result
-            print >> sys.stderr, "got an unexpected answer", data, "from", answer_from
-    print >> sys.stderr, "no server found."
+            print("got an unexpected answer", data, "from", answer_from, file=sys.stderr)
+    print("no server found.", file=sys.stderr)
     raise SystemExit
 
 def find_servers(hostlist=[('127.0.0.1', None), ('<broadcast>', None)],
                  tries=2, delay=0.5, verbose=1, port_needed=1):
-    import gamesrv
+    from . import gamesrv
     if verbose:
-        print >> sys.stderr, 'Looking for servers in the following list:'
+        print('Looking for servers in the following list:', file=sys.stderr)
         for host, udpport in hostlist:
-            print >> sys.stderr, '    %s,  UDP port %s' % (
-                host, udpport or ("%s (default)" % UDP_PORT))
+            print('    %s,  UDP port %s' % (
+                host, udpport or ("%s (default)" % UDP_PORT)), file=sys.stderr)
     events = {}
     replies = []
     s = socket(AF_INET, SOCK_DGRAM)
@@ -93,21 +92,21 @@ def find_servers(hostlist=[('127.0.0.1', None), ('<broadcast>', None)],
                 if host != '<broadcast>':
                     try:
                         ipaddr = gethostbyname(host)
-                    except error, e:
-                        print >> sys.stderr, 'gethostbyname:', str(e)
+                    except error as e:
+                        print('gethostbyname:', str(e), file=sys.stderr)
                 s.sendto(PING_MESSAGE, (ipaddr, udpport or UDP_PORT))
                 hostsend, hostrecv = events.setdefault(ipaddr, ([], []))
                 hostsend.append(time.time())
-            except error, e:
-                print >> sys.stderr, 'send:', str(e)
+            except error as e:
+                print('send:', str(e), file=sys.stderr)
                 continue
         endtime = time.time() + delay
         while gamesrv.recursiveloop(endtime, [s]):
             try:
                 data, answer_from = s.recvfrom(200)
-            except error, e:
+            except error as e:
                 if e.args[0] != ETIMEDOUT:
-                    print >> sys.stderr, 'recv:', str(e)
+                    print('recv:', str(e), file=sys.stderr)
                     continue
                 break
             try:
@@ -134,7 +133,7 @@ def find_servers(hostlist=[('127.0.0.1', None), ('<broadcast>', None)],
                 server = ':'.join(data[1:2]+data[4:])
                 replies.append((hostname, realhostname, port, server, ipaddr))
             else:
-                print >> sys.stderr, "got an unexpected answer from", answer_from
+                print("got an unexpected answer from", answer_from, file=sys.stderr)
     servers = {}
     aliases = {}
     timeout = time.time() + 2.0     # wait for gethostbyaddr() for 2 seconds
@@ -155,8 +154,8 @@ def find_servers(hostlist=[('127.0.0.1', None), ('<broadcast>', None)],
         if replies:
             time.sleep(0.08)   # time for gethostbyaddr() to finish
     if verbose:
-        print >> sys.stderr, "%d answer(s):" % len(servers), servers.keys()
-    for host, port in servers.keys():
+        print("%d answer(s):" % len(servers), list(servers.keys()), file=sys.stderr)
+    for host, port in list(servers.keys()):
         ping = None
         ipaddr = aliases[host]
         if ipaddr in events:
@@ -176,7 +175,7 @@ def _lazygetter(hostname, resultlst):
         try:
             hostname = gethostbyaddr(hostname)[0]
             if hostname == 'localhost':
-                from msgstruct import HOSTNAME as hostname
+                from .msgstruct import HOSTNAME as hostname
         except error:
             pass
     finally:
@@ -187,6 +186,6 @@ def lazy_gethostbyaddr(hostname):
         return HOSTNAMECACHE[hostname]
     except KeyError:
         resultlst = HOSTNAMECACHE[hostname] = []
-        import thread
-        thread.start_new_thread(_lazygetter, (hostname, resultlst))
+        import _thread
+        _thread.start_new_thread(_lazygetter, (hostname, resultlst))
         return resultlst

@@ -20,7 +20,8 @@ def meancolor(img):
             b1 += b
     return r1/count, g1/count, b1/count
 
-def addshadow(img, (r1, g1, b1), depth=8):
+def addshadow(img, xxx_todo_changeme, depth=8):
+    (r1, g1, b1) = xxx_todo_changeme
     w = len(img[0])
     h = len(img)
     pad = depth * [keycol]
@@ -35,7 +36,8 @@ def addshadow(img, (r1, g1, b1), depth=8):
             result[1+d+i][w+d] = color
     return result
 
-def addrshadow(img, (r1, g1, b1), depth=8):
+def addrshadow(img, xxx_todo_changeme1, depth=8):
+    (r1, g1, b1) = xxx_todo_changeme1
     w = len(img[0])
     h = len(img)
     pad = depth * [keycol]
@@ -49,17 +51,17 @@ def addrshadow(img, (r1, g1, b1), depth=8):
 
 
 def load(filename):
-    print "Loading %s..." % filename
+    print("Loading %s..." % filename)
     Bin = macbinary.MacBinary(filename)
     levels = {}
     mnstrlist = [Nasty, Monky, Ghosty, Flappy,
                  Springy, Orcy, Gramy, Blitzy]
     
-    for key, lvl in Bin['LEVL'].items():
+    for key, lvl in list(Bin['LEVL'].items()):
         d = lvl.getlevel(mnstrlist)
         class BinBoard(boards.Board):
             pass
-        for key1, value1 in d.items():
+        for key1, value1 in list(d.items()):
             setattr(BinBoard, key1, value1)
         levels[key] = BinBoard
 

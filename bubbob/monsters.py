@@ -1,4 +1,4 @@
-from __future__ import generators
+
 import random
 import gamesrv
 import images
@@ -780,7 +780,7 @@ class Blitzy(Monster):
             self.no_shoot_before = BubPlayer.FrameCounter + 29
         return 0
 
-MonsterClasses = [c for c in globals().values()
+MonsterClasses = [c for c in list(globals().values())
                   if type(c)==type(Monster) and issubclass(c, Monster)]
 MonsterClasses.remove(Monster)
 

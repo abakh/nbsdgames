@@ -68,32 +68,32 @@ def test_generator():
         yield lst.pop()
         yield lst.pop()
     g = gfunc()
-    assert g.next() == 6
+    assert next(g) == 6
     g1 = statesaver.copy(g)
-    assert g.next() == 5
-    py.test.raises(StopIteration, g.next)
-    assert g1.next() == 5
-    py.test.raises(StopIteration, g1.next)
+    assert next(g) == 5
+    py.test.raises(StopIteration, g.__next__)
+    assert next(g1) == 5
+    py.test.raises(StopIteration, g1.__next__)
 
 def test_exhausted_gen():
     def gfunc():
         yield 5
     g = gfunc()
     for i in g:
-        print i
+        print(i)
     g1 = statesaver.copy(g)
     assert iter(g1) is g1
-    py.test.raises(StopIteration, g1.next)
+    py.test.raises(StopIteration, g1.__next__)
     g2 = statesaver.copy(g1)
     assert iter(g2) is g2
-    py.test.raises(StopIteration, g2.next)
+    py.test.raises(StopIteration, g2.__next__)
 
 def test_seqiter():
-    from UserList import UserList
+    from collections import UserList
     seq = UserList([2, 4, 6, 8])
     it = iter(seq)
-    assert it.next() == 2
-    assert it.next() == 4
+    assert next(it) == 2
+    assert next(it) == 4
     it1 = statesaver.copy(it)
     assert list(it) == [6, 8]
     assert list(it1) == [6, 8]
@@ -101,8 +101,8 @@ def test_seqiter():
 def test_tupleiter():
     tup = (2, 4, 6, 8)
     it = iter(tup)
-    assert it.next() == 2
-    assert it.next() == 4
+    assert next(it) == 2
+    assert next(it) == 4
     it1 = statesaver.copy(it)
     assert list(it) == [6, 8]
     assert list(it1) == [6, 8]
@@ -110,8 +110,8 @@ def test_tupleiter():
 def test_listiter():
     lst = [2, 4, 6, 8]
     it = iter(lst)
-    assert it.next() == 2
-    assert it.next() == 4
+    assert next(it) == 2
+    assert next(it) == 4
     it1 = statesaver.copy(it)
     lst.append(10)
     assert list(it) == [6, 8, 10]
@@ -120,8 +120,8 @@ def test_listiter():
 def test_stringiter():
     s = "hello"
     it = iter(s)
-    assert it.next() == 'h'
-    assert it.next() == 'e'
+    assert next(it) == 'h'
+    assert next(it) == 'e'
     it1 = statesaver.copy(it)
     assert list(it) == ['l', 'l', 'o']
     assert list(it1) == ['l', 'l', 'o']

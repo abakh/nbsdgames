@@ -4,7 +4,7 @@ import cgi, os, string, time
 form = cgi.FieldStorage()
 
 def txtfilter(s):
-    l = filter(lambda c: c in "!$*,-.0123456789:@ABCDEFGHIJKLMNOPQRSTUVWXYZ^_`abcdefghijklmnopqrstuvwxyz{|}", s)
+    l = [c for c in s if c in "!$*,-.0123456789:@ABCDEFGHIJKLMNOPQRSTUVWXYZ^_`abcdefghijklmnopqrstuvwxyz{|}"]
     return string.join(l, '')
 
 def identity(s):
@@ -12,13 +12,13 @@ def identity(s):
 
 def fieldlist(name, filter=txtfilter):
     result = []
-    if form.has_key(name):
+    if name in form:
         field = form[name]
         if type(field) is type([]):
             for f in field:
-                result.append(filter(f.value))
+                result.append(list(filter(f.value)))
         else:
-            result.append(filter(field.value))
+            result.append(list(filter(field.value)))
     return result
 
 def goodmatch(addr1, addr2):
@@ -45,7 +45,7 @@ class Entry:
         else:
             self.filled = 1
             
-    def __nonzero__(self):
+    def __bool__(self):
         return self.filled
 
     def write(self, f):
@@ -56,7 +56,7 @@ class Entry:
             except:
                 pass
             else:
-                lst = filter(lambda x: x[-4:]=='.png' and 'A'<=x[0]<='Z', lst)
+                lst = [x for x in lst if x[-4:]=='.png' and 'A'<=x[0]<='Z']
                 if lst:
                     self.icon = random.choice(lst)
         f.seek(self.pos)
@@ -114,7 +114,7 @@ def main():
         else:
             freelist.append(e)
 
-    for srv, action in OPS.items():
+    for srv, action in list(OPS.items()):
         if action == 'a':
             if freelist:
                 e = freelist[-1]
@@ -131,7 +131,7 @@ def main():
                 import socket
                 try:
                     result = socket.gethostbyaddr(hostname)
-                except socket.error, e:
+                except socket.error as e:
                     Entry.Notice = ('%s: %s' % (hostname, e))
                 else:
                     if result[0] == 'projects.sourceforge.net':  # ????
@@ -150,7 +150,7 @@ def main():
     f.close()
 
     published.sort()
-    return map(lambda (pos, e): e, published)
+    return [pos_e[1] for pos_e in published]
 
 
 def publish_list(serverlist):
@@ -163,17 +163,17 @@ def publish_list(serverlist):
     url = url + '?' + string.join(query, '&')
     for s in fieldlist('frag'):
         url = url + '#' + s
-    print 'Content-Type: text/html'
-    print 'Location:', url
-    print
-    print '<html><head></head><body>'
-    print 'Please <a href="%s">click here</a> to continue.' % url
-    print '</body></html>'
+    print('Content-Type: text/html')
+    print('Location:', url)
+    print()
+    print('<html><head></head><body>')
+    print('Please <a href="%s">click here</a> to continue.' % url)
+    print('</body></html>')
 
 def publish_default(serverlist):
-    import htmlentitydefs
+    import html.entities
     text_to_html = {}
-    for key, value in htmlentitydefs.entitydefs.items():
+    for key, value in list(html.entities.entitydefs.items()):
         text_to_html[value] = '&' + key + ';'
     for i in range(32):
         text_to_html[chr(i)] = '?'
@@ -187,8 +187,8 @@ def publish_default(serverlist):
     header, row, footer = string.split(f.read(), '\\')
     f.close()
     import sys
-    print 'Content-Type: text/html'
-    print
+    print('Content-Type: text/html')
+    print()
     sys.stdout.write(header % "List of registered Internet Servers")
     counter = 0
     for s in serverlist:
@@ -218,17 +218,17 @@ def publish_default(serverlist):
     sys.stdout.write(footer % "If your browser understands Java, you can click on a server to join the game. Note however that you will still need to install the whole Python client to benefit from the background musics, as this feature is missing from the Java client.<br><br>This list might contain already-dead servers; such 'zombies' disappear after some time.")
 
 def publish_raw(serverlist):
-    print 'Content-Type: text/plain'
-    print
-    print 'Raw list produced for', os.environ['REMOTE_ADDR']
-    print
+    print('Content-Type: text/plain')
+    print()
+    print('Raw list produced for', os.environ['REMOTE_ADDR'])
+    print()
     for s in serverlist:
-        print repr((s.server, s.desc, s.icon, s.orig))
+        print(repr((s.server, s.desc, s.icon, s.orig)))
 
 def publish_img(serverlist):
     import sys
-    print 'Content-Type: image/png'
-    print
+    print('Content-Type: image/png')
+    print()
     f = open('sfbub.png', 'rb')
     sys.stdout.write(f.read())
     f.close()
@@ -254,8 +254,8 @@ def publish_register(serverlist):
     header, row, footer = string.split(f.read(), '\\')
     f.close()
     import sys
-    print 'Content-Type: text/html'
-    print
+    print('Content-Type: text/html')
+    print()
     sys.stdout.write(header % banner)
     sys.stdout.write(footer % 'Press <a href="javascript: back()">Back</a> to come back to the main page.')
 
@@ -267,8 +267,8 @@ try:
     publish(slist)
 except:
     import traceback, sys
-    print "Content-Type: text/plain"
-    print
-    print "ERROR REPORT"
-    print
+    print("Content-Type: text/plain")
+    print()
+    print("ERROR REPORT")
+    print()
     traceback.print_exc(file=sys.stdout)

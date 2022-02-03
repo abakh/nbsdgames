@@ -1,10 +1,10 @@
-from __future__ import generators
-from __future__ import nested_scopes
-import BaseHTTPServer
-from SimpleHTTPServer import SimpleHTTPRequestHandler
-import urlparse, cgi, htmlentitydefs
+
+
+import http.server
+from http.server import SimpleHTTPRequestHandler
+import urllib.parse, cgi, html.entities
 import sys, os, time
-from cStringIO import StringIO
+from io import StringIO
 
 
 class Translator:
@@ -28,7 +28,7 @@ class Translator:
             prevstdout = sys.stdout
             try:
                 sys.stdout = f = StringIO()
-                exec expr in self.globals, self.locals
+                exec(expr, self.globals, self.locals)
             finally:
                 sys.stdout = prevstdout
             return f.getvalue()
@@ -59,7 +59,7 @@ class TranslatorIO:
 # HTML quoting
 
 text_to_html = {}
-for key, value in htmlentitydefs.entitydefs.items():
+for key, value in list(html.entities.entitydefs.items()):
     text_to_html[value] = '&' + key + ';'
 
 def htmlquote(s):
@@ -107,7 +107,7 @@ class HTTPRequestError(Exception):
 class MiniHandler(SimpleHTTPRequestHandler):
 
     def send_head(self, query=''):
-        addr, host, path, query1, fragment = urlparse.urlsplit(self.path)
+        addr, host, path, query1, fragment = urllib.parse.urlsplit(self.path)
         path = canonicalpath(path)
         if path not in pathloaders:
             if path + '/' in pathloaders:
@@ -123,10 +123,10 @@ class MiniHandler(SimpleHTTPRequestHandler):
             hdr = self.headers
             hdr['remote host'] = self.client_address[0]
             f, ctype = loader(headers=hdr, **kwds)
-        except IOError, e:
+        except IOError as e:
             self.send_error(404, "I/O error: " + str(e))
             return None
-        except HTTPRequestError, e:
+        except HTTPRequestError as e:
             self.send_error(500, str(e))
             return None
         except:
@@ -187,6 +187,6 @@ Please <a href="%s">click here</a> to continue.
 actions_when_finished = []
 
 def my_host():
-    import gamesrv
+    from . import gamesrv
     port = gamesrv.socketports[gamesrv.openhttpsocket()]
     return '127.0.0.1:%d' % port

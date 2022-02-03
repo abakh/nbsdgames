@@ -1,5 +1,5 @@
 import os, sys, random
-from cStringIO import StringIO
+from io import StringIO
 import socket, time
 
 PLAYERNAMES = ['Bub', 'Bob', 'Boob', 'Beb',
@@ -34,7 +34,7 @@ class Options:
         if not attr.startswith('_'):
             return None
         else:
-            raise AttributeError, attr
+            raise AttributeError(attr)
 
 
 class PageServer:
@@ -81,8 +81,8 @@ class PageServer:
         self.httpport = port = gamesrv.displaysockport(hs)
         self.indexurl = 'http://127.0.0.1:%d/%s/' % (port, self.seed)
         if self.Game:
-            print self.Game.FnDesc,
-        print 'server is ready at', self.indexurl
+            print(self.Game.FnDesc, end=' ')
+        print('server is ready at', self.indexurl)
         return 1
 
     def getlocalservers(self):
@@ -91,8 +91,8 @@ class PageServer:
         return self.localservers
 
     def searchlocalservers(self):
-        servers = hostchooser.find_servers().items()
-        servers = filter(self.filterserver, servers)
+        servers = list(hostchooser.find_servers().items())
+        servers = list(filter(self.filterserver, servers))
         servers.sort()
         self.localservers = servers
 
@@ -136,7 +136,8 @@ class PageServer:
 ##            self.inetservers[host, port] = info
 ##        #print 'hostchooser:', self.inetserverlist, '->', self.inetservers
 
-    def filterserver(self, ((host, port), info)):
+    def filterserver(self, xxx_todo_changeme):
+        ((host, port), info) = xxx_todo_changeme
         for c in host+str(port):
             if c not in "-.0123456789:@ABCDEFGHIJKLMNOPQRSTUVWXYZ^_abcdefghijklmnopqrstuvwxyz":
                 return 0
@@ -166,15 +167,15 @@ class PageServer:
         data[self.localhost] = self.localoptions.dict()
         try:
             f = open(self.filename, 'w')
-            print >> f, `data`
+            print(repr(data), file=f)
             f.close()
-        except IOError, e:
-            print >> sys.stderr, "! Cannot save config file: " + str(e)
+        except IOError as e:
+            print("! Cannot save config file: " + str(e), file=sys.stderr)
 
     def reloadports(self):
         import msgstruct
         msgstruct.PORTS.clear()
-        for key, value in self.localoptions.dict().items():
+        for key, value in list(self.localoptions.dict().items()):
             if key.startswith('port_'):
                 key = key[5:]
                 if key == 'CLIENT' and type(value) == str and ':' in value:
@@ -230,7 +231,7 @@ class PageServer:
 
     def indexloader(self, headers, cheat=[], **options):
         if cheat:
-            import __builtin__
+            import builtins
             for c in cheat:
                 getattr(__builtin__, '__cheat')(c)
         else:
@@ -241,7 +242,7 @@ class PageServer:
         host = headers['remote host']
         host = socket.gethostbyname(host)
         if host != '127.0.0.1':
-            raise HTTPRequestError, "Access denied"
+            raise HTTPRequestError("Access denied")
         return None, self.indexurl
 
 ##    def listloader(self, headers, s=[], **options):
@@ -257,7 +258,7 @@ class PageServer:
 
     def newloader(self, headers, **options):
         if not self.Game:
-            raise HTTPRequestError, "Complete bub-n-bros installation needed"
+            raise HTTPRequestError("Complete bub-n-bros installation needed")
         locals = {
             'Game': self.Game,
             'options': self.globaloptions,
@@ -269,7 +270,7 @@ class PageServer:
     def runloader(self, headers, **options):
         self.globaloptions.metapublish = 'n'
         self.globaloptions.autoreset = 'n'
-        for key, value in options.items():
+        for key, value in list(options.items()):
             if len(value) == 1:
                 setattr(self.globaloptions, key, value[0])
         self.saveoptions()
@@ -327,9 +328,9 @@ class PageServer:
                 httpport = int(httpport[0])
             except (ValueError, IndexError):
                 if port:
-                    raise HTTPRequestError, "This server is not running HTTP."
+                    raise HTTPRequestError("This server is not running HTTP.")
                 else:
-                    raise HTTPRequestError, "Sorry, I cannot connect the Java applet to a server using this field."
+                    raise HTTPRequestError("Sorry, I cannot connect the Java applet to a server using this field.")
             return None, 'http://%s:%s/' % (host, httpport)
 
         # now is a good time to generate the color files if we can
@@ -337,7 +338,7 @@ class PageServer:
                             'buildcolors.py')
         if os.path.exists(file):
             g = {'__name__': '__auto__', '__file__': file}
-            execfile(file, g)
+            exec(compile(open(file, "rb").read(), file, 'exec'), g)
 
         if port:
             address = '%s:%s' % (host, port)
@@ -370,7 +371,7 @@ class PageServer:
             self.localoptions.port_CLIENT = None
             self.localoptions.port_LISTEN = None
             self.localoptions.port_HTTP = None
-            for key, value in options.items():
+            for key, value in list(options.items()):
                 setattr(self.localoptions, key, value[0])
             self.saveoptions()
         locals = {
@@ -451,8 +452,8 @@ class PageServer:
             except KeyError:
                 try:
                     mode = display.modes.findmode(None, lst)
-                except KeyError, e:
-                    print >> sys.stderr, str(e)  # no mode!
+                except KeyError as e:
+                    print(str(e), file=sys.stderr)  # no mode!
                     mode = None
             currentmodes.append(mode)
         return currentmodes
@@ -462,10 +463,10 @@ class PageServer:
         if dpy.getmodule() is None:
             return None  # redirect to the Java applet
         if dpy is None or snd is None:
-            raise HTTPRequestError, "No installed graphics or sounds drivers. See the settings page."
+            raise HTTPRequestError("No installed graphics or sounds drivers. See the settings page.")
         options = self.localoptions
         result = ['--cfg='+no_quote_worries(self.filename)]
-        for key, value in options.dict().items():
+        for key, value in list(options.dict().items()):
             if key.startswith('port_') and value:
                 result.append('--port')
                 result.append('%s=%s' % (key[5:], value))
@@ -476,7 +477,7 @@ class PageServer:
                               ('--sound',   snd)]:
             result.append(optname + '=' + mode.name)
             uid = mode.unique_id() + '_'
-            for key, value in options.dict().items():
+            for key, value in list(options.dict().items()):
                 if key.startswith(uid):
                     result.append('--%s=%s' % (key[len(uid):], value))
         return result
@@ -574,7 +575,7 @@ def main(Game, save_url_to=None, quiet=0):
     srv = PageServer(Game)
     srv.registerpages()
     if not srv.opensocket():
-        print >> sys.stderr, "server aborted."
+        print("server aborted.", file=sys.stderr)
         sys.exit(1)
     if quiet:
         if Game:
@@ -582,7 +583,7 @@ def main(Game, save_url_to=None, quiet=0):
         import stdlog
         f = stdlog.LogFile()
         if f:
-            print "Logging to", f.filename
+            print("Logging to", f.filename)
             sys.stdout = sys.stderr = f
     if save_url_to:
         data = srv.indexurl + '\n'
@@ -595,7 +596,7 @@ def main(Game, save_url_to=None, quiet=0):
         atexit.register(try_to_unlink, save_url_to)
         try:
             fno = os.open(save_url_to, os.O_CREAT | os.O_TRUNC | os.O_WRONLY,
-                          0600)
+                          0o600)
             if os.write(fno, data) != len(data):
                 raise OSError
             os.close(fno)
@@ -619,17 +620,17 @@ def schedule_launch(args):
 
 def launch(args):
     # platform-specific hacks
-    print 'Running client ->  ', ' '.join(args)
+    print('Running client ->  ', ' '.join(args))
     if 0:  # OLD CODE sys.platform == 'darwin':   # must start as a UI process
         import tempfile
         cmdname = tempfile.mktemp('_BubBob.py')
         f = open(cmdname, 'w')
-        print >> f, 'import sys, os'
-        print >> f, 'try: os.unlink(%r)' % cmdname
-        print >> f, 'except OSError: pass'
-        print >> f, 'sys.argv[:] = %r' % (args,)
-        print >> f, '__file__ = %r' % cmdname
-        print >> f, 'execfile(%r)' % args[0]
+        print('import sys, os', file=f)
+        print('try: os.unlink(%r)' % cmdname, file=f)
+        print('except OSError: pass', file=f)
+        print('sys.argv[:] = %r' % (args,), file=f)
+        print('__file__ = %r' % cmdname, file=f)
+        print('execfile(%r)' % args[0], file=f)
         f.close()
         os.system('/usr/bin/open -a PythonLauncher "%s"' % cmdname)
     else:
@@ -692,14 +693,14 @@ else:
         assert s[len(absroot)] == os.sep
         relpath = s[len(absroot)+1:]
         result = os.path.join(ROOTDIR, relpath)
-        print "no_quote_worries %r => %r" % (s, result)
+        print("no_quote_worries %r => %r" % (s, result))
         return result
 
 
 if __name__ == '__main__':
     if (len(sys.argv) != 3 or sys.argv[1] != '--quiet' or
         not sys.argv[2].startswith('--saveurlto=')):
-        print >> sys.stderr, "This script should only be launched by BubBob.py."
+        print("This script should only be launched by BubBob.py.", file=sys.stderr)
         sys.exit(2)
     main(None, sys.argv[2][len('--saveurlto='):], quiet=1)
     gamesrv.mainloop()

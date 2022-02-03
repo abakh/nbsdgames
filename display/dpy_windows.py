@@ -1,7 +1,7 @@
 import sys
 import wingame
-from modes import BaseDisplay
-from cStringIO import StringIO
+from .modes import BaseDisplay
+from io import StringIO
 
 
 class Display(BaseDisplay):

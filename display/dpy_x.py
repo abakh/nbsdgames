@@ -1,7 +1,7 @@
 import sys
 import xshm
-from modes import BaseDisplay
-from cStringIO import StringIO
+from .modes import BaseDisplay
+from io import StringIO
 
 
 class Display(BaseDisplay):
@@ -20,9 +20,8 @@ class Display(BaseDisplay):
         self.mouseevents = xdpy.mouseevents
         self.pointermotion = xdpy.pointermotion
         if use_shm and not xdpy.shmmode():
-            print >> sys.stderr, \
-                  "Note: cannot use SHM extension (%dx%d), display will be slow." % \
-                  (width, height)
+            print("Note: cannot use SHM extension (%dx%d), display will be slow." % \
+                  (width, height), file=sys.stderr)
 
     def selectlist(self):
         if hasattr(self.xdpy, 'fd'):

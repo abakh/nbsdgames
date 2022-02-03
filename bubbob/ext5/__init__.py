@@ -1,4 +1,4 @@
-from __future__ import generators
+
 import os, random
 import images, gamesrv
 from images import ActiveSprite
@@ -251,7 +251,7 @@ class Lemmings:
 
         testing = {}
         def addlemming():
-            for x, y in testing.items():
+            for x, y in list(testing.items()):
                 if bget(x, y) != ' ' == bget(x, y-1):
                     if x <= curboard.width//2:
                         dir = 1
@@ -283,7 +283,7 @@ def run():
     boards.replace_boardgen(Lemmings().bgen())
 
 def setup():
-    for key, (filename, rect) in localmap.items():
+    for key, (filename, rect) in list(localmap.items()):
         filename = os.path.join(LocalDir, filename)
         images.sprmap[key] = (filename, rect)
 setup()

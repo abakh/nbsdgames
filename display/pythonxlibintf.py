@@ -51,7 +51,7 @@ class Display:
                                      0x010101)
 
     def pixmap(self, w, h, data, colorkey=-1):
-        print >> sys.stderr, '.',
+        print('.', end=' ', file=sys.stderr)
         extent = w*h
         depth = self.depth
         if depth >= 24:
@@ -72,7 +72,7 @@ class Display:
         elif depth == 24 or depth == 32:
             p_size = 8, 8, 8
         else:
-            raise ValueError, 'unsupported screen depth %d' % depth
+            raise ValueError('unsupported screen depth %d' % depth)
 
         imgdata = []
         maskdata = []
@@ -82,9 +82,9 @@ class Display:
             while plane >= (1<<(8-p_size[color])):
                 src = 0
                 for y in range(h):
-                    imgline = 0L
-                    maskline = 0L
-                    shifter = 1L
+                    imgline = 0
+                    maskline = 0
+                    shifter = 1
                     for x in range(w):
                         if data[src:src+3] == key:
                             # transparent
@@ -111,7 +111,8 @@ class Display:
         image.size = w, h
         return image
 
-    def getppm(self, (x, y, w, h), bkgnd=None):
+    def getppm(self, xxx_todo_changeme, bkgnd=None):
+        (x, y, w, h) = xxx_todo_changeme
         if bkgnd is None:
             bkgnd = self.win.create_pixmap(w, h, self.depth)
             bkgnd.mask = None
@@ -191,7 +192,8 @@ class Display:
         from socket import fromfd, AF_INET, SOCK_STREAM
         return [fromfd(self.dpy.fileno(), AF_INET, SOCK_STREAM)]
 
-    def taskbar(self, (x, y, w, h)):
+    def taskbar(self, xxx_todo_changeme1):
+        (x, y, w, h) = xxx_todo_changeme1
         for j in range(y, y+h, 32):
             for i in range(x, x+w, 32):
                 self.putppm(i, j, self.taskbkgnd,

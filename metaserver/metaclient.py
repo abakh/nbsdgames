@@ -1,7 +1,7 @@
 import sys, os, time, random
 from select import select
 from socket import *
-from metastruct import *
+from .metastruct import *
 
 _SERVER = 'ctpug.org.za'
 
@@ -13,16 +13,16 @@ VERSION_TAG = 1601
 def connect(failure=[]):
     if len(failure) >= 2:
         return None
-    print >> sys.stderr, 'Connecting to the meta-server %s:%d...' % METASERVER
+    print('Connecting to the meta-server %s:%d...' % METASERVER, file=sys.stderr)
     try:
         s = socket(AF_INET, SOCK_STREAM)
         s.connect(METASERVER)
-    except error, e:
-        print >> sys.stderr, '*** cannot contact meta-server:', str(e)
+    except error as e:
+        print('*** cannot contact meta-server:', str(e), file=sys.stderr)
         failure.append(e)
         return None
     else:
-        print >> sys.stderr, 'connected.'
+        print('connected.', file=sys.stderr)
     return s
 
 sys.setcheckinterval(4096)
@@ -30,7 +30,7 @@ sys.setcheckinterval(4096)
 
 def float2str(f):
     # don't trust locale issues and write a string with a '.'
-    s = str(long(f*1000000.0))
+    s = str(int(f*1000000.0))
     return s[:-6] + '.' + s[-6:]
 
 def str2float(s):
@@ -76,19 +76,19 @@ class MetaClientSrv(MessageSocket):
         import gamesrv
         gamesrv.removesocket('META', self.s)
         self.closed = 1
-        print >> sys.stderr, 'disconnected from the meta-server'
+        print('disconnected from the meta-server', file=sys.stderr)
 
     def send_traceback(self):
         if not self.closed:
-            import traceback, cStringIO, sys
-            f = cStringIO.StringIO()
-            print >> f, sys.version
-            print >> f, 'platform:   ', sys.platform
-            print >> f, 'executable: ', sys.executable
-            print >> f, 'argv:       ', sys.argv
-            print >> f, 'cwd:        ', os.getcwd()
-            print >> f, 'version tag:', VERSION_TAG
-            print >> f
+            import traceback, io, sys
+            f = io.StringIO()
+            print(sys.version, file=f)
+            print('platform:   ', sys.platform, file=f)
+            print('executable: ', sys.executable, file=f)
+            print('argv:       ', sys.argv, file=f)
+            print('cwd:        ', os.getcwd(), file=f)
+            print('version tag:', VERSION_TAG, file=f)
+            print(file=f)
             traceback.print_exc(file = f)
             self.s.sendall(message(MMSG_TRACEBACK, f.getvalue()))
 
@@ -100,37 +100,37 @@ class MetaClientSrv(MessageSocket):
                 if self.lastwakeup == wakeup:
                     sys.setcheckinterval(4096)
                     self.synsockets.clear()
-            import thread
+            import _thread
             self.lastwakeup = time.time()
-            thread.start_new_thread(fastresponses, (self.lastwakeup,))
+            _thread.start_new_thread(fastresponses, (self.lastwakeup,))
 
     def msg_connect(self, origin, port, *rest):
         def connect(origin, port):
             host, _ = origin.split(':')
             addr = host, port
             s = socket(AF_INET, SOCK_STREAM)
-            print >> sys.stderr, 'backconnecting to', addr
+            print('backconnecting to', addr, file=sys.stderr)
             try:
                 s.connect(addr)
-            except error, e:
-                print >> sys.stderr, 'backconnecting:', str(e)
+            except error as e:
+                print('backconnecting:', str(e), file=sys.stderr)
             else:
                 self.game.newclient_threadsafe(s, addr)
-        import thread
-        thread.start_new_thread(connect, (origin, port))
+        import _thread
+        _thread.start_new_thread(connect, (origin, port))
 
     def msg_udp_conn(self, origin, secret, port, *rest):
         def connect(origin, secret, port):
             host, _ = origin.split(':')
             addr = host, port
             s = socket(AF_INET, SOCK_DGRAM)
-            print >> sys.stderr, 'udp connecting to', addr
+            print('udp connecting to', addr, file=sys.stderr)
             s.connect(addr)
             mysecret = random.randrange(0, 65536)
             packet = ('B' + chr(  secret & 0xFF) + chr(  secret >> 8)
                           + chr(mysecret & 0xFF) + chr(mysecret >> 8))
-            from socketoverudp import SocketOverUdp
-            from socketoverudp import SOU_RANGE_START, SOU_RANGE_STOP
+            from .socketoverudp import SocketOverUdp
+            from .socketoverudp import SOU_RANGE_START, SOU_RANGE_STOP
             for i in range(5):
                 #print 'sending', repr(packet)
                 s.send(packet)
@@ -153,7 +153,7 @@ class MetaClientSrv(MessageSocket):
                         SOU_RANGE_START <= ord(inbuf[0]) < SOU_RANGE_STOP):
                         break
             else:
-                print >> sys.stderr, 'udp connecting: no answer, giving up'
+                print('udp connecting: no answer, giving up', file=sys.stderr)
                 return
             sock = SocketOverUdp(s, (mysecret, secret))
             data = sock._decode(inbuf)
@@ -163,13 +163,13 @@ class MetaClientSrv(MessageSocket):
                 #print 'waiting for more'
                 iwtd, owtd, ewtd = select([sock], [], [], 5.0)
                 if sock not in iwtd:
-                    print >> sys.stderr, 'udp connecting: timed out'
+                    print('udp connecting: timed out', file=sys.stderr)
                     return
                 #print 'decoding more'
                 data += sock.recv()
                 #print 'now data is', repr(data)
             if data[:-2] != expected:
-                print >> sys.stderr, 'udp connecting: bad data'
+                print('udp connecting: bad data', file=sys.stderr)
                 return
             sock.sendall('[bnb s->c]' + data[-2:])
             sock.flush()
@@ -177,19 +177,19 @@ class MetaClientSrv(MessageSocket):
             while 1:
                 iwtd, owtd, ewtd = select([sock], [], [], 5.0)
                 if sock not in iwtd:
-                    print >> sys.stderr, 'udp connecting: timed out'
+                    print('udp connecting: timed out', file=sys.stderr)
                     return
                 data = sock.recv(200)
                 if data:
                     break
             if data != '^':
-                print >> sys.stderr, 'udp connecting: bad data'
+                print('udp connecting: bad data', file=sys.stderr)
                 return
             #print 'done!'
             self.game.newclient_threadsafe(sock, addr)
 
-        import thread
-        thread.start_new_thread(connect, (origin, secret, port))
+        import _thread
+        _thread.start_new_thread(connect, (origin, secret, port))
 
     def msg_ping(self, origin, *rest):
         # ping time1  -->  pong time2 time1
@@ -213,15 +213,15 @@ class MetaClientSrv(MessageSocket):
             #print 'sleep(%r)' % delay
             if 0.0 <= delay <= 10.0:
                 time.sleep(delay)
-            print >> sys.stderr, 'synconnecting to', addr
+            print('synconnecting to', addr, file=sys.stderr)
             try:
                 s.connect(addr)
-            except error, e:
-                print >> sys.stderr, 'synconnecting:', str(e)
+            except error as e:
+                print('synconnecting:', str(e), file=sys.stderr)
             else:
                 self.game.newclient_threadsafe(s, addr)
-        import thread
-        thread.start_new_thread(connect, (origin, clientport, connecttime, s))
+        import _thread
+        _thread.start_new_thread(connect, (origin, clientport, connecttime, s))
 
     MESSAGES = {
         RMSG_CONNECT: msg_connect,
@@ -266,8 +266,8 @@ def meta_unregister(game):
 
 class Event:
     def __init__(self):
-        import thread
-        self.lock = thread.allocate_lock()
+        import _thread
+        self.lock = _thread.allocate_lock()
         self.lock.acquire()
     def signal(self):
         try:
@@ -288,24 +288,24 @@ class MetaClientCli:
         self.threads = {}
 
     def run(self):
-        import thread
-        print >> sys.stderr, 'Trying to connect to', self.serverkey
+        import _thread
+        print('Trying to connect to', self.serverkey, file=sys.stderr)
         self.ev = Event()
         self.ev2 = Event()
         self.buffer = ""
-        self.sendlock = thread.allocate_lock()
-        self.recvlock = thread.allocate_lock()
+        self.sendlock = _thread.allocate_lock()
+        self.recvlock = _thread.allocate_lock()
         self.inputmsgqueue = []
         self.gotudpport = None
         if not (PORTS.get('CLIENT') or PORTS.get('sendudpto')):
             self.s = connect()
-            thread.start_new_thread(self.acquire_udp_port, ())
+            _thread.start_new_thread(self.acquire_udp_port, ())
         else:
             self.s = None
             self.ev2.signal()
             self.startthread(self.try_udp_connect)
 
-        thread.start_new_thread(self.bipbip, ())
+        _thread.start_new_thread(self.bipbip, ())
         self.startthread(self.try_direct_connect, 0.75)
         self.startthread(self.try_indirect_connect, 1.50)
         while self.resultsocket is None:
@@ -323,7 +323,7 @@ class MetaClientCli:
             self.ev.signal()
 
     def startthread(self, fn, sleep=0.0, args=()):
-        import thread
+        import _thread
         def bootstrap(fn, atom, sleep, args):
             try:
                 time.sleep(sleep)
@@ -334,21 +334,21 @@ class MetaClientCli:
                 self.ev.signal()
         atom = object()
         self.threads[atom] = time.time()
-        thread.start_new_thread(bootstrap, (fn, atom, sleep, args))
+        _thread.start_new_thread(bootstrap, (fn, atom, sleep, args))
 
     def threadsleft(self):
         if self.fatalerror:
             sys.exit(1)
         now = time.time()
         TIMEOUT = 11
-        for starttime in self.threads.values():
+        for starttime in list(self.threads.values()):
             if now < starttime + TIMEOUT:
                 break
         else:
             if self.threads:
-                print >> sys.stderr, '*** time out, giving up.'
+                print('*** time out, giving up.', file=sys.stderr)
             else:
-                print >> sys.stderr, '*** failed to connect.'
+                print('*** failed to connect.', file=sys.stderr)
             sys.exit(1)
 
     def try_direct_connect(self):
@@ -357,14 +357,14 @@ class MetaClientCli:
         s = socket(AF_INET, SOCK_STREAM)
         try:
             s.connect((host, port))
-        except error, e:
-            print >> sys.stderr, 'direct connexion failed:', str(e)
+        except error as e:
+            print('direct connexion failed:', str(e), file=sys.stderr)
         else:
-            print >> sys.stderr, 'direct connexion accepted.'
+            print('direct connexion accepted.', file=sys.stderr)
             self.resultsocket = s
 
     def try_indirect_connect(self):
-        import thread, time
+        import _thread, time
         if not self.s:
             self.s = connect()
         if not self.s:
@@ -413,8 +413,8 @@ class MetaClientCli:
                             self.gotudpport = msg[1], int(msg[2])
                         continue
                     if msg[0] == RMSG_NO_HOST and msg[1] == self.serverkey:
-                        print >> sys.stderr, ('*** server %r is not registered'
-                                             ' on the meta-server' % (msg[1],))
+                        print(('*** server %r is not registered'
+                                             ' on the meta-server' % (msg[1],)), file=sys.stderr)
                         self.fatalerror = True
                         sys.exit()
                     self.inputmsgqueue.append(msg)
@@ -425,7 +425,7 @@ class MetaClientCli:
                         return
                 data = self.s.recv(2048)
                 if not data:
-                    print >> sys.stderr, 'disconnected from the meta-server'
+                    print('disconnected from the meta-server', file=sys.stderr)
                     sys.exit()
                 self.buffer += data
         finally:
@@ -441,11 +441,11 @@ class MetaClientCli:
         s1.listen(1)
         _, port = s1.getsockname()
         self.routemsg(RMSG_CONNECT, port)
-        print >> sys.stderr, 'listening for backward connection'
+        print('listening for backward connection', file=sys.stderr)
         iwtd, owtd, ewtd = select([s1], [], [], 7.5)
         if s1 in iwtd:
             s, addr = s1.accept()
-            print >> sys.stderr, 'accepted backward connection from', addr
+            print('accepted backward connection from', addr, file=sys.stderr)
             self.resultsocket = s
 
     def send_ping(self):
@@ -459,11 +459,11 @@ class MetaClientCli:
         remoteaddr = remotehost, remoteport
         try:
             s.connect(remoteaddr)
-        except error, e:
-            print >> sys.stderr, 'SYN connect failed:', str(e)
+        except error as e:
+            print('SYN connect failed:', str(e), file=sys.stderr)
             return
-        print >> sys.stderr, ('simultaneous SYN connect succeeded with %s:%d' %
-                              remoteaddr)
+        print(('simultaneous SYN connect succeeded with %s:%d' %
+                              remoteaddr), file=sys.stderr)
         self.resultsocket = s
 
     def try_udp_connect(self):
@@ -500,7 +500,7 @@ class MetaClientCli:
         for name in ('*udpsock*', 'CLIENT'):
             if name in PORTS:
                 del PORTS[name]
-        from socketoverudp import SocketOverUdp
+        from .socketoverudp import SocketOverUdp
         sock = SocketOverUdp(s, (originalsecret, remotesecret))
         #print 'sending', repr(packet)
         sock.sendall(packet)
@@ -511,24 +511,24 @@ class MetaClientCli:
             #print 'waiting'
             iwtd, owtd, ewtd = select([sock], [], [], 2.5)
             if sock not in iwtd:
-                print >> sys.stderr, 'socket-over-udp timed out'
+                print('socket-over-udp timed out', file=sys.stderr)
                 return
             #print 'we get:'
             data += sock.recv()
             #print repr(data)
         if data != expected:
-            print >> sys.stderr, 'bad udp data from', addr
+            print('bad udp data from', addr, file=sys.stderr)
         else:
             sock.sendall('^')
             sock.flush()
-            print 'udp connexion handshake succeeded'
+            print('udp connexion handshake succeeded')
             self.resultsocket = sock
 
     def acquire_udp_port(self):
         try:
             s = socket(AF_INET, SOCK_DGRAM)
             s.bind(('', INADDR_ANY))
-            randomdata = hex(random.randrange(0, sys.maxint))
+            randomdata = hex(random.randrange(0, sys.maxsize))
             for i in range(5):
                 s.sendto(randomdata, METASERVER_UDP)
                 time.sleep(0.05)
@@ -538,9 +538,9 @@ class MetaClientCli:
                 if self.gotudpport:
                     PORTS['*udpsock*'] = s, self.gotudpport
                     udphost, udpport = self.gotudpport
-                    print >> sys.stderr, ('udp port %d is visible from '
+                    print(('udp port %d is visible from '
                                           'outside on %s:%d' % (
-                        s.getsockname()[1], udphost, udpport))
+                        s.getsockname()[1], udphost, udpport)), file=sys.stderr)
                     self.startthread(self.try_udp_connect)
                     break
         finally:
@@ -568,13 +568,13 @@ def print_server_list():
         assert msg[0] == RMSG_LIST
         entries = decodedict(msg[1])
         if not entries:
-            print >> sys.stderr, 'No registered server.'
+            print('No registered server.', file=sys.stderr)
         else:
-            print
-            print ' %-25s | %-30s | %s' % (
-                'server', 'game', 'players')
-            print '-'*27+'+'+'-'*32+'+'+'-'*11
-            for key, value in entries.items():
+            print()
+            print(' %-25s | %-30s | %s' % (
+                'server', 'game', 'players'))
+            print('-'*27+'+'+'-'*32+'+'+'-'*11)
+            for key, value in list(entries.items()):
                 if ':' in key:
                     try:
                         addr, _, _ = gethostbyaddr(key[:key.index(':')])
@@ -585,12 +585,12 @@ def print_server_list():
                         if len(addr) < 28: addr += '|'
                         addr = '%-60s' % (addr,)
                         if len(addr) < 61: addr += '|'
-                        print addr
+                        print(addr)
                 value = decodedict(value)
-                print ' %-25s | %-30s | %s' % (
+                print(' %-25s | %-30s | %s' % (
                     key, value.get('desc', '<no description>'),
-                    value.get('extradesc', ''))
-            print
+                    value.get('extradesc', '')))
+            print()
 
 if __name__ == '__main__':
     print_server_list()

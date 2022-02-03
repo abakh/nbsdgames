@@ -64,7 +64,7 @@ class PureMixer:
             byteorder = self.byteorder
         # done
         if (freq, bytes, signed, channels, byteorder) != self.parameters:
-            raise ValueError, 'sound sample conversion failed'
+            raise ValueError('sound sample conversion failed')
         return data
 
     def wavesample(self, file):
@@ -87,7 +87,7 @@ class PureMixer:
         channels = mixer_channels[:]
         channels.reverse()
         for c in channels:
-            if already_seen.has_key(c):
+            if c in already_seen:
                 data1 = ''
             else:
                 data1 = c.read(bufsize)
@@ -114,10 +114,10 @@ def byteswap(data, byte):
     elif byte == 4:
         typecode = 'i'
     else:
-        raise ValueError, 'cannot convert endianness for samples of %d bytes' % byte
+        raise ValueError('cannot convert endianness for samples of %d bytes' % byte)
     import array
     a = array.array(typecode, data)
     if a.itemsize != byte:
-        raise ValueError, 'endianness convertion failed'
+        raise ValueError('endianness convertion failed')
     a.byteswap()
     return a.tostring()

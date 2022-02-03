@@ -1,4 +1,4 @@
-from __future__ import generators
+
 import random
 import boards, images, gamesrv
 from boards import CELL, HALFCELL
@@ -168,7 +168,7 @@ def display(lines, timeleft, bgen=None, black=0):
                 t = boards.normal_frame()
             else:
                 try:
-                    t = bgen.next()
+                    t = next(bgen)
                 except StopIteration:
                     timeleft = 0.0
                     break
@@ -180,13 +180,13 @@ def display(lines, timeleft, bgen=None, black=0):
 def ranking_picture(results, maximum, givepoints):
     if maximum is None:
         maximum = 0
-        for n in results.values():
+        for n in list(results.values()):
             maximum += n
     maximum = maximum or 1
     ranking = []
     teamrank = [0, 0]
     teamplayers = [[], []]
-    for p, n in results.items():
+    for p, n in list(results.items()):
         if p.team != -1:
             teamrank[p.team] += n
             teamplayers[p.team].append((n,p))
@@ -205,7 +205,7 @@ def ranking_picture(results, maximum, givepoints):
 
     nbpoints = givepoints and ((len(ranking)+1)//2)*10000
     lines = []
-    for (n, dummy, bubber), i in zip(ranking, range(len(ranking))):
+    for (n, dummy, bubber), i in zip(ranking, list(range(len(ranking)))):
         pic = RPicture()
         if isinstance(bubber, list):
             fraction = (nbpoints//(10*len(bubber))) * 10
@@ -253,7 +253,7 @@ def screen_monster():
     pairs = []
     for p in BubPlayer.PlayerList:
         catch = p.stats.get('monster', {})
-        for p2, count in catch.items():
+        for p2, count in list(catch.items()):
             if count:
                 pairs.append((count, p, p2))
     random.shuffle(pairs)
@@ -277,7 +277,7 @@ def screen_catch():
     pairs = []
     for p in BubPlayer.PlayerList:
         catch = p.stats.get('catch', {})
-        for p2, count in catch.items():
+        for p2, count in list(catch.items()):
             if count:
                 pairs.append((count, p, p2))
     random.shuffle(pairs)
@@ -301,7 +301,7 @@ def screen_bonus():
     pairs = []
     for p in BubPlayer.PlayerList:
         catch = p.stats.get('bonus', {})
-        for p2, count in catch.items():
+        for p2, count in list(catch.items()):
             if count > 1:
                 pairs.append((count, p, p2))
     random.shuffle(pairs)

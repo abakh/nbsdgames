@@ -1,4 +1,4 @@
-from __future__ import generators
+
 import random, math
 import gamesrv
 import images
@@ -19,7 +19,7 @@ bubble_wind = {
 
 
 class Bubble(ActiveSprite):
-    exploding_bubbles = range(131,136)
+    exploding_bubbles = list(range(131,136))
     red_bubbles       = [156, 157, 156, 155]
     white_bubbles     = [164, 165, 164, 163]
     pink_bubbles      = [172, 173, 172, 171]
@@ -233,7 +233,7 @@ class Bubble(ActiveSprite):
         ico = icons[1]
         yfrac = 0.0
         self.dragon_jumped = False
-        for i in xrange(timeout):
+        for i in range(timeout):
             hspeed = random.randrange(2, 4)
             if ico is not icons[1]:
                 icotimeout += 1
@@ -410,7 +410,8 @@ class DragonBubble(Bubble):
                 hspeed = -hspeed
         self.gen.append(self.throw_bubble(hspeed, special_bubble, (acos,asin)))
 
-    def throw_bubble(self, hspeed, special_bubble=None, (acos,asin)=(1,0)):
+    def throw_bubble(self, hspeed, special_bubble=None, xxx_todo_changeme=(1,0)):
+        (acos,asin) = xxx_todo_changeme
         from monsters import Monster
         nx = self.x
         ny = self.y
@@ -680,7 +681,7 @@ class BonusBubble(Bubble):
     def findhole(self, testline):
         holes = [x for x in range(len(testline)-1) if testline[x:x+2]=='  ']
         if not holes:
-            holes = range(2, len(testline)-3)
+            holes = list(range(2, len(testline)-3))
         return random.choice(holes) * CELL
 
     def thrown_bubble(self, x, y, hspeed, acossin):
@@ -688,7 +689,8 @@ class BonusBubble(Bubble):
         self.move(x, y)
         self.gen = [self.throwing_bubble(hspeed, acossin, self.imgsetter)]
 
-    def throwing_bubble(self, hspeed, (acos,asin), restore_img):
+    def throwing_bubble(self, hspeed, xxx_todo_changeme1, restore_img):
+        (acos,asin) = xxx_todo_changeme1
         nx = self.x
         ny = self.y
         while abs(hspeed) >= 4.0:
@@ -962,7 +964,7 @@ class WaterCell(ActiveSprite):
         ActiveSprite.kill(self)
         if not self.watercells[None].alive:
             del self.watercells[None]
-            for s in self.watercells.values():
+            for s in list(self.watercells.values()):
                 if s.alive:
                     s.in_charge()
                     break
@@ -974,7 +976,7 @@ class WaterCell(ActiveSprite):
 
             new = []
             nwatercells = {None: self}
-            for key, s in watercells.items():
+            for key, s in list(watercells.items()):
                 if key:
                     x, y, dir = key
                     if s.repeat:
@@ -1012,7 +1014,7 @@ class WaterCell(ActiveSprite):
             for args in new:
                 WaterCell(*args)
             
-            for key, s in watercells.items():
+            for key, s in list(watercells.items()):
                 if key:
                     x, y, dir = key
                     flag = 0
