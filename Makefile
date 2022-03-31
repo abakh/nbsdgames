@@ -3,10 +3,10 @@
 #-O3 --std=c99 -lcurses -DNO_MOUSE for NetBSD curses
 #adding --std=c99 makes warnings in GNU, and the blame is upon glibc feature test macros. my code is correct.
 
-GAMES_DIR?=/usr/games
-SCORES_DIR?=/var/games
-MAN_DIR?=/usr/share/man/man6
-CFLAGS+=  -Wno-unused-result -D SCORES_DIR=\"$(SCORES_DIR)\"
+GAMES_DIR?=$(PREFIX)/usr/games
+SCORES_DIR?=$(PREFIX)/var/games
+MAN_DIR?=$(PREFIX)/usr/share/man/man6
+CFLAGS+=  -Wno-unused-result -D SCORES_DIR=\"$(PREFIX)$(SCORES_DIR)\"
 PKG-CONFIG?=pkg-config
 LIBS=$(shell pkg-config --libs --cflags ncurses) -lm
 
@@ -61,8 +61,8 @@ snakeduel: snakeduel.c config.h
 tugow: tugow.c common.h
 	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 menu:
-	cp nbsdgames.desktop $(DESTIDR)/usr/share/applications
-	cp nbsdgames.svg $(DESTDIR)/usr/share/pixmaps
+	cp nbsdgames.desktop $(DESTIDR)$(PREFIX)/usr/share/applications
+	cp nbsdgames.svg $(DESTDIR)$(PREFIX)/usr/share/pixmaps
 clean:
 	for game in $(ALL); do rm $$game; done;
 uninstall:
