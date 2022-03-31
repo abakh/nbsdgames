@@ -7,7 +7,8 @@ GAMESDIR?=$(PREFIX)/usr/games
 SCORESDIR?=$(PREFIX)/var/games
 MANDIR?=$(PREFIX)/usr/share/man/man6
 CFLAGS+= -Wno-unused-result -DSCORES_DIR=\"$(PREFIX)$(SCORESDIR)\"
-LIBS=$(shell pkg-config --libs --cflags ncurses) -lm
+LIBS_PKG_CONFIG!=pkg-config --libs --cflags ncurses
+LIBS=$(LIBS_PKG_CONFIG) -lm
 
 
 ALL= nbsdgames jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare darrt snakeduel tugow
