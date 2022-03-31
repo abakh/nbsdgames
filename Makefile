@@ -23,43 +23,43 @@ scorefiles:
 manpages:
 	cp man/* $(MAN_DIR)
 jewels: jewels.c config.h common.h
-	$(CC) $(CFLAGS) jewels.c $(LDFLAGS) $(LIBS) -o ./jewels
+	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 sudoku: sudoku.c config.h
-	$(CC) $(CFLAGS) sudoku.c $(LDFLAGS) $(LIBS) -o ./sudoku
+	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 mines: mines.c config.h
-	$(CC) $(CFLAGS) mines.c $(LDFLAGS) $(LIBS) -o ./mines
+	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 reversi: reversi.c config.h
-	$(CC) $(CFLAGS) reversi.c $(LDFLAGS) $(LIBS) -o ./reversi
+	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 checkers: checkers.c config.h
-	$(CC) $(CFLAGS) checkers.c $(LDFLAGS) $(LIBS) -o ./checkers
+	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 battleship: battleship.c config.h
-	$(CC) $(CFLAGS) battleship.c $(LDFLAGS) $(LIBS) -o ./battleship
+	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 rabbithole: rabbithole.c config.h
-	$(CC) $(CFLAGS) rabbithole.c $(LDFLAGS) $(LIBS) -o ./rabbithole
+	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 sos: sos.c config.h
-	$(CC) $(CFLAGS) sos.c $(LDFLAGS) $(LIBS) -o ./sos
+	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 pipes: pipes.c config.h common.h
-	$(CC) $(CFLAGS) pipes.c $(LDFLAGS) $(LIBS) -o ./pipes
+	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 fifteen: fifteen.c config.h
-	$(CC) $(CFLAGS) fifteen.c $(LDFLAGS) $(LIBS) -o ./fifteen
+	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 memoblocks: memoblocks.c
-	$(CC) $(CFLAGS) memoblocks.c $(LDFLAGS) $(LIBS) -o ./memoblocks
+	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 fisher: fisher.c config.h common.h
-	$(CC) $(CFLAGS) fisher.c $(LDFLAGS) $(LIBS) -o ./fisher
+	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 muncher: muncher.c config.h common.h
-	$(CC) $(CFLAGS) muncher.c $(LDFLAGS) $(LIBS) -o ./muncher
+	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 miketron: miketron.c config.h common.h
-	$(CC) $(CFLAGS) miketron.c $(LDFLAGS) $(LIBS) -o ./miketron
+	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 redsquare: redsquare.c config.h
-	$(CC) $(CFLAGS) redsquare.c $(LDFLAGS) $(LIBS) -o ./redsquare
+	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 darrt: darrt.c config.h common.h
-	$(CC) $(CFLAGS) darrt.c $(LDFLAGS) $(LIBS) -o ./darrt
+	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 nbsdgames: nbsdgames.c
-	$(CC) $(CFLAGS) nbsdgames.c $(LDFLAGS) $(LIBS) -o ./nbsdgames
+	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 snakeduel: snakeduel.c config.h
-	$(CC) $(CFLAGS) snakeduel.c $(LDFLAGS) $(LIBS) -o ./snakeduel
+	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 tugow: tugow.c common.h
-	$(CC) $(CFLAGS) tugow.c $(LDFLAGS) $(LIBS) -o ./tugow
+	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 menu:
 	cp nbsdgames.desktop /usr/share/applications
 	cp nbsdgames.svg /usr/share/pixmaps
