@@ -17,11 +17,11 @@ SCORE_FILES= pipes_scores jewels_scores miketron_scores muncher_scores fisher_sc
 all: $(ALL)
 
 scorefiles:
-	for sf in $(SCORE_FILES); do touch $(SCORES_DIR)/$$sf ; chmod 664 $(SCORES_DIR)/$$sf; chown :games $(SCORES_DIR)/$$sf ; done;
-	for game in $(ALL); do chown :games $(GAMES_DIR)/$$game; chmod g $(GAMES_DIR)/$$game ; done;
+	for sf in $(SCORE_FILES); do touch $(DESTDIR)$(SCORES_DIR)/$$sf ; chmod 664 $(DESTDIR)$(SCORES_DIR)/$$sf; chown :games $(DESTDIR)$(SCORES_DIR)/$$sf ; done;
+	for game in $(ALL); do chown :games $(DESTDIR)$(GAMES_DIR)/$$game; chmod g $(DESTDIR)$(GAMES_DIR)/$$game ; done;
 
 manpages:
-	cp man/* $(MAN_DIR)
+	cp man/* $(DESTDIR)$(MAN_DIR)
 jewels: jewels.c config.h common.h
 	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 sudoku: sudoku.c config.h
@@ -61,14 +61,14 @@ snakeduel: snakeduel.c config.h
 tugow: tugow.c common.h
 	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
 menu:
-	cp nbsdgames.desktop /usr/share/applications
-	cp nbsdgames.svg /usr/share/pixmaps
+	cp nbsdgames.desktop $(DESTIDR)/usr/share/applications
+	cp nbsdgames.svg $(DESTDIR)/usr/share/pixmaps
 clean:
 	for game in $(ALL); do rm $$game; done;
 uninstall:
 	for game in $(ALL); do rm $(GAMES_DIR)/$$game; rm $(MAN_DIR)/$$game.6.gz ;done;
 install: $(ALL)
-	cp $(ALL)  $(GAMES_DIR)
+	cp $(ALL) $(DESTDIR)/$(GAMES_DIR)
 test:
 	for game in $(ALL); do ./$$game ;done;
 
@@ -78,8 +78,8 @@ nb:
 	for game in $(ALL); do cp $$game nb$$game ;done;
 	for manpage in $(ls man); do cp man/$$manpage man/nb$$manpage ;done;
 nbinstall: nb 
-	cp nb* $(GAMES_DIR)
+	cp nb* $(DESTDIR)/$(GAMES_DIR)
 nbmanpages: nb
-	cp man/nb* $(MAN_DIR)
+	cp man/nb* $(DESTDIR)/$(MAN_DIR)
 nbclean:
 	for game in $(ALL); do rm nb$$game; done;
