@@ -6,7 +6,7 @@
 GAMESDIR?=$(PREFIX)/usr/games
 SCORESDIR?=$(PREFIX)/var/games
 MANDIR?=$(PREFIX)/usr/share/man/man6
-CFLAGS=-Wno-unused-result -DSCORES_DIR=\"$(PREFIX)$(SCORESDIR)\"
+CFLAGS+= -Wno-unused-result -DSCORES_DIR=\"$(PREFIX)$(SCORESDIR)\"
 LIBS=$(shell pkg-config --libs --cflags ncurses) -lm
 
 
@@ -21,44 +21,23 @@ scorefiles:
 
 manpages:
 	cp man/* $(DESTDIR)$(MANDIR)
-jewels: jewels.c config.h common.h
-	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
-sudoku: sudoku.c config.h
-	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
-mines: mines.c config.h
-	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
-reversi: reversi.c config.h
-	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
-checkers: checkers.c config.h
-	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
-battleship: battleship.c config.h
-	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
-rabbithole: rabbithole.c config.h
-	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
-sos: sos.c config.h
-	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
-pipes: pipes.c config.h common.h
-	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
-fifteen: fifteen.c config.h
-	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
-memoblocks: memoblocks.c
-	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
-fisher: fisher.c config.h common.h
-	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
-muncher: muncher.c config.h common.h
-	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
-miketron: miketron.c config.h common.h
-	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
-redsquare: redsquare.c config.h
-	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
-darrt: darrt.c config.h common.h
-	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
-nbsdgames: nbsdgames.c
-	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
-snakeduel: snakeduel.c config.h
-	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
-tugow: tugow.c common.h
-	$(CC) $(CFLAGS) $< $(LDFLAGS) $(LIBS) -o $@
+
+# Games which only need config.h
+sudoku mines reversi checkers battleship rabbithole sos fifteen redsquare snakeduel: config.h
+	$(CC) $(CFLAGS) $@.c $< $(LDFLAGS) $(LIBS) -o $@
+
+# Games which need config.h and common.h
+jewels pipes fisher muncher miketron darrt: config.h common.h
+	$(CC) $(CFLAGS) $@.c $< $(LDFLAGS) $(LIBS) -o $@
+
+# Games which only need common.h
+tugow: common.h
+	$(CC) $(CFLAGS) $@.c $< $(LDFLAGS) $(LIBS) -o $@
+
+# Games which only need themselves
+memoblocks nbsdgames:
+	$(CC) $(CFLAGS) $@.c $< $(LDFLAGS) $(LIBS) -o $@
+
 menu:
 	cp nbsdgames.desktop $(DESTIDR)$(PREFIX)/usr/share/applications
 	cp nbsdgames.svg $(DESTDIR)$(PREFIX)/usr/share/pixmaps
