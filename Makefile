@@ -74,7 +74,7 @@ test:
 
 #######for namespacing #######
 nb:
-	CFLAGS="$$CFLAGS -D NB=\\\"nb\\\"" make
+	CFLAGS="$$CFLAGS -D NB=\\\"nb\\\"" $(MAKE)
 	for game in $(ALL); do cp $$game nb$$game ;done;
 	for manpage in $(ls man); do cp man/$$manpage man/nb$$manpage ;done;
 nbinstall: nb 
