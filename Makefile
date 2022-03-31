@@ -7,7 +7,7 @@ GAMES_DIR?=/usr/games
 SCORES_DIR?=/var/games
 MAN_DIR?=/usr/share/man/man6
 CFLAGS+=  -Wno-unused-result -D SCORES_DIR=\"$(SCORES_DIR)\"
-PKG-CONFIG=pkg-config
+PKG-CONFIG?=pkg-config
 LDFLAGS+= $(shell pkg-config --libs --cflags ncurses) -lm
 
 
