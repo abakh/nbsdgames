@@ -2,11 +2,11 @@
 
 #-O3 --std=c99 -lcurses -DNO_MOUSE for NetBSD curses
 #adding --std=c99 makes warnings in GNU, and the blame is upon glibc feature test macros. my code is correct.
-
-GAMESDIR?=$(PREFIX)/usr/games
+PREFIX?=/
+GAMESDIR?=$(PREFIX)/usr/bin
 SCORESDIR?=$(PREFIX)/var/games
 MANDIR?=$(PREFIX)/usr/share/man/man6
-CFLAGS+= -Wno-unused-result -DSCORES_DIR=\"$(PREFIX)$(SCORESDIR)\"
+CFLAGS+= -Wno-unused-result -DSCORES_DIR=\"$(SCORESDIR)\"
 LIBS_PKG_CONFIG!=pkg-config --libs --cflags ncurses
 LIBS=$(LIBS_PKG_CONFIG) -lm
 
