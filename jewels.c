@@ -258,7 +258,7 @@ int main(int argc,char** argv){
 	int input;
 	bool falls;
 	byte stop=0 , combo;
-	char jwstr[] = {'*','^','~','"','$','V'};
+	char jwstr[] = "*^~\"$V";
         if(has_colors()){
                 start_color();
                 use_default_colors();
