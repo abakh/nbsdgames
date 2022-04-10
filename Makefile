@@ -2,7 +2,6 @@
 
 #-O3 --std=c99 -lcurses -DNO_MOUSE for NetBSD curses
 #adding --std=c99 makes warnings in GNU, and the blame is upon glibc feature test macros. my code is correct.
-PREFIX?=/
 GAMES_DIR?=$(PREFIX)/usr/bin
 SCORES_DIR?=$(PREFIX)/var/games
 MAN_DIR?=$(PREFIX)/usr/share/man/man6
@@ -57,8 +56,9 @@ nb:
 	for game in $(ALL); do cp $$game nb$$game ;done;
 	for manpage in $(ls man); do cp man/$$manpage man/nb$$manpage ;done;
 nbinstall: nb 
-	cp nb* $(DESTDIR)/$(GAMES_DIR)
+	for game in $(ALL); do cp nb$$game $(DESTDIR)/$(GAMES_DIR) ;done;
 nbmanpages: nb
 	cp man/nb* $(DESTDIR)/$(MAN_DIR)
-nbclean:
-	for game in $(ALL); do rm nb$$game; done;
+nbclean: clean
+	for game in $(ALL); do rm nb$$game ;done;
+	
