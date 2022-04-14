@@ -57,6 +57,7 @@ nb:
 	for manpage in $(ls man); do cp man/$$manpage man/nb$$manpage ;done;
 nbinstall: nb 
 	for game in $(ALL); do cp nb$$game $(DESTDIR)/$(GAMES_DIR) ;done;
+	cp nbsdgames $(DESTDIR)/$(GAMES_DIR)
 nbmanpages: nb
 	cp man/nb* $(DESTDIR)/$(MAN_DIR)
 nbclean: clean
