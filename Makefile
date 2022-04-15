@@ -58,6 +58,7 @@ nb:
 nbinstall: nb 
 	for game in $(ALL); do cp nb$$game $(DESTDIR)/$(GAMES_DIR) ;done;
 	cp nbsdgames $(DESTDIR)/$(GAMES_DIR)
+	rm $(DESTDIR)/$(GAMES_DIR)/nbnbsdgames
 nbmanpages: nb
 	cp man/nb* $(DESTDIR)/$(MAN_DIR)
 nbclean: clean
