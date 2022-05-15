@@ -2,12 +2,12 @@
  *You have a computing machine from 1980's  and you wonder how you can use it? <br/>
   You are a bored sysadmin with no work, and need to kill time looking busy with terminal?  <br/>
   You have Plan9 dual-booted with OpenBSD and have kept the OpenBSD just for gaming? <br/>
-  Your port of Linux to a fancy platform has no GUI, but you still want to find a use for it?<br/>
-  You the DSL developer and have cancelled the project because you lacked games? <br/>
   You have to make a Reversi AI for your homework and you don't know where to copy it from? <br/>
   Your port of Linux to a fancy platform has no GUI, but you still want nice screenshots?<br/>
   You have been so excited about the bsdgames, but have grown tired of playing tetris, snake and robots for billions of times? <br/>
-  Are you feeling that betrayed you by bundling stuff like phantasia in a package you expected to contain GAMES?*<br/>
+  Are you feeling that betrayed you by bundling stuff like phantasia in a package you expected to contain GAMES?<br/>
+  Did you come here thinking it is bsdgames?*<br/>
+
 **Don't worry** anymore as you've got nbsdgames now!
 
 The games include:
@@ -20,7 +20,7 @@ The games include:
 * Battleship
 * SOS
 * Rabbithole (A maze-exploring game where you have to gather items from all around the maze rather than reaching an end, the idea maybe mine)
-* Pipes (Same as the famous Pipe Mania, unplayable on the environments that don't support the line characters)
+* Pipes (Same as the famous Pipe Mania)
 * Fifteen
 * Memoblocks (or Memory blocks. A similar game was included in Windows 7)
 * Fisher
@@ -33,7 +33,7 @@ The games include:
 
 The difficulty and/or dimensions are adjustable through simple command line options, you can play a minesweeper game that take hours to complete, or exprience hexadecimal sudoku and 8x8 fifteen-like puzzles!
 
-Or just enter "nbsdgames" at your terminal to get a fancy menu and play all sorts of games from there.
+*Or just enter "nbsdgames" at your terminal to get a fancy menu and play all sorts of games from there.*
 
  
 Play on xterm for best experience.
@@ -65,9 +65,19 @@ Like this:
         make
         sudo make install # or use the binaries already compiled
 ```
-## Platforms
 
-They natively run on Linux, BSD, MacOS and are known to work on Windows as well (using PDCurses, thanks to Laura Michaels for providing advice).
+## Packages
+
+It's on almost every repo by now: Debian (and other DEBs), OpenSUSE (and other RPMs), AUR, Alpine, FreeBSD, NetBSD, DragonflyBSD, Minix, Homebrew (MacOSX) and more 
+https://repology.org/project/nbsdgames/versions
+
+Thanks to Elias Riedel Gårding, Zinjanthropus, Gürkan Myczko, Robert Clausecker, Sam James, and so many other nice people for packaging.
+
+They also gave back code and useful feedback.
+
+## Other Platforms
+
+They are known to work on Windows as well (using PDCurses, thanks to Laura Michaels for providing advice).
 
 They have been ported to Plan9 thanks to Jens Staal!
 
@@ -75,21 +85,34 @@ Thanks to PDCurses they even work on DOS and every platform with SDL.
 
 They should theoretically work on OS/2 as well but I have not verified that yet.
 
-## Packages
-It is now on Debian unstable and soon on your Debian-derived distros, just install the deb from here until it gets to your repo.
+## Dependencies
 
-Thanks to Gürkan Myczko for packaging.
+* git (optional)
+* POSIX make (optional)
+* A C compiler with C99 enabled 
+* The standard library
+* ncurses (libncurses5-dev if you are on debian-based distros)
 
-It's available on Arch (AUR)  thanks to Elias Riedel Gårding: https://aur.archlinux.org/packages/nbsdgames-git/
-(The commands start with nb to avoid name conflict)
+To install them all on debian-base :
 
-It's been made available for rpm distros thanks to Zinjanthropus: https://build.opensuse.org/package/show/home:Zinjanthropus/nbsdgames
+``` sh
+        sudo apt install git make gcc libncurses5-dev
+```
+## How to build
 
-It's available on pkgsrc (default on NetBSD, Minix, supports everything else) thanks to nia: https://pkgsrc.se/games/nbsdgames
+1) Download the files
+2) Go to the sources directory
+3) Install
 
-It's available on homebrew (package manager for Linux people using Mac OSX, and Linux people using OSX using Linux) thanks to kind strangers: https://formulae.brew.sh/formula/nbsdgames
+Like this:
 
-It's available on FreeBSD thanks to Robert Clausecker https://www.freshports.org/games/nbsdgames/
+``` sh
+        git clone https://github.com/abakh/nbsdgames
+        cd ./nbsdgames
+        make
+        sudo make install # or use the binaries already compiled
+```
+
 
 ## How do these look like
 Linux+xterm+tmux
@@ -107,6 +130,8 @@ Windows
 * Tell me your feature requests, bug reports, etc.
 * Tell me the games you want to be added (but in the same genre, I can't port Angry Birds to curses! :)
 * Make a package for your distro (or put it on repos if the package is not there)
-* Getting it to Redhat and SUSE repos would be nice.
+* Getting it to Redhat and OpenBSD repos would be nice.
 * Tell distro developers to consider adding these as default games, nbsdgames packs a lot of fun games in a few hundreds of kilobytes.
-Also thank to all the people who helped in the previous versions, all what I requested was done! I didn't expect such an amount of assistance on this project :heart:
+
+
+Also thanks to all the people who helped in the previous versions, all what I requested was done! I didn't expect such an amount of assistance on this project :heart:
