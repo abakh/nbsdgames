@@ -76,20 +76,10 @@ Thanks to PDCurses they even work on DOS and every platform with SDL.
 They should theoretically work on OS/2 as well but I have not verified that yet.
 
 ## Packages
-It is now on Debian unstable and soon on your Debian-derived distros, just install the deb from here until it gets to your repo.
 
-Thanks to Gürkan Myczko for packaging.
+Packages are available for multiple distributions thanks to individual packagers.
 
-It's available on Arch (AUR)  thanks to Elias Riedel Gårding: https://aur.archlinux.org/packages/nbsdgames-git/
-(The commands start with nb to avoid name conflict)
-
-It's been made available for rpm distros thanks to Zinjanthropus: https://build.opensuse.org/package/show/home:Zinjanthropus/nbsdgames
-
-It's available on pkgsrc (default on NetBSD, Minix, supports everything else) thanks to nia: https://pkgsrc.se/games/nbsdgames
-
-It's available on homebrew (package manager for Linux people using Mac OSX, and Linux people using OSX using Linux) thanks to kind strangers: https://formulae.brew.sh/formula/nbsdgames
-
-It's available on FreeBSD thanks to Robert Clausecker https://www.freshports.org/games/nbsdgames/
+[![Packaging status](https://repology.org/badge/vertical-allrepos/nbsdgames.svg)](https://repology.org/project/nbsdgames/versions)
 
 ## How do these look like
 Linux+xterm+tmux
