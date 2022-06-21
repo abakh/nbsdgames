@@ -86,6 +86,8 @@ char scores_menu[]={
 	"tugow_scores\n"
 };
 char choice_str[100]={0};
+char name[100]={0};
+
 void fancy_background(){
 	int y,x;
 	int lines=LINES,cols=COLS;
@@ -109,7 +111,6 @@ void filled_rect(int sy,int sx,int ey,int ex){
 			mvaddch(y,x,' ');
 }
 
-char name[100]={0};
 void green_border(void){
 	int y,x;
 	int lines=LINES,cols=COLS;
@@ -343,9 +344,13 @@ void scores(){
 }
 
 int main(int argc,char** argv){
+	printf("\x1b]2;%s\x07","NBSDGAMES!");//change the title
+	printf("\x1b]0;%s\x07","NBSDGAMES!");
 	if(argc>1){
 		printf("This game doesn't take arguments");
 	}
+	char path[1000];
+	//snprintf(path,999,"%s:.",path);//include current dir at the end
 	signal(SIGINT,sigint_handler);
 	initscr();
 	noecho();
