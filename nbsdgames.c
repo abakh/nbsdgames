@@ -350,7 +350,7 @@ int main(int argc,char** argv){
 		printf("This game doesn't take arguments");
 	}
 	char path[1000];
-	//snprintf(path,999,"%s:.",path);//include current dir at the end
+	snprintf(path,999,"%s:.",path);//include current dir at the end
 	signal(SIGINT,sigint_handler);
 	initscr();
 	noecho();
