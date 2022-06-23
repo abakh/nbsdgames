@@ -405,7 +405,7 @@ int main(int argc, char** argv){
 			mouseinput(sy,sx);
 		if( (input=='k' || (input==KEY_UP||input=='w')) && py>0)
 			--py;
-		if( (input=='j' || (input==KEY_DOWN||input=='s')) && py<len-1)
+		if( (input=='j' || (input==KEY_DOWN)) && py<len-1)
 			++py;
 		if( (input=='h' || (input==KEY_LEFT||input=='a')) && px>0)
 			--px;
