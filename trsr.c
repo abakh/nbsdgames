@@ -1,5 +1,6 @@
 /* 
-|\/|
+ *      
+|\/|  2P  
 |  |INES
 
 Authored by abakh <abakh@tuta.io>
@@ -10,14 +11,15 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 compile with -lncurses
 */
-#include "config.h"
-#define FLAG 9
-#define UNCLEAR 10
+#include "common.h"
+#define FOUND 9
+#define UNTOUCHED -1
 #define MINLEN 8
 #define MINWID 8
 #define MAXLEN 1000
 #define MAXWID 1000
-#define EMPTY_LINES 7 
+#define EMPTY_LINES 7
+#define MAX_REPEATS 5
 #ifdef NO_VLA //The Plan9 compiler can not handle VLAs
 #define len 8
 #define wid 8
@@ -25,10 +27,13 @@ compile with -lncurses
 int len=8,wid=8;
 #endif
 int py,px,flags;
-int untouched;
 int mscount;
+long scores[2];
+char sides[2]={'h','h'};
+
 chtype colors[6]={0};
 int beginy,view_len;
+int turn=0;
 byte setup_scroll(){
 	beginy=0;
 	if(0<py+3-(LINES-EMPTY_LINES)){
@@ -61,6 +66,25 @@ void rectangle(int sy,int sx){
 byte get_cell(byte board[len][wid],int y,int x){
 	return board[(y+len)%len][(x+wid)%wid];
 }
+void logo(int sy, int sx){
+	mvprintw(sy+1,sx+0, "|\\/|  2P");
+	mvprintw(sy+2,sx,   "|  |INES   %ld:%ld",scores[0],scores[1]);
+ 
+	//attron(colors[3]);
+	//mvprintw(sy+1,sx+8,"2P");
+	//attroff(colors[3]);
+	
+	if(turn==0){
+		attron(colors[1]);
+		mvprintw(sy+1,sx+11,"Percent's Turn");
+		attroff(colors[1]);
+	}
+	if(turn==1){
+		attron(colors[2]);
+		mvprintw(sy+1,sx+11,"Square's Turn");
+		attroff(colors[2]);
+	}
+}
 //display
 void draw(int sy,int sx,byte board[len][wid]){
 	rectangle(sy,sx);
@@ -85,56 +109,28 @@ void draw(int sy,int sx,byte board[len][wid]){
 				prnt='0'+get_cell(board,y,x);
 			}
 			else if(get_cell(board,y,x)==9){
-				attr |= colors[3];
-				prnt='P';
+				attr |= colors[1];
+				prnt='%';
 			}
-			else if(get_cell(board,y,x)>9){
-				prnt='?';
+			else if(get_cell(board,y,x)==10){
+				attr |= colors[2];
+				prnt='#';
 			}
 			mvaddch(sy+1+(y-beginy),sx+x*2+1,attr|prnt);
 		}
 	}
 }
-//show the mines
-void drawmines(int sy,int sx,byte board[len][wid],byte mines[len][wid]){
-	int y,x;
-	setup_scroll();
-	for(y=beginy;y<beginy+view_len;++y){
-		for(x=0;x<wid;++x){
-			if(mines[y][x]){
-				if(y==py&&x==px)
-					mvaddch(sy+y-beginy+1,sx+x*2+1,'X');
-				else if(get_cell(board,y,x)==9)
-					mvaddch(sy+y-beginy+1,sx+x*2+1,'%');
-				else
-					mvaddch(sy+y-beginy+1,sx+x*2+1,'*');
-			}
-		}
-	}
-}
-//place mines
-void mine(byte mines[len][wid]){
-	int y=rand()%len;
-	int x=rand()%wid;
-	mines[py][px]=1;//so it doesn't place mines where you click first
-	for(int n=0;n<mscount;++n){
-		while(mines[y][x]){
-			y=rand()%len;
-			x=rand()%wid;
-		}
-		mines[y][x]=1;
-	}
-	mines[py][px]=0;
-}
-
 byte click(byte board[len][wid],byte mines[len][wid],int ty,int tx){
+	if(mines[ty][tx]){
+		board[ty][tx]=9+turn;
+		scores[turn]+=1;
+		return 1;
+	}
+
 	if(board[ty][tx]>=0 && board[ty][tx] <9)//it has been click()ed before
 		return 0;
-	else{//untouched
-		if(board[ty][tx]==FLAG)
-			--flags;
+	else{
 		board[ty][tx]=0;
-		--untouched;
 		
 	}
 	int y,x;
@@ -174,6 +170,83 @@ byte click(byte board[len][wid],byte mines[len][wid],int ty,int tx){
 	return 0;
 }
 
+
+//count discovered mines around the number being inspected
+float hit_probablity(byte board [len][wid],byte mines[len][wid],int ny,int nx){//n:number
+	int y,x;
+	float empty=0;
+	float bombs=0;
+	for(y=ny-1;y<ny+2;++y){
+		for(x=nx-1;x<nx+2;++x){
+			if(y<0 || y>=len || x<0 || x>=wid){
+				continue;
+			}
+			if(board[y][x]==UNTOUCHED){
+				++empty;			
+				if(mines[y][x]==1){
+					++bombs;
+				}
+			}
+		}
+	}
+	if(empty==0){
+		return 0;
+	}
+	return bombs/empty;
+
+}
+//AI algorithm
+byte decide(byte board[len][wid],byte mines[len][wid]){
+	float maxp=0;
+	float p=0;
+	int targety=-1, targetx=-1;
+	int hity,hitx;
+	int y,x;
+	for(y=0;y<len;++y){
+		for(x=0;x<wid;++x){
+			if(0<board[y][x] &&  board[y][x]<9){
+				refresh();
+				p=hit_probablity(board,mines,y,x);
+				if(p>maxp){
+					targety=y;
+					targetx=x;
+				}
+				if(p==1.0){
+					goto Skip;
+				}
+			}
+		}
+	}
+	Skip:
+	if(-1==targety){
+		do{
+			hity=rand()%len;
+			hitx=rand()%wid;
+		}while(board[hity][hitx]!=-1);
+	}
+	else{
+		do{
+			hity=targety-1+(rand()%3);
+			hitx=targetx-1+(rand()%3);
+		}while(board[hity][hitx]!=UNTOUCHED ||hitx<0 || hitx>=wid || hity<0 || hity>=len);
+	}
+	return click(board,mines,hity,hitx);
+}
+//place mines
+void mine(byte mines[len][wid]){
+	int y=rand()%len;
+	int x=rand()%wid;
+	mines[py][px]=1;//so it doesn't place mines where you click first
+	for(int n=0;n<mscount;++n){
+		while(mines[y][x]){
+			y=rand()%len;
+			x=rand()%wid;
+		}
+		mines[y][x]=1;
+	}
+	mines[py][px]=0;
+}
+
 void sigint_handler(int x){
 	endwin();
 	puts("Quit.");
@@ -201,8 +274,7 @@ void mouseinput(int sy, int sx){
 }
 void help(void){
 	erase();
-	mvprintw(1,0,"|\\/|");
-	mvprintw(2,0,"|  |INES");
+	logo(0,0);
 	attron(A_BOLD);
 	mvprintw(3,0,"  **** THE CONTROLS ****");
 	mvprintw(10,0,"YOU CAN ALSO USE THE MOUSE!");
@@ -220,8 +292,7 @@ void help(void){
 }
 void gameplay(void){
 	erase();
-	mvprintw(1,0,"|\\/|");
-	mvprintw(2,0,"|  |INES");
+	logo(0,0);
 	attron(A_BOLD);
 	mvprintw(3,0,"  **** THE GAMEPLAY ****");
 	attroff(A_BOLD);
@@ -241,8 +312,21 @@ int main(int argc, char** argv){
 	signal(SIGINT,sigint_handler);
 #ifndef	NO_VLA 
 	int opt;
+	int input;
+	int sides_chosen=0,size_chosen=0;
 	while( (opt=getopt(argc,argv,"hnm:l:w:"))!=-1){
 		switch(opt){
+			case '1':
+			case '2':
+				if(!strcmp("c",optarg) || !strcmp("h",optarg)){
+					sides[opt-'1']=optarg[0];
+					sides_chosen=1;
+				}
+				else{
+					puts("That should be either h or c\n");
+					return EXIT_FAILURE;
+				}
+			break;
 			case 'm':
 				mscount=atoi(optarg);
 				if(mscount<0 || mscount>len*wid){
@@ -250,12 +334,14 @@ int main(int argc, char** argv){
 				}
 			break;
 			case 'l':
+				size_chosen=1;
 				len=atoi(optarg);
 				if(len<MINLEN || len>MAXLEN){
 					fprintf(stderr,"Length too high or low.\n");
 				}
 			break;
 			case 'w':
+				size_chosen=1;
 				wid=atoi(optarg);
 				if(wid<MINWID || wid>MAXWID){
 					fprintf(stderr,"Width too high or low.\n");
@@ -268,11 +354,6 @@ int main(int argc, char** argv){
 			break;
 		}
 	}
-	if(!mscount){
-		mscount=len*wid/6;
-	}
-#else
-	mscount=len*wid/6;
 #endif
 	srand(time(NULL)%UINT_MAX);
 	initscr();
@@ -296,36 +377,104 @@ int main(int argc, char** argv){
 		}
 
 	}
+#ifndef NO_VLA
+	if(!size_chosen){
+		if((LINES-7) < 5){
+			len=5;
+		}
+		else{
+			len=(LINES-7);
+		}
+		if((COLS-5)/2 < 20){
+			wid=20;
+		}
+		else{
+			wid=(COLS-5)/2;
+		}
+	}
+	if(!mscount){
+		mscount=len*wid/8;
+	}
+#else
+	mscount=len*wid/8;
+#endif
+
+	if(!sides_chosen){
+		printw("Choose type of the $ player(H/c)\n" );
+		refresh();
+		input=getch();
+		if(input=='c'){
+			sides[0]='c';
+			printw("Computer.\n");
+		}
+		else{
+			sides[0]='h';
+			printw("Human.\n");
+		}
+		printw("Choose type of the %% player(h/C)\n");
+		refresh();
+		input=getch();
+		if(input=='h'){
+			sides[1]='h';
+			printw("Human.\n");
+		}
+		else{
+			sides[1]='c';
+			printw("Computer.\n");
+		}
+	}
+
 	byte board[len][wid];
 	byte mines[len][wid];
 	char result[70];
-	int input;
 	int sy,sx;
+	byte repeats;
 	bool first_click;	
 	Start:
-	first_click=1;
+	scores[0]=scores[1]=0;
 	sy=sx=0;
 	py=px=0;
-	untouched=len*wid;
 	flags=0;
 	curs_set(0);
 	for(int y=0;y<len;++y){
 		for(int x=0;x<wid;++x){
-			board[y][x]=-1;
+			board[y][x]=UNTOUCHED;
 			mines[y][x]=0;
 		}
 	}
-	
+	mine(mines);
+	turn=1;
+	Turn:
+	repeats=0;
+	turn=!turn;
+	if(sides[turn]=='c'){
+		bool first_time=1;
+		do{
+			++repeats;
+			erase();
+			logo(sy,sx);
+			draw(sy+3,sx+0,board);
+			refresh();
+			if(!first_time){
+				usleep(500000);//it is demoralising to see it find 5 mines in a split second
+			}
+			else{
+				first_time=0;
+			}
+		}while(decide(board,mines) && repeats<MAX_REPEATS);
+		goto Turn;
+	}
+
+	MyTurnAgain:
+	++repeats;
+	if(repeats>=MAX_REPEATS){
+		goto Turn;
+	}
 	while(1){
 		erase();
-		mvprintw(sy+1,sx+0,"|\\/|     Flags:%d\n",flags);
-		mvprintw(sy+2,sx+0,"|  |INES Mines:%d\n",mscount);
+		logo(sy,sx);
 		draw(sy+3,sx+0,board);
 		refresh();
-		if(untouched<=mscount){
-			strcpy(result,"YAY!!");
-			break;
-		}
 		input = getch();
 		if( input==KEY_PPAGE && LINES< len+3){//the board starts in 3
 			sy+=10;
@@ -367,52 +516,15 @@ int main(int argc, char** argv){
 			++px;
 		if( (input=='q'||input==27))
 			sigint_handler(0);
-		if(input=='x' && getch()=='y' && getch()=='z' && getch()=='z' && getch()=='y' ){
-			if(first_click){
-				strcpy(result,"That is for Windows.");
+		if((input=='\n'||input==KEY_ENTER) && board[py][px]==UNTOUCHED){
+			if(click(board,mines,py,px)){
+				goto MyTurnAgain;
 			}
 			else{
-				strcpy(result,"It is now pitch dark. If you proceed you will likely fall into a pit.");
+				goto Turn;
 			}
-			break;
-		}
-		if((input=='\n'||input==KEY_ENTER) && board[py][px] < 9){
-			if(mines[py][px]){
-				switch( rand()%3){
-					case 0:
-						strcpy(result,"You lost The Game.");
-						break;
-					case 1:
-						strcpy(result,"You exploded!");
-						break;
-					case 2:
-						strcpy(result,"Bring your MRAP with you next time!");
-				}
-				break;
-			}
-
-
-
-			if(first_click){
-				mine(mines);
-				first_click=0;
-			}
-			click(board,mines,py,px);
-		}
-		if(input==' '){
-			 if(board[py][px] == -1){
-				board[py][px]=FLAG;
-				++flags;
-			 }
-			 else if(board[py][px] == FLAG){
-				board[py][px]=UNCLEAR;
-				--flags;
-			 }
-			 else if(board[py][px] == UNCLEAR)
-				board[py][px]=-1;
 		}
 	}
-	drawmines(sy+3,sx+0,board,mines);
 	move(sy+view_len+5,sx+0);
 	printw("%s Wanna play again?(y/n)",result);
 

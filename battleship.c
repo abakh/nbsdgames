@@ -9,14 +9,7 @@ To the extent possible under law, the author(s) have dedicated all copyright and
 You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>. 
 
 */
-#include <curses.h>
-#include <string.h>
-#include <time.h>
-#include <limits.h>
-#include <stdlib.h>
-#include <signal.h>
-#include <stdbool.h>
-#include "config.h"
+#include "common.h"
 #define MISS -2
 #define SEA -1 
 #define HIT 0

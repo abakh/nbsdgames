@@ -11,17 +11,6 @@ To the extent possible under law, the author(s) have dedicated all copyright and
 You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 */
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <time.h>
-#include <math.h>
-#include <signal.h>
-#include <string.h>
-#include <limits.h>
-#include <curses.h>
-#include <unistd.h>
-#include "config.h"
 #include "common.h"
 #define SAVE_TO_NUM 11
 #define HOOKS 10

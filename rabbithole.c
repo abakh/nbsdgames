@@ -12,12 +12,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 compile with -lncurses
 */
 
-#include <curses.h>
-#include <string.h>
-#include <stdlib.h>
-#include <limits.h>
-#include <time.h>
-#include <signal.h>
 #include "config.h"
 #define UP 1
 #define RIGHT 2

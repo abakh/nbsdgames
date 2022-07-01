@@ -13,12 +13,6 @@ If you make a vertical or horizontal row of 4 jewels they will explode and add u
 Like Tetris,You will lose the game when the center of the uppermost row is filled.
 
 TODO make it like puyo puyo instead of the remake of what i poorly remembered*/
-#include <curses.h>
-#include <time.h>
-#include <limits.h>
-#include <string.h>
-#include <stdlib.h>
-#include "config.h"
 #include "common.h"
 #define LEN 17
 #define WID 19

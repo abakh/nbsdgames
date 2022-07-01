@@ -9,18 +9,6 @@ To the extent possible under law, the author(s) have dedicated all copyright and
 
 You should have received a copy of the CC0 Public Domain Dedication along with this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 */
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <time.h>
-#include <signal.h>
-#include <string.h>
-#include <limits.h>
-#include <math.h>
-
-#include <curses.h>
-#include <unistd.h>
-#include "config.h"
 #include "common.h"
 #define SAVE_TO_NUM 11
 #define LEN 24
@@ -210,7 +198,7 @@ void show_scores(byte playerrank){
 			refresh();
 			do{
 				input=getch();
-			}while(input==KEY_UP || input==KEY_DOWN);
+			}while((input==KEY_UP||input=='w') || (input==KEY_DOWN||input=='s'));
 			filled_rect(0,0,LEN,WID);
 			red_border();
 		}
@@ -312,7 +300,7 @@ int main(void){
 	attroff(colors[0]|A_STANDOUT);
 	do{
 		input=getch();
-	}while(input==KEY_UP || input==KEY_DOWN);
+	}while((input==KEY_UP||input=='w') || (input==KEY_DOWN||input=='s'));
 	if(input!='q' && input!='n' && input!='N')
 		goto Start;
 	endwin();

@@ -11,11 +11,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 
 */
-#include <curses.h>
-#include <string.h>
-#include <stdlib.h>
-#include <signal.h>
-#include <stdbool.h>
 #include "config.h"
 byte py,px;//cursor
 const char piece[2] = {'O','X'};

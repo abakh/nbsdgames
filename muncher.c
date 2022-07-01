@@ -9,15 +9,6 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 
 */
-#include <curses.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <limits.h>
-#include <time.h>
-#include <signal.h>
-#include <unistd.h>
-#include "config.h"
 #include "common.h"
 #define SAVE_TO_NUM 10
 #define MINLEN 10
