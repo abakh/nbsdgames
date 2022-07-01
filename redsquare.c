@@ -10,7 +10,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 
 */
-#include "config.h"
+#include "common.h"
 #define LEN 35 
 #define WID 50
 #define RLEN LEN //real
