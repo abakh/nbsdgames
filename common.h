@@ -12,6 +12,10 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include <limits.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <curses.h>
+#include <time.h>
+#include <signal.h>
+#include <math.h>
 #include "config.h"
 #define FOPEN_FAIL -10
 #define ENV_VAR_OR_USERNAME (getenv("NB_PLAYER")?getenv("NB_PLAYER"):getenv("USER"))
