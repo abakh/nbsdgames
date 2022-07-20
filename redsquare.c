@@ -103,10 +103,12 @@ void draw(byte board[RLEN][RWID]){
 				if(get_cell(board,y,x)==ALIVE)
 					prnt=ACS_BLOCK;
 				else if(get_cell(board,y,x)==RED){
-					if(coherent)
+					if(coherent && (y==py||y==(py+LEN+1)%LEN)&& (x==px||x==(px+WID+1)%WID)){
 						prnt=' '|A_STANDOUT|colors[3];
-					else
+					}
+					else{
 						prnt='O'|colors[3];
+					}
 				}
 				else
 					prnt=' ';
@@ -167,8 +169,6 @@ void live(byte board[RLEN][RWID]){
 						board[y][x]=ALIVE;
 				}
 				else{
-					if(coherent && board[y][x]==RED)
-						coherent=0;
 					board[y][x]=DEAD;
 				}
 			}
@@ -372,44 +372,61 @@ void mk_square(byte board[LEN][WID]){
 		}
 	}
 }
-//detect if there is a square and enable the player to move
-void reemerge(byte board[LEN][WID]){
-	byte y,x,dy,dx,ry,rx;
-	for(y=0;y<LEN;++y)
-		for(x=0;x<WID;++x)
-			if(board[y][x]==RED)
-				goto FoundTheFirst;
-	FoundTheFirst:
+byte nothing_around(byte board[LEN][WID],byte fy, byte fx){
+	byte count_reds=0;
+	byte sy=fy-1,sx=fx-1;//s:start
+	byte dy,dx;//d:delta
+	for(dy=0;dy<4;dy++){
+		for(dx=0;dx<4;dx++){
+			if(get_cell(board,sy+dy,sx+dx)){
+				count_reds++;
+			}
+		}
+	}
+	return (count_reds==4);
+}
+
+byte no_square(byte board[LEN][WID]){
+	return !(get_cell(board,py,px) &&
+		get_cell(board,py+1,px) &&
+		get_cell(board,py,px+1) &&
+		get_cell(board,py+1,px+1) &&
+		nothing_around(board,py,px) );
+}
+void find_square(byte board[LEN][WID],byte fy, byte fx){//f:found
+	byte dy,dx,ry,rx;
 	for(dy=0;dy<2;++dy){
 		for(dx=0;dx<2;++dx){
-			ry=y+dy;
-			if(ry==-1)
-				ry=LEN-1;
-			else if(ry==LEN)
-				ry=0;
-			rx=x+dx;
-			if(rx==-1)
-				rx=WID-1;
-			else if(rx==WID)
-				rx=0;
-			if(board[ry][rx]!=RED){
-				if(!y){
-					y=LEN-1;//the square can be divided at both sides of the border, this prevents failing
-					//it goes to look from the upper-left corner of the square as it would for other squares
-					goto FoundTheFirst;
-				}
-				if(!x){
-					x=WID-1;
-					goto FoundTheFirst;
-				}
+			ry=fy+dy;
+			rx=fx+dx;
+			if(get_cell(board,ry,rx)!=RED){
+				//the square can be divided at both sides of the border, this prevents failing
+				//it goes to look from the upper-left corner of the square as it would for other squares
 				return;
 			}
 		}
 	}
-	py=y;
-	px=x;
-	coherent=1;	
+	if(nothing_around(board,fy,fx)){
+		py=fy;
+		px=fx;
+		coherent=1;	
+	}
 }
+//detect if there is a square and enable the player to move
+void reemerge(byte board[LEN][WID]){
+	byte y,x,dy,dx,ry,rx;
+	for(y=0;y<LEN;++y){
+		for(x=0;x<WID;++x){
+			if(board[y][x]==RED){
+				find_square(board,y,x);
+			}
+			if(coherent){
+				return;
+			}
+		}
+	}
+}
+
 void sigint_handler(int x){
 	endwin();
 	puts("Quit.");
@@ -535,9 +552,10 @@ int main(int argc,char** argv){
 		else
 			cinred=0;	
 		count(board);
-		if(rnum!=4)
+		if(no_square(board)){
 			coherent=0;
-		if(!coherent && rnum==4)
+		}
+		if(!coherent && rnum>=4)
 			reemerge(board);
 		erase();
 		logo();
@@ -566,9 +584,9 @@ int main(int argc,char** argv){
 		input = getch();
 		live(board);
 		count(board);//apparently this should come at both sides of live+draw. resulting from trial and error.
-		if(rnum!=4)//the square has participated in life reactions if so
+		if(no_square(board))//the square has participated in life reactions if so
 			coherent=0;
-		if(!coherent && rnum==4)//there can be a square
+		if(!coherent)//there can be a square
 			reemerge(board);
 
 		if( input==KEY_F(1) || input=='?' )
@@ -599,6 +617,9 @@ int main(int argc,char** argv){
 		}
 		else 
 			goto DidntMove;
+		if(!coherent){
+			reemerge(board);
+		}
 		if(coherent){ 
 			rm_square(board,prey,prex);
 			mk_square(board);
