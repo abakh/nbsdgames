@@ -13,6 +13,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "common.h"
 #define LEN 35 
 #define WID 50
+#define STALE_LIMIT 2
 #define RLEN LEN //real
 #define RWID WID
 #define DEAD 0
@@ -24,6 +25,7 @@ byte py,px;
 byte cy,cx;//cross
 bool coherent;//square's coherence
 int anum,rnum;//reds and otherwise alive cell counts
+int stale_cells,stale_for;//throw new cells if it is stale for a long time
 chtype colors[6]={0};
 void cp(byte a[RLEN][RWID],byte b[RLEN][RWID]){
 	byte y,x;
@@ -90,6 +92,11 @@ void draw(byte board[RLEN][RWID]){
 	chtype prnt;
 	byte y,x;
 	setup_scroll();
+	if(stale_for){
+		attron(colors[3]);
+		mvprintw(4,0,"%d",stale_for);
+		attroff(colors[3]);
+	}
 	for(y=beginy;y<beginy+view_len;++y){
 		for(x=0;x<WID;++x){
 			if(y==cy && x==cx){
@@ -325,9 +332,9 @@ void new_level(byte board[LEN][WID]){
 			add_line(board,26,"     #                                   #     ");
 			add_line(board,27," #   #                               #   #     ");
 			add_line(board,28,"  ####                                ####     ");
-			//add_line(board,5,"                #");
-			//add_line(board,6,"                ##");
-			//add_line(board,7,"               ##");
+			add_line(board,5,"                #");
+			add_line(board,6,"                ##");
+			add_line(board,7,"               ##");
 		break;
 		default:
 			srand(level);
@@ -512,18 +519,20 @@ int main(int argc,char** argv){
 	int input=0;
 	int prey,prex;
 	int cinred;
+	level=-1;
 	Start:
+	stale_cells=0;
+	stale_for=0;
 	curs_set(0);
 	halfdelay(9);
 	cinred=0;
 	py=LEN*3/4;
 	px=WID/2;
 	curs_set(0);
-	level=-1;
 	new_level(board);
 	mk_square(board);
 	while(1){
-		switch(rand()%5){//move the cross
+		switch(rand()%5){//move the X
 			case 0:
 				++cx;
 				if(cx==WID)
@@ -561,6 +570,21 @@ int main(int argc,char** argv){
 		logo();
 		draw(board);
 		refresh();
+		if(coherent || abs(stale_cells-(rnum+anum))<stale_cells/10){//if there is little variation it is stale
+			stale_cells=rnum+anum;
+		}
+		else{
+			stale_for+=1;
+		}
+		if(stale_for>STALE_LIMIT){
+			for(int i=0;i<10;++i){
+				board[rand()%LEN][rand()%WID]=RED;
+			}
+			for(int i=0;i<10;++i){
+				board[rand()%LEN][rand()%WID]=ALIVE;
+			}
+			stale_for=0;
+		}
 		if(rnum>anum||cinred==2){
 			mvprintw(LEN+5,0,"Well done! Press a key to continue:");
 			curs_set(1);
