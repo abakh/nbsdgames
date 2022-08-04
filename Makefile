@@ -12,7 +12,7 @@ LIBS=$(LIBS_PKG_CONFIG) -lm
 
 ALL= nbsdgames jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare darrt snakeduel tugow
 SCORE_FILES= pipes_scores jewels_scores miketron_scores muncher_scores fisher_scores darrt_scores tugow_scores
-
+SRC!=echo *.c *.h
 all: $(ALL)
 
 scorefiles:
@@ -22,21 +22,8 @@ scorefiles:
 manpages:
 	cp man/* $(DESTDIR)$(MAN_DIR)
 
-# Games which only need config.h
-sudoku mines reversi checkers battleship rabbithole sos fifteen redsquare snakeduel: config.h
-	$(CC) $(CFLAGS) $@.c $< $(LDFLAGS) $(LIBS) -o $@
-
-# Games which need config.h and common.h
-jewels pipes fisher muncher miketron darrt: config.h common.h
-	$(CC) $(CFLAGS) $@.c $< $(LDFLAGS) $(LIBS) -o $@
-
-# Games which only need common.h
-tugow: common.h
-	$(CC) $(CFLAGS) $@.c $< $(LDFLAGS) $(LIBS) -o $@
-
-# Games which only need themselves
-memoblocks nbsdgames:
-	$(CC) $(CFLAGS) $@.c $< $(LDFLAGS) $(LIBS) -o $@
+$(ALL): $(SRC) config.h common.h
+	$(CC) $(CFLAGS) $@.c $(LDFLAGS) $(LIBS) -o $@
 
 menu:
 	cp nbsdgames.desktop $(DESTIDR)$(PREFIX)/usr/share/applications
