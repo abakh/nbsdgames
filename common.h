@@ -7,6 +7,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 */
 #include <stdio.h>
+#include <assert.h>
 #include <string.h>
 #include <stdlib.h>
 #include <limits.h>
