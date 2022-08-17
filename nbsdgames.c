@@ -62,6 +62,7 @@ char main_menu[]={
 	NB"darrt\n"
 	NB"snakeduel\n"
 	NB"tugow\n"
+	NB"revenge\n"
 };
 char ascii_art[]={
 "     ######                    ######    "
