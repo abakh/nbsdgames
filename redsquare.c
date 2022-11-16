@@ -13,7 +13,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include "common.h"
 #define LEN 35 
 #define WID 50
-#define STALE_LIMIT 2
+#define STALE_LIMIT 20
 #define RLEN LEN //real
 #define RWID WID
 #define DEAD 0
