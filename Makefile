@@ -10,8 +10,8 @@ LIBS_PKG_CONFIG!=pkg-config --libs --cflags ncurses
 LIBS=$(LIBS_PKG_CONFIG) -lm
 
 
-ALL= nbsdgames jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare darrt snakeduel tugow revenge
-SCORE_FILES= pipes_scores jewels_scores miketron_scores muncher_scores fisher_scores darrt_scores tugow_scores revenge_scores
+ALL= nbsdgames jewels sudoku mines reversi checkers battleship rabbithole sos pipes fifteen memoblocks fisher muncher miketron redsquare darrt snakeduel tugow revenge trsr sjump
+SCORE_FILES= pipes_scores jewels_scores miketron_scores muncher_scores fisher_scores darrt_scores tugow_scores revenge_scores sjump_scores
 SRC!=echo *.c *.h
 all: $(ALL)
 
