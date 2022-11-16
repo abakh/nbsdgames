@@ -1,8 +1,7 @@
 /* 
- *      
-|\/|  2P  
-|  |INES
-
+_____
+  |
+  |REASURE
 Authored by abakh <abakh@tuta.io>
 To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
 
@@ -67,12 +66,10 @@ byte get_cell(byte board[len][wid],int y,int x){
 	return board[(y+len)%len][(x+wid)%wid];
 }
 void logo(int sy, int sx){
-	mvprintw(sy+1,sx+0, "|\\/|  2P");
-	mvprintw(sy+2,sx,   "|  |INES   %ld:%ld",scores[0],scores[1]);
+	mvprintw(sy,sx,     "_____");
+	mvprintw(sy+1,sx+0, "  |  ");
+	mvprintw(sy+2,sx,   "  |REASURE    %ld:%ld",scores[0],scores[1]);
  
-	//attron(colors[3]);
-	//mvprintw(sy+1,sx+8,"2P");
-	//attroff(colors[3]);
 	
 	if(turn==0){
 		attron(colors[1]);
@@ -277,15 +274,14 @@ void help(void){
 	logo(0,0);
 	attron(A_BOLD);
 	mvprintw(3,0,"  **** THE CONTROLS ****");
-	mvprintw(10,0,"YOU CAN ALSO USE THE MOUSE!");
+	mvprintw(9,0,"YOU CAN ALSO USE THE MOUSE!");
 	attroff(A_BOLD);
 	mvprintw(4,0,"RETURN/ENTER : Examine for bombs");
-	mvprintw(5,0,"SPACE : Flag/Unflag");
-	mvprintw(6,0,"hjkl/ARROW KEYS : Move cursor");
-	mvprintw(7,0,"q : Quit");
-	mvprintw(8,0,"F1 & F2 : Help on controls & gameplay");
-	mvprintw(9,0,"PgDn,PgUp,<,> : Scroll"); 
-	mvprintw(12,0,"Press a key to continue");
+	mvprintw(5,0,"hjkl/ARROW KEYS : Move cursor");
+	mvprintw(6,0,"q : Quit");
+	mvprintw(7,0,"F1 & F2 : Help on controls & gameplay");
+	mvprintw(8,0,"PgDn,PgUp,<,> : Scroll"); 
+	mvprintw(11,0,"Press a key to continue");
 	refresh();
 	getch();
 	erase();
@@ -296,14 +292,8 @@ void gameplay(void){
 	attron(A_BOLD);
 	mvprintw(3,0,"  **** THE GAMEPLAY ****");
 	attroff(A_BOLD);
-	mvprintw(4,0,"Try to find the landmines in the field\n");
-	printw("with logical reasoning: When you click\n");
-	printw("on a tile ( a '.' here), numbers may show\n");
-	printw("up that indicate the number of landmines\n");
-	printw("in adjacent tiles; you should find and \n");
-	printw("avoid the landmines based on them; and\n");
-	printw("clicking on a landmine would make you\n");
-	printw("lose the game.");
+	mvprintw(4,0,"Like Mines but you need to find stuff\n");
+	printw("instead of avoiding them.\n");
 	refresh();
 	getch();
 	erase();
@@ -383,13 +373,13 @@ int main(int argc, char** argv){
 			len=5;
 		}
 		else{
-			len=(LINES-7);
+			len=15;
 		}
 		if((COLS-5)/2 < 20){
 			wid=20;
 		}
 		else{
-			wid=(COLS-5)/2;
+			wid=15;
 		}
 	}
 	if(!mscount){
@@ -400,7 +390,7 @@ int main(int argc, char** argv){
 #endif
 
 	if(!sides_chosen){
-		printw("Choose type of the $ player(H/c)\n" );
+		printw("Choose type of the # player(H/c)\n" );
 		refresh();
 		input=getch();
 		if(input=='c'){
@@ -430,7 +420,9 @@ int main(int argc, char** argv){
 	int sy,sx;
 	byte repeats;
 	bool first_click;	
+	byte won;
 	Start:
+	won=-1;
 	scores[0]=scores[1]=0;
 	sy=sx=0;
 	py=px=0;
@@ -445,6 +437,18 @@ int main(int argc, char** argv){
 	mine(mines);
 	turn=1;
 	Turn:
+	erase();
+	logo(sy,sx);
+	draw(sy+3,sx+0,board);
+	refresh();
+	if(scores[0]>mscount/2){
+		won=0;
+		goto End;
+	}
+	if(scores[1]>mscount/2){
+		won=1;
+		goto End;
+	}
 	repeats=0;
 	turn=!turn;
 	if(sides[turn]=='c'){
@@ -461,11 +465,18 @@ int main(int argc, char** argv){
 			else{
 				first_time=0;
 			}
+			if(scores[0]>mscount/2 || scores[1]>mscount/2){
+				goto Turn;
+			}
+
 		}while(decide(board,mines) && repeats<MAX_REPEATS);
 		goto Turn;
 	}
 
 	MyTurnAgain:
+	if(scores[0]>mscount/2 || scores[1]>mscount/2){
+		goto Turn;
+	}
 	++repeats;
 	if(repeats>=MAX_REPEATS){
 		goto Turn;
@@ -525,8 +536,19 @@ int main(int argc, char** argv){
 			}
 		}
 	}
+	End:
 	move(sy+view_len+5,sx+0);
-	printw("%s Wanna play again?(y/n)",result);
+	if(won==0){
+		attron(colors[1]);
+		printw("Percent won.");
+		attroff(colors[1]);
+	}
+	else{
+		attron(colors[2]);
+		printw("Square won.");
+		attroff(colors[2]);
+	}
+	printw(" Wanna play again?(y/n)",result);
 
 	curs_set(1);
 	input=getch();
