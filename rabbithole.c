@@ -12,7 +12,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 compile with -lncurses
 */
 
-#include "config.h"
+#include "common.h"
 #define UP 1
 #define RIGHT 2
 #define DOWN 4

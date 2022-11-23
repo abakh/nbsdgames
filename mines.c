@@ -10,7 +10,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 
 compile with -lncurses
 */
-#include "config.h"
+#include "common.h"
 #define FLAG 9
 #define UNCLEAR 10
 #define MINLEN 8
