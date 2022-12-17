@@ -63,6 +63,8 @@ char main_menu[]={
 	NB"snakeduel\n"
 	NB"tugow\n"
 	NB"revenge\n"
+	NB"sjump\n"
+	NB"trsr\n"
 };
 char ascii_art[]={
 "     ######                    ######    "
@@ -85,6 +87,8 @@ char scores_menu[]={
        	"fisher_scores\n"
        	"darrt_scores\n" 
 	"tugow_scores\n"
+	"revenge_scores\n"
+	"sjump_scores\n"
 };
 char choice_str[100]={0};
 char name[100]={0};
