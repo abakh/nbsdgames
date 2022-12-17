@@ -19,7 +19,11 @@ TARG=\
     reversi \
     sos \
     snakeduel \
-    sudoku
+    sudoku \
+    tugow \
+    trsr \
+    revenge \
+    sjump \
 
 BIN=/$objtype/bin/games
 
