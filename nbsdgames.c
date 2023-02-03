@@ -134,7 +134,7 @@ void green_border(void){
 }
 
 
-int show_scores(FILE* score_file){
+void show_scores(FILE* score_file){
 	erase();
 	filled_rect(0,0,LINES,COLS);
 	green_border();

@@ -104,7 +104,7 @@ byte save_score(void){
 
 void show_scores(byte playerrank){
 	erase();
-	logo(0,0);
+	logo();
 	if(playerrank==FOPEN_FAIL){
 		mvaddstr(3,0,"Could not open score file");
 		printw("\nHowever, your score is %ld.",score);
@@ -149,7 +149,7 @@ void show_scores(byte playerrank){
 			nocbreak();
 			cbreak();
 			erase();
-			logo(0,0);
+			logo();
 		}
 	}
 	//scorefile is still open with w+

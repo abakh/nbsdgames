@@ -29,7 +29,7 @@ int untouched;
 int mscount;
 chtype colors[6]={0};
 int beginy,view_len;
-byte setup_scroll(){
+void setup_scroll(){
 	beginy=0;
 	if(0<py+3-(LINES-EMPTY_LINES)){
 		beginy=py+3-(LINES-EMPTY_LINES);
