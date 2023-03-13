@@ -395,8 +395,11 @@ int main(int argc,char** argv){
 			}
 		}
 		if(input=='Q'){
-			strcpy(msg,"Ctrl-C to quit.");
+			strcpy(msg,"ESC or Ctrl-C to quit.");
 			msg_show=50;
+		}
+		if(input==27){
+			break;
 		}
 		if(input!=ERR){
 			usleep(100000);

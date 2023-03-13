@@ -130,8 +130,7 @@ Windows
 * Tell me your feature requests, bug reports, etc.
 * Tell me the games you want to be added (but in the same genre, I can't port Angry Birds to curses! :)
 * Make a package for your distro (or put it on repos if the package is not there)
-* Getting it to Redhat and OpenBSD repos would be nice.
 * Tell distro developers to consider adding these as default games, nbsdgames packs a lot of fun games in a few hundreds of kilobytes.
-
+* Compile these with ASAN, play and find C-ish bugs.
 
 Also thanks to all the people who helped in the previous versions, all what I requested was done! I didn't expect such an amount of assistance on this project :heart:
