@@ -294,7 +294,7 @@ void help(void){
 	erase();
 	gameplay();
 }
-int avoid_accidental_pass(){
+int avoid_accidental_pass(void){
 	int input;
 	Again:
 	input=getch();

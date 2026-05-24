@@ -46,7 +46,7 @@ void logo(void){
 	addstr("| \\ED_)QUARE\n");
 }
 
-int avoid_accidental_pass(){
+int avoid_accidental_pass(void){
 	int input;
 	Again:
 	input=getch();
@@ -148,7 +148,7 @@ void show_scores(byte playerrank){
 
 
 int beginy,view_len;
-void setup_scroll(){
+void setup_scroll(void){
 	beginy=0;
 	if(0<py+3-(LINES-EMPTY_LINES)){
 		beginy=py+3-(LINES-EMPTY_LINES);

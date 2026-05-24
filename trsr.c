@@ -33,7 +33,7 @@ char sides[2]={'h','h'};
 chtype colors[6]={0};
 int beginy,view_len;
 int turn=0;
-void setup_scroll(){
+void setup_scroll(void){
 	beginy=0;
 	if(0<py+3-(LINES-EMPTY_LINES)){
 		beginy=py+3-(LINES-EMPTY_LINES);

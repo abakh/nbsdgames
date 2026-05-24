@@ -74,7 +74,7 @@ void add_random_angle(item *a){
 	a->vx=cos(a->angle);
 }
 
-void fill_items(){
+void fill_items(void){
 	item *a=NULL;
 	for(byte i=0;i<ITEMS_COUNT;++i){
 		a=items+i;
@@ -160,7 +160,7 @@ void swap_items(item *a, item *b){
 	*a=*b;
 	*b=s;
 }
-void sort_items(){
+void sort_items(void){
 	byte pos=0;//sort for y
 	while(pos<ITEMS_COUNT){
 		if(pos==0 || items[pos].y > items[pos-1].y || ((int) items[pos].y == (int) items[pos-1].y) && (items[pos].x > items[pos-1].x)){
@@ -269,7 +269,7 @@ void collide(item *a, item *b){
 		}
 	}
 }
-void collisions(){
+void collisions(void){
 	item *a,*b;
 	for(byte i=0;i<ITEMS_COUNT;++i){
 		a=&items[i];
@@ -287,7 +287,7 @@ void collisions(){
 	}
 
 }
-void mechanics(){
+void mechanics(void){
 	collisions();
 	static byte slow_motion=0;
 	slow_motion=(slow_motion+1)%1;
@@ -325,7 +325,7 @@ void draw_item(item a){
 	}
 	mvaddch((int) a.y,(int)a.x,shape);
 }
-void find_scissor(){
+void find_scissor(void){
 	item *a=NULL;
 	item *make_player=NULL;
 	for(byte i=0;i<ITEMS_COUNT;++i){
@@ -341,14 +341,14 @@ void find_scissor(){
 		make_player->player=1;
 	}
 }
-void logo(){
+void logo(void){
 	mvaddstr(0,0,"         ");
 	mvaddstr(1,0," _      ");
 	mvaddstr(2,0,"(_'      ");
         mvaddstr(3,0,"._)CISSOR");
 }
 
-void draw(){
+void draw(void){
 	logo();
 	mvprintw(5,0,"Score: %ld",score);
 	for(byte i=0;i<ITEMS_COUNT;++i){
@@ -441,7 +441,7 @@ void sigint_handler(int x){
 	puts("Quit.");
 	exit(x);
 }
-int avoid_accidental_pass(){
+int avoid_accidental_pass(void){
 	int input;
 	Again:
 	input=getch();

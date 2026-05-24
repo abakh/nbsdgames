@@ -90,7 +90,7 @@ void star_line(byte y){
 	for(byte x=1;x<WID-1;++x)
 		mvaddch(y,x,'.');
 }
-void logo(){
+void logo(void){
 	mvprintw(0,0," _        ___  ");
 	mvprintw(1,0,"(_'        |     Score: %ld",score);
 	mvprintw(2,0,"._)QUARE (_:UMP  Combo: %d",combo);
@@ -184,7 +184,7 @@ void draw_square(byte sy,byte sx){
 	mvaddch(sy+SIZE,sx,ACS_LLCORNER);
 	mvaddch(sy,sx+SIZE*2,ACS_URCORNER);
 }
-void move_o(){
+void move_o(void){
 	if(ox==0){
 		if(oy==0){
 			ox++;
@@ -241,7 +241,7 @@ void draw(int sy,int sx){
 	logo();
 }
 
-byte shooting_scene(){
+byte shooting_scene(void){
 	float dy=(oy-(SIZE/2))/(float)SIZE;
 	float dx=(ox-(SIZE))/(float)(SIZE*2);
 	dy/=2;//it was too hard :(

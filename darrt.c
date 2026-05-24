@@ -74,7 +74,7 @@ void red_border(void){
 		
 }
 
-void fill_aims(){
+void fill_aims(void){
 	for(byte i=0;i<26;++i){
 		aims[i].y= randint(8,HLEN);
 		aims[i].x= randint(0,HWID);
@@ -198,7 +198,7 @@ void star_line(byte y){
 	for(byte x=1;x<WID-1;++x)
 		mvaddch(y,x,'.');
 }
-void make_background(){
+void make_background(void){
 	float d;
 	for(byte y=0;y<LEN;++y){
 		for(byte x=0;x<WID;++x){
@@ -228,13 +228,13 @@ void draw_aim(aim a){
 		color=colors[2];
 	mvaddch((int) a.y,(int)a.x,a.sign|color);
 }
-void logo(){
+void logo(void){
 	mvaddstr(0,0," _        ");
 	mvaddstr(1,0,"| '.      ");
 	mvaddstr(2,0,"|  :      ");
         mvaddstr(3,0,"|.' ARRT  ");
 }
-void draw(){
+void draw(void){
 	for(byte y=0;y<LEN;++y){
 		for(byte x=0;x<WID;++x){
 			mvaddch(y,x,background[y][x]);
@@ -256,7 +256,7 @@ void draw(){
 	}
 }
 
-void end_scene(){
+void end_scene(void){
 	for(byte y=0;y<LEN;++y){
 		for(byte x=0;x<WID;++x){
 			mvaddch(y,x,background[y][x]);

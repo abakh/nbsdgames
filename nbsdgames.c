@@ -108,7 +108,7 @@ char help_page[]={
 char choice_str[100]={0};
 char name[100]={0};
 
-void fancy_background(){
+void fancy_background(void){
 	int y,x;
 	int lines=LINES,cols=COLS;
 	for(y=0;y<lines;++y){
@@ -286,7 +286,7 @@ int menu(char* entries,char* title){
 	}
 	goto Refresh;
 }
-void enter_name(){
+void enter_name(void){
 	snprintf(name,25,"%s",getenv("USER"));
 	int input=0;
 	int index=strlen(name);
@@ -315,7 +315,7 @@ void enter_name(){
 	}
 	setenv("NB_PLAYER",name,1);
 }
-void scores(){
+void scores(void){
 	int choice;
 	char address[1000]={0};
 	FILE* score_file;
