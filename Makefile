@@ -34,7 +34,7 @@ clean:
 uninstall:
 	for game in $(ALL); do rm $(GAMES_DIR)/$$game; rm $(MAN_DIR)/$$game.6.gz ;done;
 install: dirs $(ALL)
-	cp $(ALL) $(DESTDIR)/$(GAMES_DIR)
+	cp $(ALL) $(DESTDIR)$(GAMES_DIR)
 test:
 	for game in $(ALL); do ./$$game ;done;
 
@@ -47,14 +47,14 @@ nb:
 	CFLAGS="$$CFLAGS -D NB=\\\"nb\\\"" $(MAKE)
 	for game in $(ALL); do cp $$game nb$$game ;done;
 nbinstall: dirs nb
-	for game in $(ALL); do cp nb$$game $(DESTDIR)/$(GAMES_DIR) ;done;
-	cp nbsdgames $(DESTDIR)/$(GAMES_DIR)
-	rm $(DESTDIR)/$(GAMES_DIR)/nbnbsdgames
+	for game in $(ALL); do cp nb$$game $(DESTDIR)$(GAMES_DIR) ;done;
+	cp nbsdgames $(DESTDIR)$(GAMES_DIR)
+	rm $(DESTDIR)$(GAMES_DIR)/nbnbsdgames
 NBMANPAGES := $(foreach m,$(wildcard man/*),man/nb$(notdir $(m)))
 man/nb%: man/%
 	cp "$<" "$@"
 nbmanpages: dirs nb $(NBMANPAGES)
-	cp man/nb* $(DESTDIR)/$(MAN_DIR)
+	cp man/nb* $(DESTDIR)$(MAN_DIR)
 nbclean: clean
 	for game in $(ALL); do rm nb$$game ;done;
 	
