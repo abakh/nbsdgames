@@ -42,12 +42,14 @@ test:
 nb:
 	CFLAGS="$$CFLAGS -D NB=\\\"nb\\\"" $(MAKE)
 	for game in $(ALL); do cp $$game nb$$game ;done;
-	for manpage in $(ls man); do cp man/$$manpage man/nb$$manpage ;done;
 nbinstall: nb 
 	for game in $(ALL); do cp nb$$game $(DESTDIR)/$(GAMES_DIR) ;done;
 	cp nbsdgames $(DESTDIR)/$(GAMES_DIR)
 	rm $(DESTDIR)/$(GAMES_DIR)/nbnbsdgames
-nbmanpages: nb
+NBMANPAGES := $(foreach m,$(wildcard man/*),man/nb$(notdir $(m)))
+man/nb%: man/%
+	cp "$<" "$@"
+nbmanpages: nb $(NBMANPAGES)
 	cp man/nb* $(DESTDIR)/$(MAN_DIR)
 nbclean: clean
 	for game in $(ALL); do rm nb$$game ;done;
