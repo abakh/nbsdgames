@@ -46,7 +46,7 @@ Thanks to Elias Riedel Gårding, Zinjanthropus, Gürkan Myczko, Robert Clausecke
 
 They also gave back code and useful feedback.
 
-*However some packages might be old, not having many games and improvements. You can try compiling as well.*
+*However some packages might be old, not having many games and improvements (in checkers, etc). You can try compiling as well.*
 
 ## How to compile the latest version
 
