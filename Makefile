@@ -6,7 +6,8 @@ GAMES_DIR?=$(PREFIX)/usr/bin
 SCORES_DIR?=$(PREFIX)/var/games
 MAN_DIR?=$(PREFIX)/usr/share/man/man6
 CFLAGS+= -Wno-unused-result -DSCORES_DIR=\"$(SCORES_DIR)\"
-LIBS_PKG_CONFIG!=pkg-config --libs --cflags ncurses
+PKG_CONFIG?=pkg-config
+LIBS_PKG_CONFIG!=$(PKG_CONFIG) --libs --cflags ncurses
 LIBS=$(LIBS_PKG_CONFIG) -lm
 
 
@@ -19,7 +20,7 @@ scorefiles:
 	for sf in $(SCORE_FILES); do touch $(DESTDIR)$(SCORES_DIR)/$$sf ; chmod 664 $(DESTDIR)$(SCORES_DIR)/$$sf; chown :games $(DESTDIR)$(SCORES_DIR)/$$sf ; done;
 	for game in $(ALL); do chown :games $(DESTDIR)$(GAMES_DIR)/$$game; chmod g $(DESTDIR)$(GAMES_DIR)/$$game ; done;
 
-manpages:
+manpages: dirs
 	cp man/* $(DESTDIR)$(MAN_DIR)
 
 $(ALL): $(SRC) config.h common.h
@@ -32,22 +33,28 @@ clean:
 	for game in $(ALL); do rm $$game; done;
 uninstall:
 	for game in $(ALL); do rm $(GAMES_DIR)/$$game; rm $(MAN_DIR)/$$game.6.gz ;done;
-install: $(ALL)
-	cp $(ALL) $(DESTDIR)/$(GAMES_DIR)
+install: dirs $(ALL)
+	cp $(ALL) $(DESTDIR)$(GAMES_DIR)
 test:
 	for game in $(ALL); do ./$$game ;done;
+
+dirs:
+	mkdir -p $(DESTDIR)$(GAMES_DIR)
+	mkdir -p $(DESTDIR)$(MAN_DIR)
 
 #######for namespacing #######
 nb:
 	CFLAGS="$$CFLAGS -D NB=\\\"nb\\\"" $(MAKE)
 	for game in $(ALL); do cp $$game nb$$game ;done;
-	for manpage in $(ls man); do cp man/$$manpage man/nb$$manpage ;done;
-nbinstall: nb 
-	for game in $(ALL); do cp nb$$game $(DESTDIR)/$(GAMES_DIR) ;done;
-	cp nbsdgames $(DESTDIR)/$(GAMES_DIR)
-	rm $(DESTDIR)/$(GAMES_DIR)/nbnbsdgames
-nbmanpages: nb
-	cp man/nb* $(DESTDIR)/$(MAN_DIR)
+nbinstall: dirs nb
+	for game in $(ALL); do cp nb$$game $(DESTDIR)$(GAMES_DIR) ;done;
+	cp nbsdgames $(DESTDIR)$(GAMES_DIR)
+	rm $(DESTDIR)$(GAMES_DIR)/nbnbsdgames
+NBMANPAGES := $(foreach m,$(wildcard man/*),man/nb$(notdir $(m)))
+man/nb%: man/%
+	cp "$<" "$@"
+nbmanpages: dirs nb $(NBMANPAGES)
+	cp man/nb* $(DESTDIR)$(MAN_DIR)
 nbclean: clean
 	for game in $(ALL); do rm nb$$game ;done;
 	
