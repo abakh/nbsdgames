@@ -1,8 +1,11 @@
 First of all, thanks for reading and sorry if this email reaches you multiple times. This 2-minutes read is about the zero-cost but influential and significantly beneficial decision to include the 93.7 kB package of nbsdgames (which are 21 games with a lot of variety, creativity, endless gameplay and a menu icon) as default games on your distro (maybe alongside or instead of the other games you include, if you already do).
 
-Here are some reasons for doing so (arguably it is more important than the important calculator app you probably already include) along with answers to common questions that might arise:
+Here are some reasons for doing so (arguably it is much more important than the important calculator app you probably already include) along with answers to common questions that might arise:
 
 * These are good brain exercise (which is one of the most important and beneficial kinds of exercise) also good for keeping focus when listening to something or thinking (you can look up the psychological concepts of arousal and stimming).
+
+* Science and experience have shown that such endless, simple games are great and important help for preventing and dealing with trauma, depression etc.
+For example you can look at: https://www.ox.ac.uk/news/2026-02-19-study-shows-digital-treatment-tetris-gameplay-can-dramatically-reduce-trauma
 
 * The way any user would feel about any product including your OS, is very dependent on the first impression it makes. Technical problems, skill issues and learning curves are also very common, even if your distro is one of the easier ones. If you include games in your OS, their first impression would be "dozens of cool stuff, followed by one or two problems" however if you don't include games the first impression would be almost entirely made of the problems and difficulties they would face and they would not like and talk positively about your OS (similar to the way many people feel about vim because they couldn't manage to exit it the first time)
 
