@@ -46,6 +46,7 @@ Thanks to Elias Riedel Gårding, Zinjanthropus, Gürkan Myczko, Robert Clausecke
 
 They also gave back code and useful feedback.
 
+*However some packages might be old, not having many games and improvements. You can try compiling as well.*
 
 ## How to compile the latest version
 
@@ -71,19 +72,10 @@ Like this:
 
 ``` sh
         git clone --depth 1 https://github.com/abakh/nbsdgames
-        cd ./nbsdgames
+        cd ./nbsdgames/src
         make
         sudo make install # or use the binaries already compiled
 ```
-
-## Packages
-
-It's on almost every repo by now: Debian (and other DEBs), OpenSUSE (and other RPMs), AUR, Alpine, FreeBSD, NetBSD, DragonflyBSD, Minix, Homebrew (MacOSX) and more 
-https://repology.org/project/nbsdgames/versions
-
-Thanks to Elias Riedel Gårding, Zinjanthropus, Alex Myczko, Robert Clausecker, Sam James, and so many other nice people for packaging.
-
-They also gave back code and useful feedback.
 
 ## Other Platforms
 
