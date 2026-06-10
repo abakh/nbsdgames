@@ -158,7 +158,8 @@ void rectangle(void){
 }
 //this generates the pipes...
 bitbox pipegen(void){
-	if(rand()%17){//17 so all forms have the same chance
+	byte chance=rand()%34;
+	if(chance<=28){ //corner pipes and straight pipes
 		byte a=rand()%4;
 		byte b;
 		do{
@@ -166,9 +167,13 @@ bitbox pipegen(void){
 		}while(b==a);
 		return (1 << a) | ( 1 << b);
 	}
-	else
-		return CROSSOVER;//could not be generated like that
-	
+	else if(chance<=30){ //straight pipes
+		return (1<<(chance%4))|opposite(1<<(chance%4));
+	}
+	else{
+		return CROSSOVER;
+
+	}	
 }
 //.. and this is only for display
 void addpipe(int y,int x,bitbox pipe , bool highlight){
@@ -262,8 +267,10 @@ void gameplay(void){
 	attron(green);
 	mvprintw(SY,SX+7,"THE GAMEPLAY");
 	attroff(green);
-	mvprintw(SY+1,SX,"Keep maintaining the pipeline and");
-	mvprintw(SY+2,SX,"don't let the sewage leak.");
+	mvprintw(SY+1,SX,"Keep maintaining the pipeline and prevent");
+	mvprintw(SY+2,SX,"the sewage from leaking.");
+	mvprintw(SY+3,SX,"You can get extra scores by pressing f .");
+	mvprintw(SY+4,SX,"This is a challenging game. Needs practice.");
 	refresh();
 	while(getch()==ERR);
 	erase();
@@ -340,7 +347,7 @@ int main(int argc, char** argv){
 	direction= board[fy][fx];
 	board[fy][fx]|=FILLED;
 	for(foo=0;foo<5;++foo)
-		tocome[foo]=pipegen();
+		tocome[foo]=CROSSOVER;
 	tstart = time(NULL);
 	lasttime=0;
 	initscr();
@@ -376,8 +383,9 @@ int main(int argc, char** argv){
 			mvprintw(4,0,"Score:");
 			mvprintw(5,0,"%ld",score);
 		}
-		for(foo=0;foo<5;++foo)
+		for(foo=0;foo<5;++foo){
 			addpipe(11-foo,4,tocome[foo],0); 
+		}
 		draw(board);
 		refresh();
 
@@ -391,8 +399,12 @@ int main(int argc, char** argv){
 				if(board[fy][fx] != CROSSOVER && board[fy][fx] != (CROSSOVER|FILLED) )
 					direction = board[fy][fx] & ~opposite(direction);
 				++score;
-				if(fast)
-					++score;
+				if(fast){
+					score+=3;
+				}
+				if(board[fy][fx]==(CROSSOVER|FILLED)){//encourage complex patterns
+					score+=6;
+				}
 			}
 			else 
 				goto End;
@@ -421,11 +433,13 @@ int main(int argc, char** argv){
 		if( (input=='l' || (input==KEY_RIGHT||input=='d')) && px<wid-1 )
 			++px;
 		if( (input == '\n'||input==KEY_ENTER) && !(board[py][px] & FILLED) ){
-			if(board[py][px])
-				score-=3;
+			if(board[py][px]){
+				score-=1;
+			}
 			board[py][px]=tocome[0];
-			for(foo=0;foo<4;++foo)
+			for(foo=0;foo<4;++foo){
 				tocome[foo]=tocome[foo+1];
+			}
 			tocome[4]= pipegen();
 		}
 		if( input=='f' ){
