@@ -101,6 +101,19 @@ Plan9
 Windows
 ![Screenshot from the games in Windows 7](https://raw.githubusercontent.com/abakh/junk/master/screenshot_windows.jpg)
 
+## System Requirements
+CPU: At least one core with enough hertz
+
+RAM: 1000000 bytes should be enough
+
+OS: MS/DOS and higher
+
+Disk space: 500000 bytes for installation. Leave some bytes for saving the scores (optional)
+
+GPU: Use something new that has VGA on it. VGA is nice and colorful.
+
+Such high-end computers would probably run it smoothly. No vaccum lamps and vaccum cleaners supported.
+
 ## How to contribute
 * Share these with your friends and others 
 * Your stars make the repo more findable in Github :star:
@@ -109,11 +122,6 @@ Windows
 * Make a package for your distro (or put it on repos if the package is not there)
 * Share videos of your playing on YouTube and elsewhere (this is precious feedback), and nicely asking relevant youtubers and bloggers to do so.
 * Tell distro developers to consider adding these as *default games*, read and send them the [mail.txt](https://raw.githubusercontent.com/abakh/nbsdgames/refs/heads/master/mail.txt) text.
-* Compile these with ASAN, play and find C-ish bugs.
-* Make a touch-friendly, minimal, mostly visually similar version using cairo and/or basic Qt components
-* Make a retroarch core (It would be easy to port PDCurses to retroarch)
-* Port miketron and redsquare to PSX or Sega Genesis or whatever old console
-* Find people who do these kind of stuff and suggest to them to do so
-* It would be good if you CC0 your code too.
+* [Show cool stuff like your highscores etc.](https://github.com/abakh/nbsdgames/discussions/58)
 
-Also thanks to all the people who helped in the previous versions, all what I requested was done! I didn't expect such an amount of assistance on this project :heart:
+Thanks to all the people who helped in the previous versions, all what I requested was done! I didn't expect such an amount of assistance on this project :heart:
