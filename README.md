@@ -104,11 +104,11 @@ Windows
 ## System Requirements
 CPU: At least one core with enough hertz
 
-RAM: 1000000 bytes should be enough
+RAM: 1 MB should be enough
 
 OS: MS/DOS and higher
 
-Disk space: 500000 bytes for installation. Leave some bytes for saving the scores (optional)
+Disk space: 0.5 MB for installation. Leave some bytes for saving the scores (optional)
 
 GPU: Use something new that has VGA on it. VGA is nice and colorful.
 
