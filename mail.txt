@@ -1,6 +1,8 @@
 First of all, thanks for reading and sorry if this email reaches you multiple times. This 2-minutes read is about the zero-cost but influential and significantly beneficial decision to include the 93.7 kB package of nbsdgames (which are 21 games with a lot of variety, creativity, endless gameplay and a menu icon) as default games on your distro (maybe alongside or instead of the other games you include, if you already do).
 
-Here are some reasons for doing so (arguably it is much more important than the important calculator app you probably already include) along with answers to common questions that might arise:
+I understand that you are not used to receive such texts, and this is not something everyone talks about, however the more I think, the more it seems like a good decision. Actually it seems far more justified than many stuff already on many distros, so I give this a try. I don't see why not. I am open to questions and discussion (arguably it is much more important than the important calculator app you probably already include).
+ 
+Here are some reasons for doing so along with answers to common questions that might arise:
 
 * These are good brain exercise (which is one of the most important and beneficial kinds of exercise) also good for keeping focus when listening to something or thinking (you can look up the psychological concepts of arousal and stimming).
 
@@ -20,6 +22,8 @@ For example you can look at: https://www.ox.ac.uk/news/2026-02-19-study-shows-di
 * A lot of users try OSes on VMs. A lot of people dual-boot OSes with Windows. I have seen that default games give them motivation to boot the OS more than once, play the games and also see and try other things there.
 
 * Sometimes people don't know everything about every advantage of Linux yet and are just trying Linux or your distro to see if it is interesting. I would prefer to give them something interesting, instead of sending them back uninterested after 10 minutes.
+
+* Many people try Linux because of their university, it is good to give them something to like Linux and see it as entertaining.
 
 * These can motivate non-techy people to install Linux on their old PCs so children could play and tinker with them (it did happen back when Windows included games) few years later those children could be benefiting you and others because it made them try Linux more.
 

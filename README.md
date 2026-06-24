@@ -42,7 +42,7 @@ The difficulty and/or dimensions are adjustable through simple command line opti
 It's on almost every repo by now: Debian (and other DEBs), OpenSUSE (and other RPMs), AUR, Alpine, FreeBSD, NetBSD, DragonflyBSD, Minix, Homebrew (MacOSX) and more 
 https://repology.org/project/nbsdgames/versions
 
-Thanks to Elias Riedel Gårding, Zinjanthropus, Gürkan Myczko, Robert Clausecker, Sam James, and so many other nice people for packaging.
+Thanks to Elias Riedel Gårding, Zinjanthropus, Alex Myczko, Robert Clausecker, Sam James, and so many other nice people for packaging.
 
 They also gave back code and useful feedback.
 
