@@ -121,7 +121,6 @@ Such high-end computers would probably run it smoothly. No vaccum lamps and vacc
 * Tell me the games you want to be added (but in the same genre, I can't port Angry Birds to curses! :)
 * Make a package for your distro (or put it on repos if the package is not there)
 * Share videos of your playing on YouTube and elsewhere (this is precious feedback), and nicely asking relevant youtubers and bloggers to do so.
-* Tell distro developers to consider adding these as *default games*, read and send them the [mail.txt](https://raw.githubusercontent.com/abakh/nbsdgames/refs/heads/master/mail.txt) text.
 * [Show cool stuff like your highscores etc.](https://github.com/abakh/nbsdgames/discussions/58)
 
 Thanks to all the people who helped in the previous versions, all what I requested was done! I didn't expect such an amount of assistance on this project :heart:
