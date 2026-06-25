@@ -1,6 +1,8 @@
+TLDR: There is real need for default games on Linux distros, nbsdgames is arguably the best package for that purpose (also it is different from the old bsd-games). Why not include it in your distro? I see many reasons for it and zero reasons against it. This text is interesting and informative and takes few minutes to read.
+
 First of all, thanks for reading and sorry if this email reaches you multiple times. This 2-minutes read is about the zero-cost but influential and significantly beneficial decision to include the 93.7 kB package of nbsdgames (which are 21 games with a lot of variety, creativity, endless gameplay and a menu icon) as default games on your distro (maybe alongside or instead of the other games you include, if you already do).
 
-I understand that you are not used to receive such texts, and this is not something everyone talks about, however the more I think, the more it seems like a good decision. Actually it seems far more justified than many stuff already on many distros, so I give this a try. I don't see why not. I am open to questions and discussion (arguably it is much more important than the important calculator app you probably already include).
+I understand that you are not used to receive such texts, and this is not something everyone talks about, however the more I think, the more it seems like a good decision. Actually it seems far more justified than many stuff already on many distros, so I give this a try. I don't see why not. I am open to questions and discussion (arguably it is much more important than the important calculator app you probably already include, for example).
  
 Here are some reasons for doing so along with answers to common questions that might arise:
 
@@ -29,13 +31,18 @@ For example you can look at: https://www.ox.ac.uk/news/2026-02-19-study-shows-di
 
 * As I said, technical problems are common. A lot of them are significant annoyances (network problems, dual-boot difficulties) that last many hours for the users and could make them give up. Games are good mental rests that make it go easy. People in NetBSD made a good choice when they put a tetris game in their /rescue directory.
 
+* Many young people have only seen bloatware, spyware, adware, exploitative, money-grabbing games. It would be nice to show them an alternative. I have seen kids and teens liking these games. Text games look "new" and unique to many.
+
+* Many people go back to Windows to play their games, default games could be a partial deterrent against that.
+
 * Minimal programs like this are good at propagating the Unix philosophy, "KISS", and the important reality that one small program might do a job better than many much bigger inefficient programs. If I were to show how Free Software managed to perform better than commercial products, I would begin with introducing such concepts.
+
 
 FAQ:
 
 + Why Windows and phone vendors stopped shipping games?
 
-- The games on old phones and old Windows versions were popular however since their "new looking" games started becoming too heavy they stopped being justifiable (the latest minesweeper is like 100 MB, not to mention other games). They also make money from their spyware social media apps and other stuff that compete with games over the user's boredom and attention. They also needed to pay their game developers, unlike the free and open source nbsdgames.
+- The games on old phones and old Windows versions were popular however since their "new looking" games started becoming too heavy they stopped being justifiable (the latest minesweeper is like a 100 MBs, not to mention other games). They also make money from their spyware social media apps and other stuff that compete with games over the user's boredom and attention. They also needed to pay their game developers, unlike the free and open source nbsdgames.
 
 + Not many people asked us for games.
 
@@ -56,3 +63,6 @@ FAQ:
 I hope you realize that I make this points because it is a good package not because it is my package (same applies to the person who sent you this text). I did it because I thought it is a good thing to do and it seems that it is so. If you decide to poll your community, it would be good to show them this text too, so they know what they are talking about.
 
 Thanks for reading. I wish you continued success and good reasoning.
+
+The games: https://github.com/abakh/nbsdgames
+
