@@ -1,4 +1,4 @@
-TLDR: There is real need for default games on Linux distros, nbsdgames is arguably the best package for that purpose (also it is different from the old bsd-games). Why not include it in your distro? I see many reasons for it and zero reasons against it. This text is interesting and informative and takes few minutes to read.
+TLDR: There is a real need for default games on Linux distros and nbsdgames is arguably the best package for that purpose (Don't mistake it with the old bsd-games). Why not include it in your distro? I see a lot of benefits for it and zero reasons against it. This text is interesting and informative and takes few minutes to read.
 
 First of all, thanks for reading and sorry if this email reaches you multiple times. This 2-minutes read is about the zero-cost but influential and significantly beneficial decision to include the 93.7 kB package of nbsdgames (which are 21 games with a lot of variety, creativity, endless gameplay and a menu icon) as default games on your distro (maybe alongside or instead of the other games you include, if you already do).
 
@@ -27,13 +27,15 @@ For example you can look at: https://www.ox.ac.uk/news/2026-02-19-study-shows-di
 
 * Many people try Linux because of their university, it is good to give them something to like Linux and see it as entertaining.
 
+* Many young people have only seen bloatware, spyware, adware, exploitative, money-grabbing games. It would be nice to show them an alternative. I have seen some kids and teens liking these games.
+
 * These can motivate non-techy people to install Linux on their old PCs so children could play and tinker with them (it did happen back when Windows included games) few years later those children could be benefiting you and others because it made them try Linux more.
 
 * As I said, technical problems are common. A lot of them are significant annoyances (network problems, dual-boot difficulties) that last many hours for the users and could make them give up. Games are good mental rests that make it go easy. People in NetBSD made a good choice when they put a tetris game in their /rescue directory.
 
-* Many young people have only seen bloatware, spyware, adware, exploitative, money-grabbing games. It would be nice to show them an alternative. I have seen kids and teens liking these games. Text games look "new" and unique to many.
+* Small programs cause much less wear on flash memory devices like SSDs. Good to encourage the habit of using them.
 
-* Many people go back to Windows to play their games, default games could be a partial deterrent against that.
+* Many people go back to Windows to play the games they have already installed there instead of installing the same or new games on Linux, default games could be a partial deterrent against that by preventing their boredom.
 
 * Minimal programs like this are good at propagating the Unix philosophy, "KISS", and the important reality that one small program might do a job better than many much bigger inefficient programs. If I were to show how Free Software managed to perform better than commercial products, I would begin with introducing such concepts.
 
@@ -54,7 +56,7 @@ FAQ:
 
 + Nobody would like text-based games.
 
-- That is a baseless assumption. Some people assume that everyone would scream and run upon seeing anything that has not had a marketing budget. Most people who don't play nbsdgames have simply not heard of it, many millions of people are fans of the genres it includes (checkers, sudoku, arcade games, etc.) and I see many thousands of people liking nbsdgames of which you can see hundreds in the Github (some said they love it or like it very much or that it is very cool in the emails) and I hardly see anyone "disliking" them after trying. Almost anyone I saw would like one, two, five or six or all the games in there. That is the good thing about variety.
+- Haha, that is a baseless assumption. Some people assume that everyone would scream and run upon seeing anything that has not had a marketing budget, they are wrong. Most people who don't play nbsdgames have simply not heard of it, many millions of people are fans of the genres it includes (checkers, sudoku, arcade games, etc.) and I see many thousands of people liking nbsdgames of which you can see hundreds in the Github (some said they love it or like it very much or that it is very cool in the emails) and I hardly see anyone "disliking" them after trying. Almost anyone I saw would like one, two, five or six or all the games in there. That is the good thing about variety. Text-games look unique and new to many, some say "they look like fun" or that "they spark joy". It also has some cross-cultural appeal. I have seen all sorts of people I could imagine among the fans of nbsdgames: old people, adults, teens, children, males, females, others, theologians in Paraguay, DJs in America, many scientists in Europe, people from Nepal, Ivory Coast, Japan, many other countries and almost every region I know outside Antarctica (and possibly inside it, but I can't verify)
 
 + We already have games.
 
