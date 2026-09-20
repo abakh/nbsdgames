@@ -548,7 +548,7 @@ int main(int argc,char** argv){
 	draw();
 	refresh();
 	move(LEN-1,0);
-	printw("You have lost The Game. Press a key to contintue.");
+	printw("You have lost The Game. Press a key to continue.");
 	refresh();
 	avoid_accidental_pass();
 	curs_set(1);
