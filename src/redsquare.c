@@ -672,8 +672,10 @@ int main(int argc,char** argv){
 	int input=0;
 	int prey,prex;
 	int cinred;
+	int re_count;
 	Start:
 	incoherent_for=0;
+	re_count=0;
 	score=0;
 	level=0;
 	stale_cells=0;
@@ -782,6 +784,7 @@ int main(int argc,char** argv){
 				printw("Win by capture! +20 ");
 			}
 			printw("Well done! Press a key to continue: ");
+			re_count=0;
 			curs_set(1);
 			avoid_accidental_pass();
 			curs_set(0);
@@ -815,6 +818,21 @@ int main(int argc,char** argv){
 				sprintf(msg,"Reemergence! +30 ");
 				msg_show=20;
 				score+=30;
+				++re_count;
+				if(re_count==30){
+					#define WRAP_Y(y) (((y)+LEN)%LEN)
+					#define WRAP_X(x) (((x)+WID)%WID)
+					board[WRAP_Y(py-3)][WRAP_X(px)]=RED;
+					board[WRAP_Y(py)][WRAP_X(px-3)]=RED;
+					board[WRAP_Y(py+4)][WRAP_X(px)]=RED;
+					board[WRAP_Y(py)][WRAP_X(px+4)]=RED;
+					board[WRAP_Y(py-3)][WRAP_X(px+1)]=ALIVE;
+					board[WRAP_Y(py+1)][WRAP_X(px-3)]=ALIVE;
+					board[WRAP_Y(py+4)][WRAP_X(px-1)]=ALIVE;
+					board[WRAP_Y(py-1)][WRAP_X(px+4)]=ALIVE;
+					//this foils a way I discovered to get infininte scores
+					re_count=0;
+				}
 			}
 		}
 		if( input==KEY_F(1) || input=='?' )
