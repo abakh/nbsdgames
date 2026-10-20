@@ -2,9 +2,10 @@
 
 #-O3 --std=c99 -lcurses -DNO_MOUSE for NetBSD curses
 #adding --std=c99 makes warnings in GNU, and the blame is upon glibc feature test macros. my code is correct.
-GAMES_DIR?=$(PREFIX)/usr/bin
-SCORES_DIR?=$(PREFIX)/var/games
-MAN_DIR?=$(PREFIX)/usr/share/man/man6
+PREFIX?=/usr
+GAMES_DIR?=$(PREFIX)/bin
+SCORES_DIR?=/var/games
+MAN_DIR?=$(PREFIX)/share/man/man6
 CFLAGS+= -Wno-unused-result -DSCORES_DIR=\"$(SCORES_DIR)\"
 PKG_CONFIG?=pkg-config
 LIBS_PKG_CONFIG!=$(PKG_CONFIG) --libs --cflags ncurses
@@ -17,8 +18,8 @@ SRC!=echo *.c *.h
 all: $(ALL)
 
 scorefiles:
+	mkdir -p $(DESTDIR)$(SCORES_DIR)
 	for sf in $(SCORE_FILES); do touch $(DESTDIR)$(SCORES_DIR)/$$sf ; chmod 664 $(DESTDIR)$(SCORES_DIR)/$$sf; chown :games $(DESTDIR)$(SCORES_DIR)/$$sf ; done;
-	for game in $(ALL); do chown :games $(DESTDIR)$(GAMES_DIR)/$$game; chmod g $(DESTDIR)$(GAMES_DIR)/$$game ; done;
 
 manpages: dirs
 	cp man/* $(DESTDIR)$(MAN_DIR)
@@ -27,8 +28,10 @@ $(ALL): $(SRC) config.h common.h
 	$(CC) $(CFLAGS) $@.c $(LDFLAGS) $(LIBS) -o $@
 
 menu:
-	cp nbsdgames.desktop $(DESTIDR)$(PREFIX)/usr/share/applications
-	cp nbsdgames.svg $(DESTDIR)$(PREFIX)/usr/share/pixmaps
+	mkdir -p $(DESTDIR)$(PREFIX)/share/applications
+	mkdir -p $(DESTDIR)$(PREFIX)/share/pixmaps
+	cp nbsdgames.desktop $(DESTDIR)$(PREFIX)/share/applications
+	cp nbsdgames.svg $(DESTDIR)$(PREFIX)/share/pixmaps
 clean:
 	for game in $(ALL); do rm $$game; done;
 uninstall:
