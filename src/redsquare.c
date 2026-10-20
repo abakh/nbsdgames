@@ -673,6 +673,7 @@ int main(int argc,char** argv){
 	int prey,prex;
 	int cinred;
 	int re_count;
+	int preinput=0;
 	Start:
 	incoherent_for=0;
 	re_count=0;
@@ -805,6 +806,7 @@ int main(int argc,char** argv){
 			break;
 		}
 		halfdelay(9);
+		preinput=input;
 		input = getch();
 		live(board);
 		count(board);
@@ -822,14 +824,14 @@ int main(int argc,char** argv){
 				if(re_count==30){
 					#define WRAP_Y(y) (((y)+LEN)%LEN)
 					#define WRAP_X(x) (((x)+WID)%WID)
-					board[WRAP_Y(py-3)][WRAP_X(px)]=RED;
-					board[WRAP_Y(py)][WRAP_X(px-3)]=RED;
-					board[WRAP_Y(py+4)][WRAP_X(px)]=RED;
-					board[WRAP_Y(py)][WRAP_X(px+4)]=RED;
-					board[WRAP_Y(py-3)][WRAP_X(px+1)]=ALIVE;
-					board[WRAP_Y(py+1)][WRAP_X(px-3)]=ALIVE;
-					board[WRAP_Y(py+4)][WRAP_X(px-1)]=ALIVE;
-					board[WRAP_Y(py-1)][WRAP_X(px+4)]=ALIVE;
+					board[WRAP_Y(py-4)][WRAP_X(px)]=RED;
+					board[WRAP_Y(py)][WRAP_X(px-4)]=RED;
+					board[WRAP_Y(py+5)][WRAP_X(px)]=RED;
+					board[WRAP_Y(py)][WRAP_X(px+5)]=RED;
+					board[WRAP_Y(py-4)][WRAP_X(px+1)]=ALIVE;
+					board[WRAP_Y(py+1)][WRAP_X(px-4)]=ALIVE;
+					board[WRAP_Y(py+5)][WRAP_X(px-1)]=ALIVE;
+					board[WRAP_Y(py-1)][WRAP_X(px+5)]=ALIVE;
 					//this foils a way I discovered to get infininte scores
 					re_count=0;
 				}
@@ -866,6 +868,10 @@ int main(int argc,char** argv){
 		if(coherent){ 
 			rm_square(board,prey,prex);
 			mk_square(board);
+		}
+		if(input==preinput){//don't move so fast
+			usleep(25000);
+			flushinp();
 		}
 		DidntMove:
 		if( (input=='q'||input==27)){
