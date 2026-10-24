@@ -17,6 +17,7 @@ You should have received a copy of the CC0 Public Domain Dedication along with t
 #include <time.h>
 #include <signal.h>
 #include <math.h>
+#include <sys/stat.h>
 #include "config.h"
 #define FOPEN_FAIL -10
 #define ENV_VAR_OR_USERNAME (getenv("NB_PLAYER")?getenv("NB_PLAYER"):getenv("USER"))
@@ -73,6 +74,9 @@ byte score_write(const char* path, long wscore, byte save_to_num){// only saves 
 			fprintf(tmp_score_file,"%s : %ld\n",name_buff[i],score_buff[i]);
 		}
 	}
+	#ifdef SCORES_GW
+		fchmod(fileno(tmp_score_file), 0460);
+	#endif
 	fflush(tmp_score_file);
 	fclose(score_file);
 	if (rename(tmp_path, path) < 0) {
