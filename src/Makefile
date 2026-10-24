@@ -2,6 +2,7 @@
 
 #-O3 --std=c99 -lcurses -DNO_MOUSE for NetBSD curses
 #adding --std=c99 makes warnings in GNU, and the blame is upon glibc feature test macros. my code is correct.
+#-DSCORES_GW to allow group access to score files
 PREFIX?=/usr
 GAMES_DIR?=$(PREFIX)/bin
 SCORES_DIR?=/var/games
