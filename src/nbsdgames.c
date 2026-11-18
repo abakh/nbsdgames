@@ -44,7 +44,7 @@ int usleep(long usec) {
 chtype colors[4]={A_NORMAL,A_STANDOUT};
 char main_menu[]={
 	"See High Scores\n"
-	"See help pages\n"
+	"See Help Page\n"
 	NB"fisher\n"
 	NB"darrt\n"
 	NB"miketron\n"
