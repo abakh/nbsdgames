@@ -399,7 +399,7 @@ int main(int argc,char** argv){
 		}
 		if(input=='Q'){
 			if(really_quit==0){
-				strcpy(msg,"ESC or Ctrl-C to quit.");
+				strcpy(msg,"ESC or Ctrl-C or Q to quit.");
 				msg_show=50;
 				really_quit=1;
 			}
