@@ -597,7 +597,7 @@ void gameplay(void){
 	printw(      "Learn from your mistake and try again and again.\n\n");
 
 	printw(      "Move the square and catch the X or outnumber the\n");
-	printw(      "white cells with those of your own,\n");
+	printw(      "# cells with red cells,\n");
 	printw(      "in the environment of Conway's game of life.\n");
 	printw(       "\nHint: You can try doing the trick below, and more:\n\n");
 
