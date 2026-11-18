@@ -102,8 +102,8 @@ char help_page[]={
 	"or '!' to see the Controls and Gameplay \n"
         "for that game.\n"
         "Press 'q' to exit any game or menu.\n"
-	"You can see the command line options for any game\n"
-	"this way: checkers -h\n"
+	"You can see the command line options\n"
+	"for any game this way: checkers -h\n"
 };
 char choice_str[100]={0};
 char name[100]={0};
