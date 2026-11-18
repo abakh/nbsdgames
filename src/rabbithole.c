@@ -300,7 +300,7 @@ int main(int argc,char** argv){
 	printw(" Wanna play again?(y/n)");
 	curs_set(1);
 	input=getch();
-	if(input == 'Y' || input == 'y')
+	if(input == 'Y' || input == 'y' || input=='\n')
 		goto Start;
 	else if( input!= 'N' &&  input!= 'n' && input!='q')
 		goto End;
