@@ -597,7 +597,7 @@ void gameplay(void){
 	printw(      "Learn from your mistake and try again and again.\n\n");
 
 	printw(      "Move the square and catch the X or outnumber the\n");
-	printw(      "# cells with red cells,\n");
+	printw(      "existing cells with red cells,\n");
 	printw(      "in the environment of Conway's game of life.\n");
 	printw(       "\nHint: You can try doing the trick below, and more:\n\n");
 
@@ -837,10 +837,6 @@ int main(int argc,char** argv){
 				}
 			}
 		}
-		if( input==KEY_F(1) || input=='?' )
-			help();
-		if( (input==KEY_F(2)||input=='!') )
-			gameplay();
 		prey=py;
 		prex=px;
 		if(input=='k' || (input==KEY_UP||input=='w')){
