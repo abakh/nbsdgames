@@ -334,7 +334,7 @@ int main(int argc,char** argv){
 			}
 		}
 		if((input==KEY_DOWN||input=='s')){
-			if(hook<11)
+			if(hook<10)
 				++hook;
 			if(fish[hook-1]==40 && caught==-1){
 				caught=hook-1;
