@@ -180,7 +180,7 @@ void place_food(byte board[len][wid]){
 		do{
 			y=rand()%len;
 			x=rand()%wid;
-		}while(y==py && x==px && board[y][x]!=FOOD);
+		}while((y==py && x==px) || board[y][x]==FOOD);
 		board[y][x]=SUPERFOOD;
 	}
 }
